@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import './login.css';
 import Link from 'next/link';
+import { CircleCheck, ListOrdered, Bell } from 'lucide-react';
 
 
 export default function LoginPage() {
@@ -48,21 +49,27 @@ export default function LoginPage() {
 
           <div className="feature-list">
             <div className="feature-item">
-              <div className="feature-icon">✓</div>
+              <div className="feature-icon">
+                <CircleCheck size={24} strokeWidth={2.5} />
+              </div>
               <span className="feature-text">
                 Reserva tu horario favorito
               </span>
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">⏱</div>
+              <div className="feature-icon">
+                <ListOrdered size={24} strokeWidth={2.5} />
+              </div>
               <span className="feature-text">
                 Fila virtual inteligente
               </span>
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">🔔</div>
+              <div className="feature-icon">
+                <Bell size={24} strokeWidth={2.5} />
+              </div>
               <span className="feature-text">
                 Notificaciones en tiempo real
               </span>
@@ -90,6 +97,7 @@ export default function LoginPage() {
               <div className="input-wrapper">
                 <input
                   type="email"
+                  className="auth-input"
                   placeholder="usuario@uteq.edu.mx"
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
@@ -103,6 +111,7 @@ export default function LoginPage() {
               <div className="input-wrapper">
                 <input
                   type="password"
+                  className="auth-input"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -124,9 +133,9 @@ export default function LoginPage() {
             <span>¿Primera vez?</span>
           </div>
 
-          <div className="register-link">
-  <Link href="/register">Crea tu cuenta aquí</Link>
-</div>
+          <div className="auth-link">
+            <Link href="/register">Crea tu cuenta aquí</Link>
+          </div>
 
         </div>
       </div>
