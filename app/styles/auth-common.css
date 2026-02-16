@@ -1,0 +1,448 @@
+/* ==========================================
+   ESTILOS COMUNES - AUTENTICACION
+   Clases compartidas entre Login y Register
+   ========================================== */
+
+/* Reset y configuración base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+:root {
+    --azul-institucional: #234D7B;
+    --azul-claro: #00A4E0;
+    --amarillo: #EBBA3D;
+    --gris: #71706F;
+    --blanco: #FFFFFF;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==========================================
+   Clases de utilidad - Texto
+   ========================================== */
+
+.auth-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--azul-institucional);
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+}
+
+.auth-subtitle {
+    font-size: 18px;
+    color: var(--gris);
+    font-weight: 500;
+}
+
+.highlight {
+    color: var(--azul-claro);
+    position: relative;
+    font-weight: 800;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--amarillo);
+    border-radius: 2px;
+}
+
+/* ==========================================
+   Formularios - Inputs y labels
+   ========================================== */
+
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--azul-institucional);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.auth-input,
+.auth-select {
+    width: 100%;
+    padding: 18px 20px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: #1f2937;
+    border: 2px solid #e8e8e8;
+    border-radius: 16px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+.auth-select {
+    cursor: pointer;
+}
+
+.auth-input:focus,
+.auth-select:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    background: var(--blanco);
+    box-shadow: 0 8px 24px rgba(0, 164, 224, 0.15);
+}
+
+/* Estilos para placeholders */
+.auth-input::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+    font-weight: 500;
+}
+
+.auth-select::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+    font-weight: 500;
+}
+
+/* ==========================================
+   Botones
+   ========================================== */
+
+.btn-primary {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--azul-institucional) 0%, var(--azul-claro) 100%);
+    color: var(--blanco);
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(35, 77, 123, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(0, 164, 224, 0.2);
+    border-radius: 16px;
+    color: var(--azul-claro);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--azul-claro);
+    color: var(--blanco);
+    transform: translateX(-4px);
+}
+
+/* ==========================================
+   Progress bar
+   ========================================== */
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e8e8e8;
+    border-radius: 8px;
+    margin-bottom: 48px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--azul-claro) 0%, var(--amarillo) 100%);
+    border-radius: 8px;
+    transition: width 0.5s ease;
+}
+
+/* ==========================================
+   Checkbox personalizado
+   ========================================== */
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    margin: 32px 0;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--azul-claro);
+}
+
+.checkbox-wrapper span {
+    font-size: 14px;
+    color: var(--gris);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.checkbox-wrapper a {
+    color: var(--azul-claro);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.checkbox-wrapper a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   Divider
+   ========================================== */
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 32px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e8e8e8;
+}
+
+.divider span {
+    font-size: 14px;
+    color: var(--gris);
+    font-weight: 600;
+}
+
+/* ==========================================
+   Enlaces
+   ========================================== */
+
+.auth-link {
+    text-align: center;
+    font-size: 16px;
+    color: var(--gris);
+    font-weight: 500;
+}
+
+.auth-link a {
+    color: var(--azul-claro);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.auth-link a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--amarillo);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.auth-link a:hover::after {
+    transform: scaleX(1);
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: 12px;
+}
+
+.forgot-password a {
+    font-size: 14px;
+    color: var(--azul-claro);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: var(--azul-institucional);
+}
+
+/* ==========================================
+   Formularios - Estilos comunes
+   ========================================== */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ==========================================
+   Success message
+   ========================================== */
+
+.success-message {
+    display: none;
+    text-align: center;
+    padding: 48px;
+}
+
+.success-message.active {
+    display: block;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.success-icon svg {
+    width: 40px;
+    height: 40px;
+    color: var(--blanco);
+    stroke-width: 2.5;
+}
+
+.success-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--azul-institucional);
+    margin-bottom: 12px;
+}
+
+.success-text {
+    font-size: 16px;
+    color: var(--gris);
+    margin-bottom: 32px;
+}
+
+/* ==========================================
+   Animaciones comunes
+   ========================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* ==========================================
+   Responsive - Tablet y mobile
+   ========================================== */
+
+@media (max-width: 768px) {
+    .auth-title {
+        font-size: 36px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

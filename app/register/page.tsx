@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import './register.css';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft, CircleCheck } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -11,7 +12,7 @@ const [form, setForm] = useState({
   nombre: '',
   apellido: '',
   email: '',
-  tipo: '', // 🔥 nuevo (estudiante/docente)
+  tipo: 'estudiante', // Siempre estudiante
   carrera: '',
   password: '',
   confirmPassword: '',
@@ -23,7 +24,7 @@ const [form, setForm] = useState({
   const [progress, setProgress] = useState(33);
   const [success, setSuccess] = useState(false);
 
-  // 🔹 manejar inputs
+  // Manejar inputs
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
 
@@ -40,7 +41,7 @@ const [form, setForm] = useState({
     }
   };
 
-  // 🔹 fuerza de contraseña
+  // Fuerza de contraseña
   const checkPassword = (password: string) => {
     let s = 0;
     if (password.length >= 8) s++;
@@ -50,33 +51,26 @@ const [form, setForm] = useState({
     setStrength(s);
   };
 
-  // 🔹 progreso
+  // Progreso
   const updateProgress = (data: any) => {
   const baseFields = [
     'nombre',
     'apellido',
     'email',
-    'tipo',
+    'carrera',
     'password',
     'confirmPassword',
   ];
 
   let filled = baseFields.filter((f) => data[f]).length;
 
-  // 🔥 si es estudiante también cuenta carrera
-  if (data.tipo === 'estudiante') {
-    if (data.carrera) filled++;
-  } else {
-    filled++; // docente no necesita carrera
-  }
-
   if (data.terms) filled++;
 
-  const total = data.tipo === 'estudiante' ? 8 : 7;
+  const total = 7;
   setProgress((filled / total) * 100);
 };
 
-  // 🔹 submit
+  // Submit
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
@@ -93,13 +87,15 @@ const [form, setForm] = useState({
   };
 
   return (
-    <div className="container">
-      <button
-        className="back-button"
-        onClick={() => router.push('/login')}
-      >
-        ← Volver al inicio
-      </button>
+    <div className="register-page">
+      <div className="container">
+        <button
+          className="btn-secondary back-button"
+          onClick={() => router.push('/login')}
+        >
+          <ArrowLeft size={18} strokeWidth={2.5} />
+          Volver al inicio
+        </button>
 
       <div className="register-card">
         {!success ? (
@@ -122,12 +118,14 @@ const [form, setForm] = useState({
               <div className="form-row">
                 <input
                   name="nombre"
+                  className="auth-input"
                   placeholder="Nombre"
                   onChange={handleChange}
                   required
                 />
                 <input
                   name="apellido"
+                  className="auth-input"
                   placeholder="Apellido"
                   onChange={handleChange}
                   required
@@ -137,41 +135,31 @@ const [form, setForm] = useState({
               <input
                 name="email"
                 type="email"
+                className="auth-input"
                 placeholder="correo@uteq.edu.mx"
                 onChange={handleChange}
                 required
               />
 
-            <select
-  name="tipo"
-  value={form.tipo}
-  onChange={handleChange}
-  required
->
-  <option value="">Selecciona tipo de usuario</option>
-  <option value="estudiante">Estudiante</option>
-  <option value="docente">Docente</option>
-</select>
-
-             {form.tipo === 'estudiante' && (
-  <select
-    name="carrera"
-    value={form.carrera}
-    onChange={handleChange}
-    required
-  >
-    <option value="">Selecciona tu carrera</option>
-    <option value="sistemas">Ing. en Sistemas</option>
-    <option value="industrial">Ing. Industrial</option>
-    <option value="mecatronica">Ing. Mecatrónica</option>
-    <option value="administracion">Administración</option>
-  </select>
-)}
-
+              <select
+                name="carrera"
+                value={form.carrera}
+                className="auth-select"
+                onChange={handleChange}
+                required
+                aria-label="Carrera"
+              >
+                <option value="">Selecciona tu carrera</option>
+                <option value="sistemas">Ing. en Sistemas</option>
+                <option value="industrial">Ing. Industrial</option>
+                <option value="mecatronica">Ing. Mecatrónica</option>
+                <option value="administracion">Administración</option>
+              </select>
 
               <input
                 name="password"
                 type="password"
+                className="auth-input"
                 placeholder="Contraseña"
                 onChange={handleChange}
                 required
@@ -180,6 +168,7 @@ const [form, setForm] = useState({
               <input
                 name="confirmPassword"
                 type="password"
+                className="auth-input"
                 placeholder="Confirmar contraseña"
                 onChange={handleChange}
                 required
@@ -190,13 +179,15 @@ const [form, setForm] = useState({
                   type="checkbox"
                   name="terms"
                   onChange={handleChange}
+                  title="Acepto términos y condiciones"
+                  aria-label="Acepto términos y condiciones"
                 />
                 <span>Acepto términos</span>
               </div>
 
               <button
                 type="submit"
-                className="btn-register"
+                className="btn-primary"
                 disabled={strength < 3}
               >
                 Crear mi cuenta
@@ -205,12 +196,16 @@ const [form, setForm] = useState({
           </>
         ) : (
           <div className="success-message active">
+            <div className="success-icon">
+              <CircleCheck size={40} strokeWidth={2.5} />
+            </div>
             <h2 className="success-title">¡Cuenta creada!</h2>
             <p className="success-text">
               Redirigiendo al login...
             </p>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
