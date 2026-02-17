@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './register.css';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CircleCheck } from 'lucide-react';
@@ -8,40 +8,85 @@ import { ArrowLeft, CircleCheck } from 'lucide-react';
 export default function RegisterPage() {
   const router = useRouter();
 
-const [form, setForm] = useState({
-  nombre: '',
-  apellido: '',
-  email: '',
-  tipo: 'estudiante', // Siempre estudiante
-  carrera: '',
-  password: '',
-  confirmPassword: '',
-  terms: false,
-});
+  const [form, setForm] = useState({
+    nombre: '',
+    apellido_paterno: '',
+    apellido_materno: '',
+    email: '',
+    tipo: 'estudiante',
+    division: '',
+    carrera: '',
+    password: '',
+    confirmPassword: '',
+    terms: false,
+  });
 
-
+  const [divisiones, setDivisiones] = useState<any[]>([]);
+  const [carreras, setCarreras] = useState<any[]>([]);
   const [strength, setStrength] = useState(0);
-  const [progress, setProgress] = useState(33);
+  const [progress, setProgress] = useState(0);
   const [success, setSuccess] = useState(false);
+  const [loadingCarreras, setLoadingCarreras] = useState(false);
 
-  // Manejar inputs
-  const handleChange = (e: any) => {
+  // cargar divisiones
+  useEffect(() => {
+    const loadDivisiones = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/routes/divisiones');
+        const data = await res.json();
+        setDivisiones(data);
+      } catch (error) {
+        console.error('Error cargando divisiones', error);
+      }
+    };
+    loadDivisiones();
+  }, []);
+
+  // recalcular progreso
+  useEffect(() => {
+    updateProgress(form);
+  }, [form]);
+
+  // manejar cambios
+  const handleChange = async (e: any) => {
     const { name, value, type, checked } = e.target;
-
-    const newForm = {
+    const newForm: any = {
       ...form,
       [name]: type === 'checkbox' ? checked : value,
     };
 
+    if (name === 'tipo' && value === 'docente') {
+      newForm.division = '';
+      newForm.carrera = '';
+      setCarreras([]);
+    }
+
+    if (name === 'division') {
+      newForm.carrera = '';
+      setCarreras([]);
+      if (value) {
+        try {
+          setLoadingCarreras(true);
+          const res = await fetch(
+            `http://localhost:3001/routes/carreras/${value}`
+          );
+          const data = await res.json();
+          setCarreras(data);
+        } catch (error) {
+          console.error('Error cargando carreras', error);
+        } finally {
+          setLoadingCarreras(false);
+        }
+      }
+    }
+
     setForm(newForm);
-    updateProgress(newForm);
 
     if (name === 'password') {
       checkPassword(value);
     }
   };
 
-  // Fuerza de contraseña
   const checkPassword = (password: string) => {
     let s = 0;
     if (password.length >= 8) s++;
@@ -51,39 +96,79 @@ const [form, setForm] = useState({
     setStrength(s);
   };
 
-  // Progreso
   const updateProgress = (data: any) => {
-  const baseFields = [
-    'nombre',
-    'apellido',
-    'email',
-    'carrera',
-    'password',
-    'confirmPassword',
-  ];
+    let fields = [
+      'nombre',
+      'apellido_paterno',
+      'apellido_materno',
+      'email',
+      'password',
+      'confirmPassword',
+    ];
+    if (data.tipo === 'estudiante') {
+      fields.push('division', 'carrera');
+    }
+    let filled = fields.filter((f) => data[f]).length;
+    if (data.terms) filled++;
+    const total = fields.length + 1;
+    setProgress((filled / total) * 100);
+  };
 
-  let filled = baseFields.filter((f) => data[f]).length;
-
-  if (data.terms) filled++;
-
-  const total = 7;
-  setProgress((filled / total) * 100);
-};
-
-  // Submit
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     if (form.password !== form.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
+console.log('Datos a enviar:', {
+  nombre: form.nombre,
+  apellido_paterno: form.apellido_paterno,
+  apellido_materno: form.apellido_materno,
+  correo: form.email,
+  password: form.password,
+  id_carrera: form.tipo === 'estudiante' ? form.carrera : null,
+  id_division: form.tipo === 'estudiante' ? form.division : null,
+  cuatrimestre: 1,
+  id_rol: form.tipo === 'estudiante' ? 1 : 2,
+});
 
-    setSuccess(true);
+    try {
+      const res = await fetch('http://localhost:3001/routes/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: form.nombre,
+          apellido_paterno: form.apellido_paterno,
+          apellido_materno: form.apellido_materno,
+          correo: form.email,
+          password: form.password,
+          id_carrera: form.tipo === 'estudiante' ? form.carrera : null,
+          id_division: form.tipo === 'estudiante' ? form.division : null,
+          cuatrimestre: 1,
+          id_rol: form.tipo === 'estudiante' ? 1 : 2,
+        }),
+      });
 
-    setTimeout(() => {
-      router.push('/login');
-    }, 2000);
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
+      setSuccess(true);
+      setTimeout(() => router.push('/login'), 2000);
+    } catch (error) {
+      console.error(error);
+      alert('Error al registrar');
+    }
+  };
+
+  // validación para habilitar botón
+  const isFormValid = () => {
+    if (strength < 3 || !form.terms) return false;
+    if (!form.nombre || !form.apellido_paterno || !form.apellido_materno || !form.email || !form.password || !form.confirmPassword) return false;
+    if (form.tipo === 'estudiante' && (!form.division || !form.carrera)) return false;
+    return true;
   };
 
   return (
@@ -97,115 +182,140 @@ const [form, setForm] = useState({
           Volver al inicio
         </button>
 
-      <div className="register-card">
-        {!success ? (
-          <>
-            <div className="header">
-              <h1>Únete a <span className="highlight">SchedMaster</span></h1>
-              <p className="subtitle">
-                Completa tu información para crear tu cuenta
-              </p>
-            </div>
+        <div className="register-card">
+          {!success ? (
+            <>
+              <div className="header">
+                <h1>
+                  Únete a <span className="highlight">SchedMaster</span>
+                </h1>
+                <p className="subtitle">Completa tu información para crear tu cuenta</p>
+              </div>
 
-            <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: `${progress}%` }} />
+              </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-row">
+              <form onSubmit={handleSubmit}>
+                <select name="tipo" value={form.tipo} className="auth-select" onChange={handleChange}>
+                  <option value="estudiante">Estudiante</option>
+                  <option value="docente">Docente</option>
+                </select>
+
+                <div className="form-row">
+                  <input
+                    name="nombre"
+                    value={form.nombre}
+                    className="auth-input"
+                    placeholder="Nombre"
+                    onChange={handleChange}
+                    required
+                  />
+                  <input
+                    name="apellido_paterno"
+                    value={form.apellido_paterno}
+                    className="auth-input"
+                    placeholder="Apellido Paterno"
+                    onChange={handleChange}
+                    required
+                  />
+                  <input
+                    name="apellido_materno"
+                    value={form.apellido_materno}
+                    className="auth-input"
+                    placeholder="Apellido Materno"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
                 <input
-                  name="nombre"
+                  name="email"
+                  value={form.email}
+                  type="email"
                   className="auth-input"
-                  placeholder="Nombre"
+                  placeholder="correo@uteq.edu.mx"
                   onChange={handleChange}
                   required
                 />
+
+                {form.tipo === 'estudiante' && (
+                  <>
+                    <select
+                      name="division"
+                      value={form.division}
+                      className="auth-select"
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Selecciona tu división</option>
+                      {divisiones.map((d) => (
+                        <option key={d.id_division} value={d.id_division}>
+                          {d.siglas} - {d.nombre_division}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      name="carrera"
+                      value={form.carrera}
+                      className="auth-select"
+                      onChange={handleChange}
+                      required
+                      disabled={!form.division || loadingCarreras}
+                    >
+                      <option value="">
+                        {loadingCarreras ? 'Cargando carreras...' : 'Selecciona tu carrera'}
+                      </option>
+                      {carreras.map((c) => (
+                        <option key={c.id_carrera} value={c.id_carrera}>
+                          {c.nombre_carrera}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                )}
+
                 <input
-                  name="apellido"
+                  name="password"
+                  value={form.password}
+                  type="password"
                   className="auth-input"
-                  placeholder="Apellido"
+                  placeholder="Contraseña"
                   onChange={handleChange}
                   required
                 />
-              </div>
 
-              <input
-                name="email"
-                type="email"
-                className="auth-input"
-                placeholder="correo@uteq.edu.mx"
-                onChange={handleChange}
-                required
-              />
-
-              <select
-                name="carrera"
-                value={form.carrera}
-                className="auth-select"
-                onChange={handleChange}
-                required
-                aria-label="Carrera"
-              >
-                <option value="">Selecciona tu carrera</option>
-                <option value="sistemas">Ing. en Sistemas</option>
-                <option value="industrial">Ing. Industrial</option>
-                <option value="mecatronica">Ing. Mecatrónica</option>
-                <option value="administracion">Administración</option>
-              </select>
-
-              <input
-                name="password"
-                type="password"
-                className="auth-input"
-                placeholder="Contraseña"
-                onChange={handleChange}
-                required
-              />
-
-              <input
-                name="confirmPassword"
-                type="password"
-                className="auth-input"
-                placeholder="Confirmar contraseña"
-                onChange={handleChange}
-                required
-              />
-
-              <div className="checkbox-wrapper">
                 <input
-                  type="checkbox"
-                  name="terms"
+                  name="confirmPassword"
+                  value={form.confirmPassword}
+                  type="password"
+                  className="auth-input"
+                  placeholder="Confirmar contraseña"
                   onChange={handleChange}
-                  title="Acepto términos y condiciones"
-                  aria-label="Acepto términos y condiciones"
+                  required
                 />
-                <span>Acepto términos</span>
-              </div>
 
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={strength < 3}
-              >
-                Crear mi cuenta
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className="success-message active">
-            <div className="success-icon">
-              <CircleCheck size={40} strokeWidth={2.5} />
+                <div className="checkbox-wrapper">
+                  <input type="checkbox" name="terms" checked={form.terms} onChange={handleChange} />
+                  <span>Acepto términos</span>
+                </div>
+
+                <button type="submit" className="btn-primary" disabled={!isFormValid()}>
+                  Crear mi cuenta
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="success-message active">
+              <div className="success-icon">
+                <CircleCheck size={40} strokeWidth={2.5} />
+              </div>
+              <h2 className="success-title">¡Cuenta creada!</h2>
+              <p className="success-text">Redirigiendo al login...</p>
             </div>
-            <h2 className="success-title">¡Cuenta creada!</h2>
-            <p className="success-text">
-              Redirigiendo al login...
-            </p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -20,7 +20,9 @@
     min-height: 100vh;
     width: 100vw;
 }
-
+.auth-input {
+    pointer-events: auto; /* asegura que los inputs sean interactivos */
+}
 /* Decoraciones de fondo */
 .register-page::before {
     content: '';
@@ -76,6 +78,8 @@
     border: 1px solid rgba(255, 255, 255, 0.8);
     animation: fadeInUp 0.6s ease-out;
     width: 100%;
+     position: relative; /* importante para z-index */
+    z-index: 2;
 }
 
 /* ==========================================
@@ -155,6 +159,15 @@
     background: var(--azul-claro);
     color: var(--blanco);
     transform: translateX(-4px);
+}
+.form-row {
+  display: flex;
+  gap: 10px; /* separación entre inputs */
+}
+
+.form-row input {
+  flex: 1; /* cada input toma el mismo ancho */
+  min-width: 0; /* para evitar overflow */
 }
 
 /* ==========================================
