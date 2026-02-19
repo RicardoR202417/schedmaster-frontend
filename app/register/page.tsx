@@ -20,7 +20,7 @@ export default function RegisterPage() {
     confirmPassword: '',
     terms: false,
   });
-
+ 
   const [divisiones, setDivisiones] = useState<any[]>([]);
   const [carreras, setCarreras] = useState<any[]>([]);
   const [strength, setStrength] = useState(0);
@@ -193,11 +193,11 @@ console.log('Datos a enviar:', {
               </div>
 
               <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${progress}%` }} />
+                <div className="progress-fill" data-progress={progress} />
               </div>
 
               <form onSubmit={handleSubmit}>
-                <select name="tipo" value={form.tipo} className="auth-select" onChange={handleChange}>
+                <select name="tipo" value={form.tipo} className="auth-select" onChange={handleChange} aria-label="Tipo de usuario">
                   <option value="estudiante">Estudiante</option>
                   <option value="docente">Docente</option>
                 </select>
@@ -247,6 +247,7 @@ console.log('Datos a enviar:', {
                       className="auth-select"
                       onChange={handleChange}
                       required
+                      aria-label="Selecciona tu división"
                     >
                       <option value="">Selecciona tu división</option>
                       {divisiones.map((d) => (
@@ -263,6 +264,7 @@ console.log('Datos a enviar:', {
                       onChange={handleChange}
                       required
                       disabled={!form.division || loadingCarreras}
+                      aria-label="Selecciona tu carrera"
                     >
                       <option value="">
                         {loadingCarreras ? 'Cargando carreras...' : 'Selecciona tu carrera'}
@@ -297,8 +299,8 @@ console.log('Datos a enviar:', {
                 />
 
                 <div className="checkbox-wrapper">
-                  <input type="checkbox" name="terms" checked={form.terms} onChange={handleChange} />
-                  <span>Acepto términos</span>
+                  <input type="checkbox" id="terms" name="terms" checked={form.terms} onChange={handleChange} />
+                  <label htmlFor="terms">Acepto términos</label>
                 </div>
 
                 <button type="submit" className="btn-primary" disabled={!isFormValid()}>

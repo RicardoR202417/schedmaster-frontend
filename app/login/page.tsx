@@ -39,7 +39,7 @@ export default function LoginPage() {
       <div className="hero-section">
         <div className="hero-content">
           <div className="brand-logo">
-            <img src="/logo.png" alt="Logo" width="80" height="80" />
+            <img src="/logo.png" alt="Logo" width="60" height="60" />
           </div>
 
           <h1 className="hero-title">SchedMaster</h1>
@@ -50,7 +50,7 @@ export default function LoginPage() {
           <div className="feature-list">
             <div className="feature-item">
               <div className="feature-icon">
-                <CircleCheck size={24} strokeWidth={2.5} />
+                <CircleCheck size={20} strokeWidth={2.5} />
               </div>
               <span className="feature-text">
                 Reserva tu horario favorito
@@ -59,7 +59,7 @@ export default function LoginPage() {
 
             <div className="feature-item">
               <div className="feature-icon">
-                <ListOrdered size={24} strokeWidth={2.5} />
+                <ListOrdered size={20} strokeWidth={2.5} />
               </div>
               <span className="feature-text">
                 Fila virtual inteligente
@@ -68,7 +68,7 @@ export default function LoginPage() {
 
             <div className="feature-item">
               <div className="feature-icon">
-                <Bell size={24} strokeWidth={2.5} />
+                <Bell size={20} strokeWidth={2.5} />
               </div>
               <span className="feature-text">
                 Notificaciones en tiempo real
