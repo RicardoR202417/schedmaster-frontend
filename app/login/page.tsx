@@ -44,7 +44,7 @@ export default function LoginPage() {
 
           <h1 className="hero-title">SchedMaster</h1>
           <p className="hero-subtitle">
-            Gestión inteligente de horarios UTEQ
+            Gestión inteligente de horarios UTEQ.
           </p>
 
           <div className="feature-list">
