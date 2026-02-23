@@ -14,20 +14,28 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:3001/routes/auth/login', {
+     const res = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, password }),
       });
 
       const data = await res.json();
+if (res.ok) {
 
-      if (res.ok) {
-        localStorage.setItem('token', data.token);
-        window.location.href = '/dashboard';
-      } else {
-        alert(data.message);
-      }
+  if (data.status === 'pending') {
+    window.location.href = '/pending';
+    return;
+  }
+
+  if (data.status === 'approved') {
+    window.location.href = '/dashboard';
+    return;
+  }
+
+} else {
+  alert(data.message);
+}
     } catch (error) {
       alert('Error de conexión');
     }

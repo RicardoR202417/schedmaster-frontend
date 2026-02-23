@@ -16,23 +16,25 @@ export default function RegisterPage() {
     tipo: 'estudiante',
     division: '',
     carrera: '',
+    horario: '', // ✅ nuevo campo
     password: '',
     confirmPassword: '',
     terms: false,
   });
- 
+
   const [divisiones, setDivisiones] = useState<any[]>([]);
   const [carreras, setCarreras] = useState<any[]>([]);
+  const [horarios, setHorarios] = useState<any[]>([]); // ✅ estado horarios
   const [strength, setStrength] = useState(0);
   const [progress, setProgress] = useState(0);
   const [success, setSuccess] = useState(false);
   const [loadingCarreras, setLoadingCarreras] = useState(false);
 
-  // cargar divisiones
+  // 🔹 cargar divisiones
   useEffect(() => {
     const loadDivisiones = async () => {
       try {
-        const res = await fetch('http://localhost:3001/routes/divisiones');
+        const res = await fetch('http://localhost:3001/api/catalogo/divisiones');
         const data = await res.json();
         setDivisiones(data);
       } catch (error) {
@@ -42,12 +44,26 @@ export default function RegisterPage() {
     loadDivisiones();
   }, []);
 
-  // recalcular progreso
+  // 🔹 cargar horarios
+  useEffect(() => {
+    const loadHorarios = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/api/horarios');
+        const data = await res.json();
+        setHorarios(data);
+      } catch (error) {
+        console.error('Error cargando horarios', error);
+      }
+    };
+    loadHorarios();
+  }, []);
+
+  // 🔹 recalcular progreso
   useEffect(() => {
     updateProgress(form);
   }, [form]);
 
-  // manejar cambios
+  // 🔹 manejar cambios
   const handleChange = async (e: any) => {
     const { name, value, type, checked } = e.target;
     const newForm: any = {
@@ -58,18 +74,18 @@ export default function RegisterPage() {
     if (name === 'tipo' && value === 'docente') {
       newForm.division = '';
       newForm.carrera = '';
+      newForm.horario = '';
       setCarreras([]);
     }
 
     if (name === 'division') {
       newForm.carrera = '';
       setCarreras([]);
+
       if (value) {
         try {
           setLoadingCarreras(true);
-          const res = await fetch(
-            `http://localhost:3001/routes/carreras/${value}`
-          );
+          const res = await fetch(`http://localhost:3001/api/catalogo/carreras/${value}`);
           const data = await res.json();
           setCarreras(data);
         } catch (error) {
@@ -105,35 +121,28 @@ export default function RegisterPage() {
       'password',
       'confirmPassword',
     ];
+
     if (data.tipo === 'estudiante') {
-      fields.push('division', 'carrera');
+      fields.push('division', 'carrera', 'horario');
     }
+
     let filled = fields.filter((f) => data[f]).length;
     if (data.terms) filled++;
+
     const total = fields.length + 1;
     setProgress((filled / total) * 100);
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     if (form.password !== form.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
-console.log('Datos a enviar:', {
-  nombre: form.nombre,
-  apellido_paterno: form.apellido_paterno,
-  apellido_materno: form.apellido_materno,
-  correo: form.email,
-  password: form.password,
-  id_carrera: form.tipo === 'estudiante' ? form.carrera : null,
-  id_division: form.tipo === 'estudiante' ? form.division : null,
-  cuatrimestre: 1,
-  id_rol: form.tipo === 'estudiante' ? 1 : 2,
-});
 
     try {
-      const res = await fetch('http://localhost:3001/routes/auth/register', {
+      const res = await fetch('http://localhost:3001/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,12 +153,14 @@ console.log('Datos a enviar:', {
           password: form.password,
           id_carrera: form.tipo === 'estudiante' ? form.carrera : null,
           id_division: form.tipo === 'estudiante' ? form.division : null,
+          id_horario: form.tipo === 'estudiante' ? form.horario : null, // ✅ enviado
           cuatrimestre: 1,
           id_rol: form.tipo === 'estudiante' ? 1 : 2,
         }),
       });
 
       const data = await res.json();
+
       if (!res.ok) {
         alert(data.message);
         return;
@@ -163,21 +174,17 @@ console.log('Datos a enviar:', {
     }
   };
 
-  // validación para habilitar botón
   const isFormValid = () => {
     if (strength < 3 || !form.terms) return false;
     if (!form.nombre || !form.apellido_paterno || !form.apellido_materno || !form.email || !form.password || !form.confirmPassword) return false;
-    if (form.tipo === 'estudiante' && (!form.division || !form.carrera)) return false;
+    if (form.tipo === 'estudiante' && (!form.division || !form.carrera || !form.horario)) return false;
     return true;
   };
 
   return (
     <div className="register-page">
       <div className="container">
-        <button
-          className="btn-secondary back-button"
-          onClick={() => router.push('/login')}
-        >
+        <button className="btn-secondary back-button" onClick={() => router.push('/login')}>
           <ArrowLeft size={18} strokeWidth={2.5} />
           Volver al inicio
         </button>
@@ -186,9 +193,7 @@ console.log('Datos a enviar:', {
           {!success ? (
             <>
               <div className="header">
-                <h1>
-                  Únete a <span className="highlight">SchedMaster</span>
-                </h1>
+                <h1>Únete a <span className="highlight">SchedMaster</span></h1>
                 <p className="subtitle">Completa tu información para crear tu cuenta</p>
               </div>
 
@@ -197,58 +202,22 @@ console.log('Datos a enviar:', {
               </div>
 
               <form onSubmit={handleSubmit}>
-                <select name="tipo" value={form.tipo} className="auth-select" onChange={handleChange} aria-label="Tipo de usuario">
+                <select name="tipo" value={form.tipo} className="auth-select" onChange={handleChange}>
                   <option value="estudiante">Estudiante</option>
                   <option value="docente">Docente</option>
                 </select>
 
                 <div className="form-row">
-                  <input
-                    name="nombre"
-                    value={form.nombre}
-                    className="auth-input"
-                    placeholder="Nombre"
-                    onChange={handleChange}
-                    required
-                  />
-                  <input
-                    name="apellido_paterno"
-                    value={form.apellido_paterno}
-                    className="auth-input"
-                    placeholder="Apellido Paterno"
-                    onChange={handleChange}
-                    required
-                  />
-                  <input
-                    name="apellido_materno"
-                    value={form.apellido_materno}
-                    className="auth-input"
-                    placeholder="Apellido Materno"
-                    onChange={handleChange}
-                    required
-                  />
+                  <input name="nombre" value={form.nombre} className="auth-input" placeholder="Nombre" onChange={handleChange} required />
+                  <input name="apellido_paterno" value={form.apellido_paterno} className="auth-input" placeholder="Apellido Paterno" onChange={handleChange} required />
+                  <input name="apellido_materno" value={form.apellido_materno} className="auth-input" placeholder="Apellido Materno" onChange={handleChange} required />
                 </div>
 
-                <input
-                  name="email"
-                  value={form.email}
-                  type="email"
-                  className="auth-input"
-                  placeholder="correo@uteq.edu.mx"
-                  onChange={handleChange}
-                  required
-                />
+                <input name="email" value={form.email} type="email" className="auth-input" placeholder="correo@uteq.edu.mx" onChange={handleChange} required />
 
                 {form.tipo === 'estudiante' && (
                   <>
-                    <select
-                      name="division"
-                      value={form.division}
-                      className="auth-select"
-                      onChange={handleChange}
-                      required
-                      aria-label="Selecciona tu división"
-                    >
+                    <select name="division" value={form.division} className="auth-select" onChange={handleChange} required>
                       <option value="">Selecciona tu división</option>
                       {divisiones.map((d) => (
                         <option key={d.id_division} value={d.id_division}>
@@ -257,46 +226,29 @@ console.log('Datos a enviar:', {
                       ))}
                     </select>
 
-                    <select
-                      name="carrera"
-                      value={form.carrera}
-                      className="auth-select"
-                      onChange={handleChange}
-                      required
-                      disabled={!form.division || loadingCarreras}
-                      aria-label="Selecciona tu carrera"
-                    >
-                      <option value="">
-                        {loadingCarreras ? 'Cargando carreras...' : 'Selecciona tu carrera'}
-                      </option>
+                    <select name="carrera" value={form.carrera} className="auth-select" onChange={handleChange} required disabled={!form.division || loadingCarreras}>
+                      <option value="">{loadingCarreras ? 'Cargando carreras...' : 'Selecciona tu carrera'}</option>
                       {carreras.map((c) => (
                         <option key={c.id_carrera} value={c.id_carrera}>
                           {c.nombre_carrera}
                         </option>
                       ))}
                     </select>
+
+                    {/* ✅ SELECT HORARIO */}
+                    <select name="horario" value={form.horario} className="auth-select" onChange={handleChange} required>
+                      <option value="">Selecciona tu horario</option>
+                      {horarios.map((h) => (
+                        <option key={h.id_horario} value={h.id_horario}>
+                          {h.dia_semana} — {new Date(h.hora_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </option>
+                      ))}
+                    </select>
                   </>
                 )}
 
-                <input
-                  name="password"
-                  value={form.password}
-                  type="password"
-                  className="auth-input"
-                  placeholder="Contraseña"
-                  onChange={handleChange}
-                  required
-                />
-
-                <input
-                  name="confirmPassword"
-                  value={form.confirmPassword}
-                  type="password"
-                  className="auth-input"
-                  placeholder="Confirmar contraseña"
-                  onChange={handleChange}
-                  required
-                />
+                <input name="password" value={form.password} type="password" className="auth-input" placeholder="Contraseña" onChange={handleChange} required />
+                <input name="confirmPassword" value={form.confirmPassword} type="password" className="auth-input" placeholder="Confirmar contraseña" onChange={handleChange} required />
 
                 <div className="checkbox-wrapper">
                   <input type="checkbox" id="terms" name="terms" checked={form.terms} onChange={handleChange} />
