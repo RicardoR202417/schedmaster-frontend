@@ -16,7 +16,8 @@ export default function RegisterPage() {
     tipo: 'estudiante',
     division: '',
     carrera: '',
-    horario: '', // ✅ nuevo campo
+    horarioId: '',
+    diasSeleccionados: [] as number[],
     password: '',
     confirmPassword: '',
     terms: false,
@@ -24,83 +25,67 @@ export default function RegisterPage() {
 
   const [divisiones, setDivisiones] = useState<any[]>([]);
   const [carreras, setCarreras] = useState<any[]>([]);
-  const [horarios, setHorarios] = useState<any[]>([]); // ✅ estado horarios
+  const [horarios, setHorarios] = useState<any[]>([]);
+  const [diasHorario, setDiasHorario] = useState<any[]>([]);
   const [strength, setStrength] = useState(0);
   const [progress, setProgress] = useState(0);
   const [success, setSuccess] = useState(false);
   const [loadingCarreras, setLoadingCarreras] = useState(false);
 
-  // 🔹 cargar divisiones
+  // cargar divisiones
   useEffect(() => {
-    const loadDivisiones = async () => {
-      try {
-        const res = await fetch('http://localhost:3001/api/catalogo/divisiones');
-        const data = await res.json();
-        setDivisiones(data);
-      } catch (error) {
-        console.error('Error cargando divisiones', error);
-      }
-    };
-    loadDivisiones();
+    fetch('http://localhost:3001/api/catalogo/divisiones')
+      .then(res => res.json())
+      .then(setDivisiones)
+      .catch(() => setDivisiones([]));
   }, []);
 
-  // 🔹 cargar horarios
+  // cargar horarios
   useEffect(() => {
-    const loadHorarios = async () => {
-      try {
-        const res = await fetch('http://localhost:3001/api/horarios');
-        const data = await res.json();
-        setHorarios(data);
-      } catch (error) {
-        console.error('Error cargando horarios', error);
-      }
-    };
-    loadHorarios();
+    fetch('http://localhost:3001/api/horarios')
+      .then(res => res.json())
+      .then(data => setHorarios(Array.isArray(data) ? data : data?.data || []))
+      .catch(() => setHorarios([]));
   }, []);
 
-  // 🔹 recalcular progreso
+  // cargar días del horario
   useEffect(() => {
-    updateProgress(form);
-  }, [form]);
+    if (!form.horarioId) return setDiasHorario([]);
 
-  // 🔹 manejar cambios
+    fetch(`http://localhost:3001/api/horarios/${form.horarioId}/dias`)
+      .then(res => res.json())
+      .then(setDiasHorario)
+      .catch(() => setDiasHorario([]));
+  }, [form.horarioId]);
+
+  useEffect(() => updateProgress(form), [form]);
+
   const handleChange = async (e: any) => {
     const { name, value, type, checked } = e.target;
-    const newForm: any = {
-      ...form,
-      [name]: type === 'checkbox' ? checked : value,
-    };
-
-    if (name === 'tipo' && value === 'docente') {
-      newForm.division = '';
-      newForm.carrera = '';
-      newForm.horario = '';
-      setCarreras([]);
-    }
+    const newForm: any = { ...form, [name]: type === 'checkbox' ? checked : value };
 
     if (name === 'division') {
       newForm.carrera = '';
       setCarreras([]);
-
       if (value) {
-        try {
-          setLoadingCarreras(true);
-          const res = await fetch(`http://localhost:3001/api/catalogo/carreras/${value}`);
-          const data = await res.json();
-          setCarreras(data);
-        } catch (error) {
-          console.error('Error cargando carreras', error);
-        } finally {
-          setLoadingCarreras(false);
-        }
+        setLoadingCarreras(true);
+        const res = await fetch(`http://localhost:3001/api/catalogo/carreras/${value}`);
+        setCarreras(await res.json());
+        setLoadingCarreras(false);
       }
     }
 
+    if (name === 'password') checkPassword(value);
     setForm(newForm);
+  };
 
-    if (name === 'password') {
-      checkPassword(value);
-    }
+  const toggleDia = (idDia: number) => {
+    setForm(prev => ({
+      ...prev,
+      diasSeleccionados: prev.diasSeleccionados.includes(idDia)
+        ? prev.diasSeleccionados.filter(d => d !== idDia)
+        : [...prev.diasSeleccionados, idDia],
+    }));
   };
 
   const checkPassword = (password: string) => {
@@ -113,71 +98,44 @@ export default function RegisterPage() {
   };
 
   const updateProgress = (data: any) => {
-    let fields = [
-      'nombre',
-      'apellido_paterno',
-      'apellido_materno',
-      'email',
-      'password',
-      'confirmPassword',
-    ];
-
-    if (data.tipo === 'estudiante') {
-      fields.push('division', 'carrera', 'horario');
-    }
-
-    let filled = fields.filter((f) => data[f]).length;
+    let fields = ['nombre','apellido_paterno','apellido_materno','email','password','confirmPassword'];
+    if (data.tipo === 'estudiante') fields.push('division','carrera','horarioId');
+    let filled = fields.filter(f => data[f]).length;
     if (data.terms) filled++;
-
-    const total = fields.length + 1;
-    setProgress((filled / total) * 100);
+    setProgress((filled / (fields.length + 1)) * 100);
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (form.password !== form.confirmPassword) return alert('Las contraseñas no coinciden');
 
-    if (form.password !== form.confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
+    const res = await fetch('http://localhost:3001/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: form.nombre,
+        apellido_paterno: form.apellido_paterno,
+        apellido_materno: form.apellido_materno,
+        correo: form.email,
+        password: form.password,
+        id_carrera: form.tipo === 'estudiante' ? form.carrera : null,
+        id_division: form.tipo === 'estudiante' ? form.division : null,
+        id_horario: form.tipo === 'estudiante' ? form.horarioId : null,
+        dias_seleccionados: form.tipo === 'estudiante' ? form.diasSeleccionados : null,
+        cuatrimestre: 1,
+        id_rol: form.tipo === 'estudiante' ? 1 : 2,
+      }),
+    });
 
-    try {
-      const res = await fetch('http://localhost:3001/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: form.nombre,
-          apellido_paterno: form.apellido_paterno,
-          apellido_materno: form.apellido_materno,
-          correo: form.email,
-          password: form.password,
-          id_carrera: form.tipo === 'estudiante' ? form.carrera : null,
-          id_division: form.tipo === 'estudiante' ? form.division : null,
-          id_horario: form.tipo === 'estudiante' ? form.horario : null, // ✅ enviado
-          cuatrimestre: 1,
-          id_rol: form.tipo === 'estudiante' ? 1 : 2,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message);
-        return;
-      }
-
-      setSuccess(true);
-      setTimeout(() => router.push('/login'), 2000);
-    } catch (error) {
-      console.error(error);
-      alert('Error al registrar');
-    }
+    if (!res.ok) return alert((await res.json()).message);
+    setSuccess(true);
+    setTimeout(() => router.push('/login'), 2000);
   };
 
   const isFormValid = () => {
     if (strength < 3 || !form.terms) return false;
     if (!form.nombre || !form.apellido_paterno || !form.apellido_materno || !form.email || !form.password || !form.confirmPassword) return false;
-    if (form.tipo === 'estudiante' && (!form.division || !form.carrera || !form.horario)) return false;
+    if (form.tipo === 'estudiante' && (!form.division || !form.carrera || !form.horarioId)) return false;
     return true;
   };
 
@@ -198,7 +156,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="progress-bar">
-                <div className="progress-fill" data-progress={progress} />
+                <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>
 
               <form onSubmit={handleSubmit}>
@@ -219,41 +177,54 @@ export default function RegisterPage() {
                   <>
                     <select name="division" value={form.division} className="auth-select" onChange={handleChange} required>
                       <option value="">Selecciona tu división</option>
-                      {divisiones.map((d) => (
-                        <option key={d.id_division} value={d.id_division}>
-                          {d.siglas} - {d.nombre_division}
-                        </option>
-                      ))}
+                      {divisiones.map(d => <option key={d.id_division} value={d.id_division}>{d.siglas} - {d.nombre_division}</option>)}
                     </select>
 
                     <select name="carrera" value={form.carrera} className="auth-select" onChange={handleChange} required disabled={!form.division || loadingCarreras}>
                       <option value="">{loadingCarreras ? 'Cargando carreras...' : 'Selecciona tu carrera'}</option>
-                      {carreras.map((c) => (
-                        <option key={c.id_carrera} value={c.id_carrera}>
-                          {c.nombre_carrera}
+                      {carreras.map(c => <option key={c.id_carrera} value={c.id_carrera}>{c.nombre_carrera}</option>)}
+                    </select>
+
+                    <select name="horarioId" value={form.horarioId} className="auth-select" onChange={handleChange} required>
+                      <option value="">Selecciona tu rango de horario</option>
+                      {horarios.map(h => (
+                        <option key={h.id_horario} value={h.id_horario}>
+                          {new Date(h.hora_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} — {new Date(h.hora_fin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </option>
                       ))}
                     </select>
 
-                    {/* ✅ SELECT HORARIO */}
-                    <select name="horario" value={form.horario} className="auth-select" onChange={handleChange} required>
-                      <option value="">Selecciona tu horario</option>
-                      {horarios.map((h) => (
-                        <option key={h.id_horario} value={h.id_horario}>
-                          {h.dia_semana} — {new Date(h.hora_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </option>
-                      ))}
-                    </select>
+                    {form.horarioId && (
+                      <div className="dias-container">
+                        {diasHorario.map(dia => (
+                          <button key={dia.id_dia} type="button"
+                            className={`dia-btn ${form.diasSeleccionados.includes(dia.id_dia) ? 'active' : ''}`}
+                            onClick={() => toggleDia(dia.id_dia)}>
+                            {dia.nombre}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </>
                 )}
 
-                <input name="password" value={form.password} type="password" className="auth-input" placeholder="Contraseña" onChange={handleChange} required />
-                <input name="confirmPassword" value={form.confirmPassword} type="password" className="auth-input" placeholder="Confirmar contraseña" onChange={handleChange} required />
+                {/* PASSWORD */}
+                <div className="input-label">CONTRASEÑA</div>
+                <input name="password" value={form.password} type="password" className="auth-input" placeholder="Crea una contraseña segura" onChange={handleChange} required />
 
-                <div className="checkbox-wrapper">
-                  <input type="checkbox" id="terms" name="terms" checked={form.terms} onChange={handleChange} />
-                  <label htmlFor="terms">Acepto términos</label>
+                <div className="password-hints">
+                  <div className={strength >= 1 ? 'hint ok' : 'hint'}>Mínimo 8 caracteres</div>
+                  <div className={strength >= 2 ? 'hint ok' : 'hint'}>Una letra mayúscula</div>
+                  <div className={strength >= 3 ? 'hint ok' : 'hint'}>Un número</div>
                 </div>
+
+                <div className="input-label">CONFIRMAR CONTRASEÑA</div>
+                <input name="confirmPassword" value={form.confirmPassword} type="password" className="auth-input" placeholder="Confirma tu contraseña" onChange={handleChange} required />
+
+                <label className="terms">
+                  <input type="checkbox" name="terms" checked={form.terms} onChange={handleChange} />
+                  <span>Acepto los <b>términos y condiciones</b> y la <b>política de privacidad</b> de SchedMaster</span>
+                </label>
 
                 <button type="submit" className="btn-primary" disabled={!isFormValid()}>
                   Crear mi cuenta
@@ -262,9 +233,7 @@ export default function RegisterPage() {
             </>
           ) : (
             <div className="success-message active">
-              <div className="success-icon">
-                <CircleCheck size={40} strokeWidth={2.5} />
-              </div>
+              <div className="success-icon"><CircleCheck size={40} /></div>
               <h2 className="success-title">¡Cuenta creada!</h2>
               <p className="success-text">Redirigiendo al login...</p>
             </div>
