@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react';
 import './admin-inscripciones.css';
 import {
-  LayoutGrid,
-  Home,
   Users,
-  CalendarCheck,
-  UserPlus,
-  BarChart3,
-  Settings,
-  LogOut,
   Download,
   RefreshCw,
   Search,
@@ -29,8 +22,8 @@ import {
   CalendarDays,
   MessageCircle,
   Send,
-  Menu,
 } from 'lucide-react';
+import AdminSidebar from '../components/AdminSidebar';
 
 // ==========================================
 // Constantes y Configuración
@@ -138,8 +131,6 @@ export default function AdminInscripcionesPage() {
   // Estados
   // ==========================================
 
-  const [sidebarActive, setSidebarActive] = useState(false);
-  
   // TODO: Cargar inscripciones desde API en useEffect
   const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
 
@@ -249,13 +240,6 @@ export default function AdminInscripcionesPage() {
   // Handlers
   // ==========================================
 
-  // Menú móvil
-  const toggleSidebar = () => {
-    setSidebarActive(!sidebarActive);
-  };
-
-  const closeSidebar = () => setSidebarActive(false);
-
   // Modal
   const openCounterModal = (userId: number, userName: string, userEmail: string) => {
     setModalData({ userId, userName, userEmail });
@@ -348,72 +332,9 @@ export default function AdminInscripcionesPage() {
 
   return (
     <>
-      {/* Botón hamburguesa móvil */}
-      <button
-        className="menu-toggle"
-        type="button"
-        onClick={toggleSidebar}
-        aria-label={sidebarActive ? 'Cerrar menú' : 'Abrir menú'}
-      >
-        <Menu />
-      </button>
-
       <div className="app">
-        {/* SIDEBAR */}
-        <aside
-          className={`sidebar ${sidebarActive ? 'active' : ''}`}
-          aria-label="Menú administrador"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSidebar();
-          }}
-        >
-          <div className="sb-brand">
-            <div className="sb-logo" aria-hidden="true">
-              <LayoutGrid />
-            </div>
-            <div className="sb-brand-text">
-              <h1>SchedMaster</h1>
-              <p>Panel de Administración</p>
-            </div>
-          </div>
-
-          <nav className="nav" aria-label="Navegación" onClick={closeSidebar}>
-            <a href="#" aria-label="Dashboard">
-              <Home /> Dashboard
-            </a>
-            <a href="#" aria-label="Usuarios">
-              <Users /> Usuarios
-            </a>
-            <a href="#" aria-label="Asistencias">
-              <CalendarCheck /> Asistencias
-            </a>
-            <a className="active" href="#" aria-current="page" aria-label="Inscripciones">
-              <UserPlus /> Inscripciones
-            </a>
-            <a href="#" aria-label="Estadísticas">
-              <BarChart3 /> Estadísticas
-            </a>
-            <a href="#" aria-label="Configuración">
-              <Settings /> Configuración
-            </a>
-          </nav>
-
-          <div className="sb-footer" aria-label="Usuario actual">
-            <div className="sb-user">
-              <div className="avatar" aria-hidden="true">
-                AU
-              </div>
-              <div className="sb-user-info">
-                <strong>Admin UTEQ</strong>
-                <span>Administrador</span>
-              </div>
-            </div>
-            <button className="btn-logout" type="button" onClick={handleLogout}>
-              <LogOut aria-hidden="true" />
-              Cerrar sesión
-            </button>
-          </div>
-        </aside>
+        {/* SIDEBAR — Componente reutilizable */}
+        <AdminSidebar onLogout={handleLogout} />
 
         {/* MAIN CONTENT */}
         <main className="main" aria-label="Contenido principal">
