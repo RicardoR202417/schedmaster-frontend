@@ -393,6 +393,9 @@ export default function AdminInscripcionesPage() {
             <a href="#" aria-label="Estadísticas">
               <BarChart3 /> Estadísticas
             </a>
+            <a href="#" aria-label="Anuncios">
+              <BarChart3 /> Anuncios
+            </a>
             <a href="#" aria-label="Configuración">
               <Settings /> Configuración
             </a>
