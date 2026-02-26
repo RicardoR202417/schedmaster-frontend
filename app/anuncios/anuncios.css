@@ -234,3 +234,77 @@
   line-height:1.6;
   max-width:32ch;
 }
+
+/* ===== FEED ===== */
+
+.feed-section{
+  padding:40px 60px 80px;
+}
+
+.feed {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;          /* 🔥 ocupa todo */
+  max-width: 100%;      /* 🔥 elimina límite */
+}
+/* CARD */
+.post-card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  transition:.2s;
+}
+
+.post-card:hover{
+  box-shadow:0 14px 40px rgba(0,0,0,.08);
+}
+
+/* HEADER */
+.post-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.post-avatar{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#eef6ff;
+  display:grid;
+  place-items:center;
+  font-weight:700;
+  color:var(--azul-institucional);
+}
+
+.post-author{
+  margin:0;
+  font-weight:700;
+  color:#0f172a;
+}
+
+.post-date{
+  font-size:13px;
+  color:#64748b;
+}
+
+/* TEXTO */
+.post-text{
+  margin:0;
+  color:#334155;
+  line-height:1.6;
+}
+
+/* IMAGEN */
+.post-image{
+  width:100%;
+  border-radius:14px;
+  object-fit:cover;
+  max-height:360px;
+}
