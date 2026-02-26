@@ -1,0 +1,7 @@
+/* ==========================================
+   ESTILOS - COMPONENTE ADMIN SIDEBAR
+   Importa los estilos comunes de admin que
+   incluyen el sidebar, nav, footer y responsive.
+   ========================================== */
+
+@import '../styles/admin-common.css';
