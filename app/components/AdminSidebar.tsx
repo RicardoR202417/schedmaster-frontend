@@ -4,137 +4,84 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutGrid,
   Home,
   Users,
-  CalendarCheck,
+  CalendarDays,
   UserPlus,
+  CalendarCheck,
+  Megaphone,
   BarChart3,
-  Settings,
-  LogOut,
+  Settings, LayoutGrid, LogOut
 } from 'lucide-react';
-import './AdminSidebar.css';
-
-// ==========================================
-// Props
-// ==========================================
 
 interface AdminSidebarProps {
-  /** Callback al pulsar "Cerrar sesión". Opcional: por defecto imprime en consola. */
   onLogout?: () => void;
-  /** Nombre del usuario que se muestra en el footer del sidebar. */
-  userName?: string;
-  /** Rol del usuario que se muestra en el footer del sidebar. */
-  userRole?: string;
-  /** Iniciales para el avatar del footer. */
+  userName?:     string;
+  userRole?:     string;
   userInitials?: string;
 }
 
-// ==========================================
-// Ítems de navegación
-// ==========================================
 
 const NAV_ITEMS = [
-  { href: '/dashboard',             icon: Home,         label: 'Dashboard'     },
-  { href: '/admin-usuarios',        icon: Users,        label: 'Usuarios'      },
-  { href: '/admin-asistencias',     icon: CalendarCheck,label: 'Asistencias'   },
-  { href: '/admin-inscripciones',   icon: UserPlus,     label: 'Inscripciones' },
-  { href: '/admin-estadisticas',    icon: BarChart3,    label: 'Estadísticas'  },
-  { href: '/admin-configuracion',   icon: Settings,     label: 'Configuración' },
+  { href: '/dashboard',            icon: Home,         label: 'Dashboard'      },
+  { href: '/admin-usuarios',       icon: Users,        label: 'Usuarios'       },
+  { href: '/admin-convocatorias',  icon: CalendarDays, label: 'Convocatorias'  },
+  { href: '/admin-inscripciones',  icon: UserPlus,     label: 'Inscripciones'  },
+  { href: '/admin-asistencias',    icon: CalendarCheck,label: 'Asistencias'    },
+  { href: '/admin-anuncios',       icon: Megaphone,    label: 'Anuncios'       },
+  { href: '/admin-estadisticas',   icon: BarChart3,    label: 'Estadísticas'   },
+  { href: '/admin-configuracion',  icon: Settings,     label: 'Configuración'  },
 ];
-
-// ==========================================
-// Componente
-// ==========================================
 
 export default function AdminSidebar({
   onLogout,
-  userName    = 'Admin UTEQ',
-  userRole    = 'Administrador',
+  userName     = 'Admin UTEQ',
+  userRole     = 'Administrador',
   userInitials = 'AU',
 }: AdminSidebarProps) {
-  const [sidebarActive, setSidebarActive] = useState(false);
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
-  const toggleSidebar = () => setSidebarActive((prev) => !prev);
-  const closeSidebar  = () => setSidebarActive(false);
-
-  const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      console.log('Cerrar sesión');
-    }
-  };
 
   return (
     <>
-      {/* Botón hamburguesa — visible solo en móvil y solo cuando el sidebar está cerrado */}
-      {!sidebarActive && (
-        <button
-          className="menu-toggle"
-          type="button"
-          onClick={toggleSidebar}
-          aria-label="Abrir menú"
-        >
+      {!open && (
+        <button className="menu-toggle" type="button" onClick={() => setOpen(true)} aria-label="Abrir menú">
           <LayoutGrid />
         </button>
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`sidebar ${sidebarActive ? 'active' : ''}`}
-        aria-label="Menú administrador"
-        onClick={(e) => {
-          // Cerrar al pulsar el overlay en móvil
-          if (e.target === e.currentTarget) closeSidebar();
-        }}
-      >
-        {/* Brand */}
+      <aside className={`sidebar ${open ? 'active' : ''}`}
+        onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}>
+
         <div className="sb-brand">
-          <div className="sb-logo" aria-hidden="true">
-            <LayoutGrid />
-          </div>
+          <div className="sb-logo"><LayoutGrid /></div>
           <div className="sb-brand-text">
             <h1>SchedMaster</h1>
             <p>Panel de Administración</p>
           </div>
         </div>
 
-        {/* Navegación */}
-        <nav className="nav" aria-label="Navegación" onClick={closeSidebar}>
-          {NAV_ITEMS.map(({ href, icon: Icon, label }) => {
-            const isActive = pathname === href;
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={isActive ? 'active' : ''}
-                aria-label={label}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                <Icon /> {label}
-              </Link>
-            );
-          })}
+        <nav className="nav" onClick={() => setOpen(false)}>
+          {NAV_ITEMS.map(({ href, icon: Icon, label }) => (
+            <Link key={href} href={href} className={pathname === href ? 'active' : ''}>
+              <Icon /> {label}
+            </Link>
+          ))}
         </nav>
 
-        {/* Footer — usuario */}
-        <div className="sb-footer" aria-label="Usuario actual">
+        <div className="sb-footer">
           <div className="sb-user">
-            <div className="avatar" aria-hidden="true">
-              {userInitials}
-            </div>
+            <div className="avatar">{userInitials}</div>
             <div className="sb-user-info">
               <strong>{userName}</strong>
               <span>{userRole}</span>
             </div>
           </div>
-          <button className="btn-logout" type="button" onClick={handleLogout}>
-            <LogOut aria-hidden="true" />
-            Cerrar sesión
+          <button className="btn-logout" type="button" onClick={onLogout ?? (() => console.log('logout'))}>
+            <LogOut /> Cerrar sesión
           </button>
         </div>
+
       </aside>
     </>
   );

@@ -1,16 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import './admin-convocatorias.css';
-import {
-  Plus,
-  CalendarDays,
-  Pencil,
-  Power,
-  PowerOff,
-  X,
-  Save,
-} from 'lucide-react';
+import { Plus, CalendarDays, Pencil, Power, PowerOff, X, Save } from 'lucide-react';
 import AdminSidebar from '../components/AdminSidebar';
 
 interface Convocatoria {
@@ -22,86 +13,96 @@ interface Convocatoria {
   estado: 'activada' | 'desactivada';
 }
 
+type FormState = Omit<Convocatoria, 'id'>;
+
 export default function AdminConvocatoriasPage() {
-  // 👇 DATO FAKE PARA VISUALIZAR
   const [convocatorias, setConvocatorias] = useState<Convocatoria[]>([
-    {
-      id: 1,
-      periodo: 'Enero - Abril 2026',
-      fechaInicio: '2026-01-05',
-      fechaFin: '2026-01-20',
-      fechaIngreso: '2026-01-27',
-      estado: 'activada',
-    },
+    { id: 1, periodo: 'Enero - Abril 2026', fechaInicio: '2026-01-05', fechaFin: '2026-01-20', fechaIngreso: '2026-01-27', estado: 'activada' },
   ]);
 
-  const [modalCrear, setModalCrear] = useState(false);
+  const [modalCrear,  setModalCrear]  = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
-  const [convocatoriaSeleccionada, setConvocatoriaSeleccionada] =
-    useState<Convocatoria | null>(null);
 
-  const [form, setForm] = useState({
-    periodo: '',
-    fechaInicio: '',
-    fechaFin: '',
-    fechaIngreso: '',
-    estado: 'activada' as 'activada' | 'desactivada',
+  const emptyForm: FormState = { periodo: '', fechaInicio: '', fechaFin: '', fechaIngreso: '', estado: 'activada' };
+  const [form, setForm] = useState<FormState>(emptyForm);
+
+  const openCrear  = () => { setForm(emptyForm); setModalCrear(true);  document.body.style.overflow = 'hidden'; };
+  const closeCrear = () => { setModalCrear(false);  document.body.style.overflow = ''; };
+
+  const openEditar  = (c: Convocatoria) => { setForm(c); setModalEditar(true);  document.body.style.overflow = 'hidden'; };
+  const closeEditar = () => { setModalEditar(false); document.body.style.overflow = ''; };
+
+  const field = (key: keyof FormState) => ({
+    value: form[key] as string,
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setForm({ ...form, [key]: e.target.value }),
   });
 
-  const openCrear = () => {
-    setForm({
-      periodo: '',
-      fechaInicio: '',
-      fechaFin: '',
-      fechaIngreso: '',
-      estado: 'activada',
-    });
-    setModalCrear(true);
-    document.body.style.overflow = 'hidden';
-  };
+  /* ── Contenido del modal (compartido crear/editar) ── */
+  const ModalContent = ({ onClose, title, subtitle }: { onClose: () => void; title: string; subtitle: string }) => (
+    <div className="modal-box modal-box--wide">
+      {/* modal-header reemplaza modal-admin-header */}
+      <div className="modal-header">
+        <div>
+          <h3>{title}</h3>
+          <p>{subtitle}</p>
+        </div>
+        <button className="btn-close" onClick={onClose}><X /></button>
+      </div>
 
-  const closeCrear = () => {
-    setModalCrear(false);
-    document.body.style.overflow = '';
-  };
+      {/* modal-body reemplaza modal-admin-body */}
+      <div className="modal-body">
+        <div className="form-group">
+          <label><CalendarDays /> Periodo</label>
+          <input className="form-select" type="text" placeholder="Ej. Mayo – Agosto 2026" {...field('periodo')} />
+        </div>
+        <div className="form-group">
+          <label>Fecha inicio inscripciones</label>
+          <input className="form-select" type="date" {...field('fechaInicio')} />
+        </div>
+        <div className="form-group">
+          <label>Fecha fin inscripciones</label>
+          <input className="form-select" type="date" {...field('fechaFin')} />
+        </div>
+        <div className="form-group">
+          <label>Fecha ingreso oficial</label>
+          <input className="form-select" type="date" {...field('fechaIngreso')} />
+        </div>
+        <div className="form-group">
+          <label>Estado</label>
+          <select className="form-select" {...field('estado')}>
+            <option value="activada">Activada</option>
+            <option value="desactivada">Desactivada</option>
+          </select>
+        </div>
+      </div>
 
-  const openEditar = (conv: Convocatoria) => {
-    setConvocatoriaSeleccionada(conv);
-    setForm(conv);
-    setModalEditar(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeEditar = () => {
-    setModalEditar(false);
-    document.body.style.overflow = '';
-  };
-
-  const handleLogout = () => console.log('logout');
+      {/* modal-footer reemplaza modal-admin-footer */}
+      <div className="modal-footer">
+        <button className="btn btn--outline" onClick={onClose}>Cancelar</button>
+        <button className="btn btn--blue"><Save /> Guardar</button>
+      </div>
+    </div>
+  );
 
   return (
     <>
       <div className="app">
-        <AdminSidebar onLogout={handleLogout} />
+        <AdminSidebar onLogout={() => console.log('logout')} />
 
         <main className="main">
           <div className="main-inner">
 
-            {/* HEADER */}
-            <header className="header">
-              <div className="title">
+            <header className="section-header">
+              <div>
                 <h2>Convocatorias</h2>
                 <p>Administra los periodos de inscripción disponibles</p>
               </div>
-
-              <div className="header-actions">
-                <button className="btn btn-primary" onClick={openCrear}>
-                  <Plus /> Nueva convocatoria
-                </button>
-              </div>
+              <button className="btn btn--yellow" onClick={openCrear}>
+                <Plus /> Nueva convocatoria
+              </button>
             </header>
 
-            {/* TABLA */}
             <section className="table-area">
               <div className="table-scroll">
                 <table>
@@ -115,39 +116,23 @@ export default function AdminConvocatoriasPage() {
                       <th>Acciones</th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    {convocatorias.map((c) => (
+                    {convocatorias.map(c => (
                       <tr key={c.id}>
                         <td>{c.periodo}</td>
-                        <td>{c.fechaInicio}</td>
-                        <td>{c.fechaFin}</td>
-                        <td>{c.fechaIngreso}</td>
-
+                        <td className="muted">{c.fechaInicio}</td>
+                        <td className="muted">{c.fechaFin}</td>
+                        <td className="muted">{c.fechaIngreso}</td>
                         <td>
-                          <span
-                            className={`chip ${
-                              c.estado === 'activada'
-                                ? 'chip-active'
-                                : 'chip-off'
-                            }`}
-                          >
-                            {c.estado === 'activada' ? (
-                              <Power size={14} />
-                            ) : (
-                              <PowerOff size={14} />
-                            )}
+                          <span className={`chip chip--${c.estado}`}>
+                            {c.estado === 'activada' ? <Power size={14} /> : <PowerOff size={14} />}
                             {c.estado}
                           </span>
                         </td>
-
                         <td>
                           <div className="row-actions">
-                            <button
-                              className="btn-mini"
-                              onClick={() => openEditar(c)}
-                            >
-                              <Pencil /> Editar
+                            <button className="btn-icon btn-icon--cyan" onClick={() => openEditar(c)} aria-label="Editar">
+                              <Pencil size={14} />
                             </button>
                           </div>
                         </td>
@@ -162,200 +147,17 @@ export default function AdminConvocatoriasPage() {
         </main>
       </div>
 
-      {/* ================= MODAL CREAR ================= */}
-      <div className={`modal-overlay ${modalCrear ? 'active' : ''}`}>
-        <div className="modal-content">
-
-          <div className="modal-header">
-            <div className="modal-header-text">
-              <h3>Nueva convocatoria</h3>
-              <p>Configura un nuevo periodo de inscripciones</p>
-            </div>
-
-            <button className="btn-close" onClick={closeCrear}>
-              <X />
-            </button>
-          </div>
-
-          <div className="modal-body">
-
-            <div className="form-group">
-              <label>
-                <CalendarDays /> Periodo
-              </label>
-              <input
-                className="form-input"
-                type="text"
-                placeholder="Ej. Mayo - Agosto 2026"
-                value={form.periodo}
-                onChange={(e) =>
-                  setForm({ ...form, periodo: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fecha inicio inscripciones</label>
-              <input
-                className="form-input"
-                type="date"
-                value={form.fechaInicio}
-                onChange={(e) =>
-                  setForm({ ...form, fechaInicio: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fecha fin inscripciones</label>
-              <input
-                className="form-input"
-                type="date"
-                value={form.fechaFin}
-                onChange={(e) =>
-                  setForm({ ...form, fechaFin: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fecha ingreso oficial</label>
-              <input
-                className="form-input"
-                type="date"
-                value={form.fechaIngreso}
-                onChange={(e) =>
-                  setForm({ ...form, fechaIngreso: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Estado</label>
-              <select
-                className="form-select"
-                value={form.estado}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    estado: e.target.value as 'activada' | 'desactivada',
-                  })
-                }
-              >
-                <option value="activada">Activada</option>
-                <option value="desactivada">Desactivada</option>
-              </select>
-            </div>
-
-          </div>
-
-          <div className="modal-footer">
-            <button className="btn btn-outline" onClick={closeCrear}>
-              Cancelar
-            </button>
-
-            <button className="btn btn-primary">
-              <Save /> Guardar convocatoria
-            </button>
-          </div>
+      {/* Modales — usan .modal-overlay en vez de .modal-admin */}
+      {modalCrear && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeCrear()}>
+          <ModalContent onClose={closeCrear} title="Nueva convocatoria" subtitle="Configura un nuevo periodo de inscripciones" />
         </div>
-      </div>
-
-      {/* ================= MODAL EDITAR ================= */}
-      <div className={`modal-overlay ${modalEditar ? 'active' : ''}`}>
-        <div className="modal-content">
-
-          <div className="modal-header">
-            <div className="modal-header-text">
-              <h3>Editar convocatoria</h3>
-              <p>Actualiza la información del periodo</p>
-            </div>
-
-            <button className="btn-close" onClick={closeEditar}>
-              <X />
-            </button>
-          </div>
-
-          <div className="modal-body">
-
-            <div className="form-group">
-              <label>Periodo</label>
-              <input
-                className="form-input"
-                type="text"
-                value={form.periodo}
-                onChange={(e) =>
-                  setForm({ ...form, periodo: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fecha inicio inscripciones</label>
-              <input
-                className="form-input"
-                type="date"
-                value={form.fechaInicio}
-                onChange={(e) =>
-                  setForm({ ...form, fechaInicio: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fecha fin inscripciones</label>
-              <input
-                className="form-input"
-                type="date"
-                value={form.fechaFin}
-                onChange={(e) =>
-                  setForm({ ...form, fechaFin: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fecha ingreso oficial</label>
-              <input
-                className="form-input"
-                type="date"
-                value={form.fechaIngreso}
-                onChange={(e) =>
-                  setForm({ ...form, fechaIngreso: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Estado</label>
-              <select
-                className="form-select"
-                value={form.estado}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    estado: e.target.value as 'activada' | 'desactivada',
-                  })
-                }
-              >
-                <option value="activada">Activada</option>
-                <option value="desactivada">Desactivada</option>
-              </select>
-            </div>
-
-          </div>
-
-          <div className="modal-footer">
-            <button className="btn btn-outline" onClick={closeEditar}>
-              Cancelar
-            </button>
-
-            <button className="btn btn-primary">
-              <Save /> Guardar cambios
-            </button>
-          </div>
+      )}
+      {modalEditar && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeEditar()}>
+          <ModalContent onClose={closeEditar} title="Editar convocatoria" subtitle="Actualiza la información del periodo" />
         </div>
-      </div>
+      )}
     </>
   );
 }

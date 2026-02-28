@@ -1,91 +1,65 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, Search, Megaphone, Menu } from "lucide-react";
-import "./admin-anuncios.css";
+import { useEffect, useState } from 'react';
+import { Plus, Pencil, Trash2, Search, Megaphone } from 'lucide-react';
+import AdminSidebar from '../components/AdminSidebar';
 
 interface Anuncio {
   id: number;
   titulo: string;
-  prioridad: "Alta" | "Media" | "Baja";
-   fotografia: string;
+  prioridad: 'Alta' | 'Media' | 'Baja';
+  fotografia: string;
   fecha_publicacion: string;
   activo: boolean;
 }
 
 export default function AdminAnunciosPage() {
   const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch]     = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Anuncio | null>(null);
+  const [editing, setEditing]   = useState<Anuncio | null>(null);
 
   useEffect(() => {
     setAnuncios([
-      {
-        id: 1,
-        titulo: "Convocatoria abierta",
-        prioridad: "Alta",
-        fecha_publicacion: "2026-02-25",
-        fotografia: "foto.jpeg",
-        activo: true,
-      },
-      {
-        id: 2,
-        titulo: "Mantenimiento del sistema",
-        prioridad: "Media",
-        fecha_publicacion: "2026-02-20",
-         fotografia: "foto.jpeg",
-        activo: false,
-      },
+      { id: 1, titulo: 'Convocatoria abierta',      prioridad: 'Alta',  fotografia: 'foto.jpeg', fecha_publicacion: '2026-02-25', activo: true  },
+      { id: 2, titulo: 'Mantenimiento del sistema', prioridad: 'Media', fotografia: 'foto.jpeg', fecha_publicacion: '2026-02-20', activo: false },
     ]);
   }, []);
-
-  const toggleSidebar = () => {
-    document.body.classList.toggle("sidebar-open");
-  };
 
   const anunciosFiltrados = anuncios.filter(a =>
     a.titulo.toLowerCase().includes(search.toLowerCase())
   );
 
-  const openCreate = () => {
-    setEditing(null);
-    setModalOpen(true);
-  };
+  const openCreate = () => { setEditing(null); setModalOpen(true); };
+  const openEdit   = (a: Anuncio) => { setEditing(a); setModalOpen(true); };
+  const deleteAnuncio = (id: number) => setAnuncios(prev => prev.filter(a => a.id !== id));
 
-  const openEdit = (a: Anuncio) => {
-    setEditing(a);
-    setModalOpen(true);
-  };
-
-  const deleteAnuncio = (id: number) => {
-    setAnuncios(prev => prev.filter(a => a.id !== id));
+  const prioridadChip = (p: string) => {
+    if (p === 'Alta')  return 'chip chip--alta';
+    if (p === 'Baja')  return 'chip chip--baja';
+    return 'chip chip--pendiente';
   };
 
   return (
-    <>
-      {/* 🔹 BOTÓN HAMBURGUESA */}
-      <button className="menu-toggle" onClick={toggleSidebar}>
-        <Menu size={20} />
-      </button>
+    <div className="app">
+      <AdminSidebar />
 
       <main className="main">
         <div className="main-inner">
 
-          <header className="header">
-            <div className="title">
+          {/* Header */}
+          <header className="section-header">
+            <div>
               <h2>Anuncios</h2>
               <p>Crea avisos importantes para los usuarios inscritos</p>
             </div>
-
-            <div className="header-actions">
-              <button className="btn btn-primary" onClick={openCreate}>
-                <Plus size={16} /> Nuevo anuncio
-              </button>
-            </div>
+            <button className="btn btn--yellow" onClick={openCreate}>
+              <Plus size={16} /> Nuevo anuncio
+            </button>
           </header>
 
-          <section className="controls">
+          {/* Búsqueda */}
+          <div className="filter-bar">
             <div className="field">
               <Search />
               <input
@@ -94,8 +68,9 @@ export default function AdminAnunciosPage() {
                 onChange={e => setSearch(e.target.value)}
               />
             </div>
-          </section>
+          </div>
 
+          {/* Tabla */}
           <section className="table-area">
             <div className="table-scroll">
               <table>
@@ -105,23 +80,18 @@ export default function AdminAnunciosPage() {
                     <th>Prioridad</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Fotografia</th>
+                    <th>Fotografía</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {anunciosFiltrados.length === 0 ? (
                     <tr>
-                      <td colSpan={5}>
+                      <td colSpan={6}>
                         <div className="empty-state">
-                          <div className="empty-state-content">
-                            <Megaphone size={32} />
-                            <p className="empty-state-title">No hay anuncios</p>
-                            <p className="empty-state-description">
-                              Los anuncios aparecerán aquí
-                            </p>
-                          </div>
+                          <Megaphone size={32} />
+                          <p>No hay anuncios</p>
+                          <small>Los anuncios aparecerán aquí</small>
                         </div>
                       </td>
                     </tr>
@@ -129,25 +99,21 @@ export default function AdminAnunciosPage() {
                     anunciosFiltrados.map(a => (
                       <tr key={a.id}>
                         <td>{a.titulo}</td>
-                        <td>{a.prioridad}</td>
-                        <td>{a.fecha_publicacion}</td>
-                        
-                        <td>{a.activo ? "Activo" : "Oculto"}</td>
-                        <td>{a.fotografia}</td>
+                        <td><span className={prioridadChip(a.prioridad)}>{a.prioridad}</span></td>
+                        <td className="muted">{a.fecha_publicacion}</td>
+                        <td>
+                          <span className={`chip ${a.activo ? 'chip--activo' : 'chip--inactivo'}`}>
+                            {a.activo ? 'Activo' : 'Oculto'}
+                          </span>
+                        </td>
+                        <td className="muted">{a.fotografia}</td>
                         <td>
                           <div className="row-actions">
-                            <button
-                              className="btn btn-accept"
-                              onClick={() => openEdit(a)}
-                            >
-                              <Pencil size={14} /> Editar
+                            <button className="btn-icon btn-icon--cyan" onClick={() => openEdit(a)} aria-label="Editar">
+                              <Pencil size={14} />
                             </button>
-
-                            <button
-                              className="btn btn-reject"
-                              onClick={() => deleteAnuncio(a.id)}
-                            >
-                              <Trash2 size={14} /> Eliminar
+                            <button className="btn-icon btn-icon--red" onClick={() => deleteAnuncio(a.id)} aria-label="Eliminar">
+                              <Trash2 size={14} />
                             </button>
                           </div>
                         </td>
@@ -161,6 +127,6 @@ export default function AdminAnunciosPage() {
 
         </div>
       </main>
-    </>
+    </div>
   );
 }
