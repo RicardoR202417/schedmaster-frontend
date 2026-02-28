@@ -4,310 +4,144 @@ import { useState, useEffect } from 'react';
 import { Search, UserPlus, Pencil, Trash2, ClipboardList } from 'lucide-react';
 import AdminSidebar from '../components/AdminSidebar';
 import Bitacora, { type Comentario } from '../components/Bitacora';
-import './admin-usuarios.css';
-
-// ==========================================
-// Tipos
-// ==========================================
 
 type Rol    = 'asistente' | 'admin' | 'docente' | 'entrenador' | 'nutriologa';
 type Estado = 'activo' | 'inactivo';
 
 interface Usuario {
-  id: number;
-  nombre: string;
-  apellido: string;
-  iniciales: string;
-  correo: string;
-  matricula: string;
-  carrera: string;
-  rol: Rol;
-  estado: Estado;
+  id: number; nombre: string; apellido: string; iniciales: string;
+  correo: string; matricula: string; carrera: string; rol: Rol; estado: Estado;
 }
 
-// ==========================================
-// Helpers
-// ==========================================
-
-const AVATAR_COLORS = [
-  'avatar-c1', 'avatar-c2', 'avatar-c3', 'avatar-c4',
-  'avatar-c5', 'avatar-c6', 'avatar-c7', 'avatar-c8',
-] as const;
-
+const AVATAR_COLORS = ['ac1','ac2','ac3','ac4','ac5','ac6','ac7','ac8'] as const;
 const getAvatarClass = (id: number) => AVATAR_COLORS[id % AVATAR_COLORS.length];
 
 const ROL_LABELS: Record<Rol, string> = {
-  asistente:   'Asistente',
-  admin:       'Admin',
-  docente:     'Docente',
-  entrenador:  'Entrenador',
-  nutriologa:  'Nutrióloga',
+  asistente: 'Asistente', admin: 'Admin', docente: 'Docente',
+  entrenador: 'Entrenador', nutriologa: 'Nutrióloga',
 };
 
-// ==========================================
-// Componente
-// ==========================================
-
 export default function AdminUsuariosPage() {
-  // ==========================================
-  // Estados
-  // ==========================================
-
-  // TODO: Reemplazar con datos reales desde API
   const [usuarios, setUsuarios] = useState<Usuario[]>([
     {
-      id: 1,
-      nombre: 'María',
-      apellido: 'González',
-      iniciales: 'MG',
-      correo: 'maria.gonzalez@uteq.edu.mx',
-      matricula: '2021-001',
-      carrera: 'Ing. en Sistemas',
-      rol: 'asistente',
-      estado: 'activo',
+      id: 1, nombre: 'María', apellido: 'González', iniciales: 'MG',
+      correo: 'maria.gonzalez@uteq.edu.mx', matricula: '2021-001',
+      carrera: 'Ing. en Sistemas', rol: 'asistente', estado: 'activo',
     },
   ]);
 
-  // TODO: Reemplazar con datos reales desde API (cargados por usuarioId)
   const BITACORA_MOCK: Record<number, Comentario[]> = {
     1: [
-      {
-        id: 1,
-        autorNombre: 'Admin UTEQ',
-        autorIniciales: 'AU',
-        fecha: '2026-02-20T10:30:00.000Z',
-        texto: 'Se verificó la identidad del usuario y se confirmó su inscripción al programa de activación física del cuatrimestre.',
-      },
-      {
-        id: 2,
-        autorNombre: 'Admin UTEQ',
-        autorIniciales: 'AU',
-        fecha: '2026-02-25T14:15:00.000Z',
-        texto: 'El usuario solicitó cambio de horario. Se le asignó el turno de 08:00–09:00. Pendiente confirmación.',
-      },
+      { id: 1, autorNombre: 'Admin UTEQ', autorIniciales: 'AU',
+        fecha: '2026-02-20T10:30:00.000Z', texto: 'Se verificó la identidad del usuario.' },
     ],
   };
 
-  const [searchQuery,    setSearchQuery]    = useState('');
-  const [filterRol,      setFilterRol]      = useState('');
-  const [filterEstado,   setFilterEstado]   = useState('');
-  const [filterCarrera,  setFilterCarrera]  = useState('');
-
+  const [searchQuery,   setSearchQuery]   = useState('');
+  const [filterRol,     setFilterRol]     = useState('');
+  const [filterEstado,  setFilterEstado]  = useState('');
+  const [filterCarrera, setFilterCarrera] = useState('');
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
-
-  // ==========================================
-  // Efectos
-  // ==========================================
-
-  // TODO: Cargar lista de usuarios al montar
-  // useEffect(() => {
-  //   const fetchUsuarios = async () => {
-  //     try {
-  //       const response = await fetch('API_URL/usuarios');
-  //       const data = await response.json();
-  //       setUsuarios(data);
-  //     } catch (error) {
-  //       console.error('Error cargando usuarios:', error);
-  //     }
-  //   };
-  //   fetchUsuarios();
-  // }, []);
-
-  useEffect(() => {
-    let filtered = [...usuarios];
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter((u) =>
-        `${u.nombre} ${u.apellido} ${u.correo} ${u.matricula}`
-          .toLowerCase()
-          .includes(q)
-      );
-    }
-    if (filterRol) {
-      filtered = filtered.filter((u) => u.rol === filterRol);
-    }
-    if (filterEstado) {
-      filtered = filtered.filter((u) => u.estado === filterEstado);
-    }
-    if (filterCarrera) {
-      filtered = filtered.filter((u) =>
-        u.carrera.toLowerCase() === filterCarrera.toLowerCase()
-      );
-    }
-
-    setFilteredUsuarios(filtered);
-  }, [usuarios, searchQuery, filterRol, filterEstado, filterCarrera]);
-
-  // ==========================================
-  // Handlers
-  // ==========================================
-
-  const handleNuevoUsuario = () => {
-    // TODO: Abrir modal o redirigir a formulario de nuevo usuario
-    console.log('Nuevo usuario');
-  };
-
-  const handleEditar = (id: number) => {
-    // TODO: Abrir modal de edición con los datos del usuario id
-    console.log('Editar usuario:', id);
-  };
-
-  const handleEliminar = (id: number) => {
-    // TODO: Confirmar y llamar a API DELETE /usuarios/:id
-    console.log('Eliminar usuario:', id);
-  };
-
-  const handleLogout = () => {
-    // TODO: Implementar logout y redirección
-    console.log('Cerrar sesión');
-  };
-
-  // Bitácora
-  const [bitacoraOpen,   setBitacoraOpen]   = useState(false);
+  const [bitacoraOpen,  setBitacoraOpen]  = useState(false);
   const [bitacoraUsuario, setBitacoraUsuario] = useState<{ id: number; nombre: string } | null>(null);
 
-  const handleBitacora = (id: number, nombre: string) => {
-    setBitacoraUsuario({ id, nombre });
-    setBitacoraOpen(true);
-  };
+  useEffect(() => {
+    let f = [...usuarios];
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      f = f.filter(u => `${u.nombre} ${u.apellido} ${u.correo} ${u.matricula}`.toLowerCase().includes(q));
+    }
+    if (filterRol)     f = f.filter(u => u.rol === filterRol);
+    if (filterEstado)  f = f.filter(u => u.estado === filterEstado);
+    if (filterCarrera) f = f.filter(u => u.carrera.toLowerCase() === filterCarrera.toLowerCase());
+    setFilteredUsuarios(f);
+  }, [usuarios, searchQuery, filterRol, filterEstado, filterCarrera]);
 
-  // ==========================================
-  // Render
-  // ==========================================
+  const handleLogout    = () => console.log('Cerrar sesión');
+  const handleEditar    = (id: number) => console.log('Editar:', id);
+  const handleEliminar  = (id: number) => console.log('Eliminar:', id);
+  const handleBitacora  = (id: number, nombre: string) => { setBitacoraUsuario({ id, nombre }); setBitacoraOpen(true); };
 
   return (
     <div className="app">
-      {/* SIDEBAR */}
       <AdminSidebar onLogout={handleLogout} />
 
-      {/* MAIN CONTENT */}
-      <main className="main" aria-label="Contenido principal">
+      <main className="main">
         <div className="main-inner">
 
           {/* Header */}
-          <header className="usr-header" aria-label="Encabezado de usuarios">
-            <div className="usr-title">
+          <header className="section-header">
+            <div>
               <h2>Gestión de Usuarios</h2>
               <p>Administra los usuarios de la plataforma</p>
             </div>
-            <button className="btn btn-yellow" type="button" onClick={handleNuevoUsuario}>
-              <UserPlus aria-hidden="true" />
-              Nuevo Usuario
+            <button className="btn btn--yellow" type="button" onClick={() => console.log('Nuevo usuario')}>
+              <UserPlus /> Nuevo Usuario
             </button>
           </header>
 
           {/* Filtros */}
-          <section className="usr-filters" aria-label="Filtros de usuarios">
-            <div className="field usr-search" role="search">
-              <Search aria-hidden="true" />
-              <input
-                type="search"
-                placeholder="Buscar por nombre, matrícula o correo..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          <section className="filter-bar">
+            <div className="field">
+              <Search />
+              <input type="search" placeholder="Buscar por nombre, matrícula o correo..."
+                value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             </div>
-
-            <select
-              className="select"
-              aria-label="Filtrar por rol"
-              value={filterRol}
-              onChange={(e) => setFilterRol(e.target.value)}
-            >
+            <select className="select" value={filterRol} onChange={e => setFilterRol(e.target.value)}>
               <option value="">Todos los roles</option>
               <option value="asistente">Asistente</option>
               <option value="admin">Admin</option>
               <option value="docente">Docente</option>
               <option value="entrenador">Entrenador</option>
               <option value="nutriologa">Nutrióloga</option>
-              {/* TODO: Poblar dinámicamente desde API */}
             </select>
-
-            <select
-              className="select"
-              aria-label="Filtrar por estado"
-              value={filterEstado}
-              onChange={(e) => setFilterEstado(e.target.value)}
-            >
+            <select className="select" value={filterEstado} onChange={e => setFilterEstado(e.target.value)}>
               <option value="">Todos los estados</option>
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
             </select>
-
-            <select
-              className="select"
-              aria-label="Filtrar por carrera"
-              value={filterCarrera}
-              onChange={(e) => setFilterCarrera(e.target.value)}
-            >
+            <select className="select" value={filterCarrera} onChange={e => setFilterCarrera(e.target.value)}>
               <option value="">Todas las carreras</option>
-              {/* TODO: Poblar dinámicamente desde API */}
             </select>
           </section>
 
-          {/* Lista de usuarios */}
-          <section className="usr-list" aria-label="Lista de usuarios">
+          {/* Lista */}
+          <section className="row-list">
             {filteredUsuarios.length === 0 ? (
-              <div className="usr-empty">
-                <p className="usr-empty-title">No hay usuarios para mostrar</p>
-                <p className="usr-empty-desc">
-                  Los usuarios registrados aparecerán aquí una vez conectada la API
-                </p>
+              <div className="empty-state">
+                <p>No hay usuarios para mostrar</p>
+                <small>Los usuarios registrados aparecerán aquí una vez conectada la API</small>
               </div>
             ) : (
-              filteredUsuarios.map((usr) => (
-                <div key={usr.id} className="usr-card">
-                  {/* Avatar */}
-                  <div
-                    className={`usr-avatar ${getAvatarClass(usr.id)}`}
-                    aria-hidden="true"
-                  >
-                    {usr.iniciales}
-                  </div>
+              filteredUsuarios.map(usr => (
+                <div key={usr.id} className="row-card">
+                  <div className={`row-avatar ${getAvatarClass(usr.id)}`}>{usr.iniciales}</div>
 
-                  {/* Info */}
-                  <div className="usr-info">
-                    <span className="usr-name">
-                      {usr.nombre} {usr.apellido}
-                    </span>
-                    <span className="usr-email muted">{usr.correo}</span>
-                    <div className="usr-tags">
-                      <span className="usr-tag">{usr.matricula}</span>
-                      <span className="usr-tag">{usr.carrera}</span>
+                  <div className="row-info">
+                    <span className="row-name">{usr.nombre} {usr.apellido}</span>
+                    <span className="row-sub muted">{usr.correo}</span>
+                    <div className="row-tags">
+                      <span className="row-tag">{usr.matricula}</span>
+                      <span className="row-tag">{usr.carrera}</span>
                     </div>
                   </div>
 
-                  {/* Acciones */}
-                  <div className="usr-actions">
-                    <span className={`chip chip-rol chip-rol--${usr.rol}`}>
-                      {ROL_LABELS[usr.rol]}
-                    </span>
-                    <span className={`chip chip-estado chip-estado--${usr.estado}`}>
+                  <div className="row-actions">
+                    <span className={`chip chip--${usr.rol}`}>{ROL_LABELS[usr.rol]}</span>
+                    <span className={`chip chip--${usr.estado}`}>
                       {usr.estado === 'activo' ? 'Activo' : 'Inactivo'}
                     </span>
-                    <button
-                      className="btn-icon btn-icon--log"
-                      type="button"
-                      aria-label={`Bitácora de ${usr.nombre} ${usr.apellido}`}
-                      onClick={() => handleBitacora(usr.id, `${usr.nombre} ${usr.apellido}`)}
-                    >
+                    <button className="btn-icon btn-icon--blue" type="button"
+                      aria-label={`Bitácora de ${usr.nombre}`}
+                      onClick={() => handleBitacora(usr.id, `${usr.nombre} ${usr.apellido}`)}>
                       <ClipboardList />
                     </button>
-                    <button
-                      className="btn-icon btn-icon--edit"
-                      type="button"
-                      aria-label={`Editar a ${usr.nombre} ${usr.apellido}`}
-                      onClick={() => handleEditar(usr.id)}
-                    >
+                    <button className="btn-icon btn-icon--cyan" type="button"
+                      aria-label={`Editar a ${usr.nombre}`} onClick={() => handleEditar(usr.id)}>
                       <Pencil />
                     </button>
-                    <button
-                      className="btn-icon btn-icon--delete"
-                      type="button"
-                      aria-label={`Eliminar a ${usr.nombre} ${usr.apellido}`}
-                      onClick={() => handleEliminar(usr.id)}
-                    >
+                    <button className="btn-icon btn-icon--red" type="button"
+                      aria-label={`Eliminar a ${usr.nombre}`} onClick={() => handleEliminar(usr.id)}>
                       <Trash2 />
                     </button>
                   </div>
@@ -318,7 +152,7 @@ export default function AdminUsuariosPage() {
 
         </div>
       </main>
-      {/* BITÁCORA */}
+
       {bitacoraUsuario && (
         <Bitacora
           isOpen={bitacoraOpen}
