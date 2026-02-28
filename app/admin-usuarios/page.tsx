@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, UserPlus, Pencil, Trash2 } from 'lucide-react';
+import { Search, UserPlus, Pencil, Trash2, ClipboardList } from 'lucide-react';
 import AdminSidebar from '../components/AdminSidebar';
+import Bitacora, { type Comentario } from '../components/Bitacora';
 import './admin-usuarios.css';
 
 // ==========================================
@@ -52,8 +53,40 @@ export default function AdminUsuariosPage() {
   // Estados
   // ==========================================
 
-  // TODO: Cargar usuarios desde API en useEffect
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  // TODO: Reemplazar con datos reales desde API
+  const [usuarios, setUsuarios] = useState<Usuario[]>([
+    {
+      id: 1,
+      nombre: 'María',
+      apellido: 'González',
+      iniciales: 'MG',
+      correo: 'maria.gonzalez@uteq.edu.mx',
+      matricula: '2021-001',
+      carrera: 'Ing. en Sistemas',
+      rol: 'asistente',
+      estado: 'activo',
+    },
+  ]);
+
+  // TODO: Reemplazar con datos reales desde API (cargados por usuarioId)
+  const BITACORA_MOCK: Record<number, Comentario[]> = {
+    1: [
+      {
+        id: 1,
+        autorNombre: 'Admin UTEQ',
+        autorIniciales: 'AU',
+        fecha: '2026-02-20T10:30:00.000Z',
+        texto: 'Se verificó la identidad del usuario y se confirmó su inscripción al programa de activación física del cuatrimestre.',
+      },
+      {
+        id: 2,
+        autorNombre: 'Admin UTEQ',
+        autorIniciales: 'AU',
+        fecha: '2026-02-25T14:15:00.000Z',
+        texto: 'El usuario solicitó cambio de horario. Se le asignó el turno de 08:00–09:00. Pendiente confirmación.',
+      },
+    ],
+  };
 
   const [searchQuery,    setSearchQuery]    = useState('');
   const [filterRol,      setFilterRol]      = useState('');
@@ -128,6 +161,15 @@ export default function AdminUsuariosPage() {
   const handleLogout = () => {
     // TODO: Implementar logout y redirección
     console.log('Cerrar sesión');
+  };
+
+  // Bitácora
+  const [bitacoraOpen,   setBitacoraOpen]   = useState(false);
+  const [bitacoraUsuario, setBitacoraUsuario] = useState<{ id: number; nombre: string } | null>(null);
+
+  const handleBitacora = (id: number, nombre: string) => {
+    setBitacoraUsuario({ id, nombre });
+    setBitacoraOpen(true);
   };
 
   // ==========================================
@@ -245,6 +287,14 @@ export default function AdminUsuariosPage() {
                       {usr.estado === 'activo' ? 'Activo' : 'Inactivo'}
                     </span>
                     <button
+                      className="btn-icon btn-icon--log"
+                      type="button"
+                      aria-label={`Bitácora de ${usr.nombre} ${usr.apellido}`}
+                      onClick={() => handleBitacora(usr.id, `${usr.nombre} ${usr.apellido}`)}
+                    >
+                      <ClipboardList />
+                    </button>
+                    <button
                       className="btn-icon btn-icon--edit"
                       type="button"
                       aria-label={`Editar a ${usr.nombre} ${usr.apellido}`}
@@ -268,6 +318,16 @@ export default function AdminUsuariosPage() {
 
         </div>
       </main>
+      {/* BITÁCORA */}
+      {bitacoraUsuario && (
+        <Bitacora
+          isOpen={bitacoraOpen}
+          onClose={() => setBitacoraOpen(false)}
+          usuarioId={bitacoraUsuario.id}
+          usuarioNombre={bitacoraUsuario.nombre}
+          comentariosIniciales={BITACORA_MOCK[bitacoraUsuario.id] ?? []}
+        />
+      )}
     </div>
   );
 }
