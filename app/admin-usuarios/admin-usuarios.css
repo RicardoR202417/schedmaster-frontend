@@ -246,6 +246,15 @@
   height: 16px;
 }
 
+.btn-icon--log {
+  color: var(--blue-900);
+  border-color: rgba(35, 77, 123, 0.20);
+}
+
+.btn-icon--log:hover {
+  background: rgba(35, 77, 123, 0.07);
+}
+
 .btn-icon--edit {
   color: var(--blue-500);
   border-color: rgba(0, 164, 224, 0.22);
