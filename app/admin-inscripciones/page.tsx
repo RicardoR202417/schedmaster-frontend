@@ -5,7 +5,7 @@ import {
   Users, Download, RefreshCw, Search, XCircle,
   Check, X, Clock, AlertTriangle, GraduationCap, Briefcase,
   Dumbbell, Stethoscope, Shield, Flame, Sparkles,
-  CalendarDays, MessageCircle, Send,
+  CalendarDays
 } from 'lucide-react';
 import AdminSidebar from '../components/AdminSidebar';
 
@@ -45,10 +45,10 @@ const DIVISIONES = [
   { value: 'dind', label: 'DIND' }, { value: 'dea',  label: 'DEA'  }, { value: 'dae', label: 'DAE' },
 ];
 const ROLES = [
-  { value: 'estudiante',            label: 'Estudiante'            },
-  { value: 'docente',               label: 'Docente'               },
-  { value: 'entrenador',            label: 'Entrenador'            },
-  { value: 'nutriologa',            label: 'Nutrióloga'            },
+  { value: 'estudiante', label: 'Estudiante' },
+  { value: 'docente', label: 'Docente' },
+  { value: 'entrenador', label: 'Entrenador' },
+  { value: 'nutriologa', label: 'Nutrióloga' },
   { value: 'administrador_general', label: 'Administrador general' },
 ];
 
@@ -61,20 +61,37 @@ interface Inscripcion {
 interface ModalData { userId: number; userName: string; userEmail: string; }
 
 export default function AdminInscripcionesPage() {
-  const [inscripciones,         setInscripciones]         = useState<Inscripcion[]>([]);
-  const [searchQuery,           setSearchQuery]           = useState('');
-  const [filterRol,             setFilterRol]             = useState('');
-  const [filterPrioridad,       setFilterPrioridad]       = useState('');
-  const [filterDivision,        setFilterDivision]        = useState('');
+
+  const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
   const [filteredInscripciones, setFilteredInscripciones] = useState<Inscripcion[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterRol, setFilterRol] = useState('');
+  const [filterPrioridad, setFilterPrioridad] = useState('');
+  const [filterDivision, setFilterDivision] = useState('');
 
   const [modalActive, setModalActive] = useState(false);
-  const [modalData,   setModalData]   = useState<ModalData | null>(null);
-  const [modalForm,   setModalForm]   = useState({
-    periodo: '', horaInicio: '', horaFin: '', dias: [] as string[], mensaje: '',
-  });
-  const [capacidadDisplay, setCapacidadDisplay] = useState('Selecciona un horario');
+  const [modalData, setModalData] = useState<ModalData | null>(null);
 
+  // 🔹 Cargar inscripciones reales
+  const fetchInscripciones = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/inscripciones/pendientes');
+      if (res.ok) {
+        const data = await res.json();
+        setInscripciones(data);
+      } else {
+        console.error('Error cargando:', res.status);
+      }
+    } catch (err) {
+      console.error('Error conexión:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchInscripciones();
+  }, []);
+
+  // 🔹 Filtros
   useEffect(() => {
     let f = [...inscripciones];
     if (searchQuery) {
@@ -87,6 +104,46 @@ export default function AdminInscripcionesPage() {
     setFilteredInscripciones(f);
   }, [searchQuery, filterRol, filterPrioridad, filterDivision, inscripciones]);
 
+  // 🔹 Aceptar
+  const handleAccept = async (id: number) => {
+    try {
+      const res = await fetch('http://localhost:3001/api/inscripciones/aceptar', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        setInscripciones(prev => prev.filter(i => i.id !== id));
+      } else {
+        alert('Error al aceptar');
+      }
+    } catch (err) {
+      alert('Error de conexión');
+    }
+  };
+
+  // 🔹 Rechazar
+  const handleReject = async (id: number) => {
+    if (!window.confirm('¿Rechazar inscripción?')) return;
+
+    try {
+      const res = await fetch('http://localhost:3001/api/inscripciones/rechazar', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        setInscripciones(prev => prev.filter(i => i.id !== id));
+      } else {
+        alert('Error al rechazar');
+      }
+    } catch (err) {
+      alert('Error de conexión');
+    }
+  };
+
   const getRolInfo = (rol: string) => {
     const cfg = ROL_CONFIG[rol as keyof typeof ROL_CONFIG];
     if (cfg) { const I = cfg.icon; return { icon: <I size={14} />, nombre: cfg.nombre }; }
@@ -94,250 +151,78 @@ export default function AdminInscripcionesPage() {
   };
 
   const countPendientes = filteredInscripciones.length;
-  const countAlta       = filteredInscripciones.filter(i => i.prioridad === 'alta').length;
+  const countAlta = filteredInscripciones.filter(i => i.prioridad === 'alta').length;
 
   const openModal = (userId: number, userName: string, userEmail: string) => {
     setModalData({ userId, userName, userEmail });
     setModalActive(true);
-    document.body.style.overflow = 'hidden';
   };
+
   const closeModal = () => {
     setModalActive(false);
-    document.body.style.overflow = '';
-    setModalForm({ periodo: '', horaInicio: '', horaFin: '', dias: [], mensaje: '' });
-    setCapacidadDisplay('Selecciona un horario');
     setModalData(null);
   };
 
-  const toggleDay = (day: string) =>
-    setModalForm(prev => ({
-      ...prev,
-      dias: prev.dias.includes(day) ? prev.dias.filter(d => d !== day) : [...prev.dias, day],
-    }));
-
-  const sendCounterProposal = () => {
-    if (!modalForm.periodo || !modalForm.horaInicio || !modalForm.horaFin || modalForm.dias.length === 0) {
-      alert('Completa todos los campos obligatorios'); return;
-    }
-    console.log('Contrapropuesta:', { ...modalData, ...modalForm });
-    closeModal();
-  };
-
   return (
-    <>
-      <div className="app">
-        <AdminSidebar onLogout={() => console.log('logout')} />
+    <div className="app">
+      <AdminSidebar onLogout={() => console.log('logout')} />
 
-        <main className="main">
-          <div className="main-inner">
+      <main className="main">
+        <div className="main-inner">
 
-            <header className="section-header">
-              <div>
-                <h2>Inscripciones de usuarios</h2>
-                <p>Valida registros pendientes. Puedes aceptar, rechazar o proponer un horario alternativo.</p>
-              </div>
-              <div className="row-actions" style={{ flexWrap: 'wrap' }}>
-                <div className="chip chip--pendiente"><Users size={14} /> Pendientes: <strong>{countPendientes}</strong></div>
-                <div className="chip chip--alta"><AlertTriangle size={14} /> Prioridad alta: <strong>{countAlta}</strong></div>
-                <button className="btn btn--outline" onClick={() => console.log('exportar')}>
-                  <Download /> Exportar
-                </button>
-                <button className="btn btn--blue" onClick={() => console.log('refrescar')}>
-                  <RefreshCw /> Actualizar
-                </button>
-              </div>
-            </header>
+          <header className="section-header">
+            <div>
+              <h2>Inscripciones de usuarios</h2>
+              <p>Valida registros pendientes.</p>
+            </div>
+            <div className="row-actions">
+              <div className="chip chip--pendiente"><Users size={14}/> {countPendientes}</div>
+              <div className="chip chip--alta"><AlertTriangle size={14}/> {countAlta}</div>
 
-            <div className="filter-bar">
-              <div className="field">
-                <Search />
-                <input type="search" placeholder="Buscar por nombre, correo o ID..."
-                  value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-              </div>
-              <select className="select" value={filterRol} onChange={e => setFilterRol(e.target.value)}>
-                <option value="">Rol: Todos</option>
-                {ROLES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
-              </select>
-              <select className="select" value={filterPrioridad} onChange={e => setFilterPrioridad(e.target.value)}>
-                <option value="">Prioridad: Todas</option>
-                <option value="alta">Alta</option>
-                <option value="baja">Baja</option>
-              </select>
-              <select className="select" value={filterDivision} onChange={e => setFilterDivision(e.target.value)}>
-                <option value="">División: Todas</option>
-                {DIVISIONES.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
-              </select>
-              <button className="btn btn--outline" onClick={() => { setSearchQuery(''); setFilterRol(''); setFilterPrioridad(''); setFilterDivision(''); }}>
-                <XCircle /> Limpiar
+              <button className="btn btn--blue" onClick={fetchInscripciones}>
+                <RefreshCw/> Actualizar
               </button>
             </div>
+          </header>
 
-            <section className="table-area">
-              <div className="table-scroll">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th><th>Nombre</th><th>Ap. Paterno</th><th>Ap. Materno</th>
-                      <th>Correo</th><th>Rol</th><th>División</th><th>Carrera</th>
-                      <th>Cuatrimestre</th><th>Prioridad</th><th>Registro</th><th>Acciones</th>
+          {/* tabla */}
+          <section className="table-area">
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Prioridad</th><th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInscripciones.map(insc => (
+                    <tr key={insc.id}>
+                      <td>{insc.id}</td>
+                      <td>{insc.nombre}</td>
+                      <td>{insc.correo}</td>
+                      <td>{getRolInfo(insc.rol).nombre}</td>
+                      <td>{insc.prioridad}</td>
+                      <td>
+                        <button className="btn-mini btn-mini--green" onClick={() => handleAccept(insc.id)}>
+                          <Check size={12}/> Aceptar
+                        </button>
+                        <button className="btn-mini btn-mini--red" onClick={() => handleReject(insc.id)}>
+                          <X size={12}/> Rechazar
+                        </button>
+                        <button className="btn-mini btn-mini--yellow"
+                          onClick={() => openModal(insc.id, insc.nombre, insc.correo)}>
+                          <Clock size={12}/> Contrapropuesta
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredInscripciones.length === 0 ? (
-                      <tr><td colSpan={12}>
-                        <div className="empty-state">
-                          <Users size={40} strokeWidth={1.5} />
-                          <p>No hay inscripciones pendientes</p>
-                          <small>Los nuevos registros aparecerán aquí automáticamente</small>
-                        </div>
-                      </td></tr>
-                    ) : filteredInscripciones.map(insc => (
-                      <tr key={insc.id}>
-                        <td className="muted">{insc.id}</td>
-                        <td>{insc.nombre}</td>
-                        <td>{insc.apellido_paterno}</td>
-                        <td>{insc.apellido_materno}</td>
-                        <td className="muted">{insc.correo}</td>
-                        <td>
-                          <span className="chip chip--asistente">
-                            {getRolInfo(insc.rol).icon} {getRolInfo(insc.rol).nombre}
-                          </span>
-                        </td>
-                        <td className="muted">{insc.division}</td>
-                        <td>{insc.carrera}</td>
-                        <td className="muted">{insc.cuatrimestre}</td>
-                        <td>
-                          <span className={`chip chip--${insc.prioridad === 'alta' ? 'alta' : 'baja'}`}>
-                            {insc.prioridad === 'alta' ? <Flame size={12} /> : <Sparkles size={12} />}
-                            {insc.prioridad === 'alta' ? 'Alta' : 'Baja'}
-                          </span>
-                        </td>
-                        <td className="muted">{insc.registro}</td>
-                        <td>
-                          <div className="row-actions">
-                            <button className="btn-mini btn-mini--green" onClick={() => console.log('Aceptar', insc.id)}>
-                              <Check size={12} /> Aceptar
-                            </button>
-                            <button className="btn-mini btn-mini--red" onClick={() => console.log('Rechazar', insc.id)}>
-                              <X size={12} /> Rechazar
-                            </button>
-                            <button className="btn-mini btn-mini--yellow"
-                              onClick={() => openModal(insc.id, `${insc.nombre} ${insc.apellido_paterno}`, insc.correo)}>
-                              <Clock size={12} /> Contrapropuesta
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="table-hint">
-                Tip: En pantallas pequeñas, desliza horizontalmente para ver todas las columnas.
-              </div>
-            </section>
-
-          </div>
-        </main>
-      </div>
-
-      {/* Modal contrapropuesta — usa .modal-overlay + .modal-box--wide */}
-      {modalActive && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
-          <div className="modal-box modal-box--wide">
-
-            <div className="modal-header">
-              <div>
-                <h3>Proponer horario alternativo</h3>
-                <p>{modalData?.userName} · {modalData?.userEmail}</p>
-              </div>
-              <button className="btn-close" onClick={closeModal}><X /></button>
-            </div>
-
-            <div className="modal-body">
-
-              <div className="form-group">
-                <label><CalendarDays size={16} /> Periodo académico</label>
-                <div className="select-with-icon">
-                  <select className="form-select" value={modalForm.periodo}
-                    onChange={e => setModalForm({ ...modalForm, periodo: e.target.value })}>
-                    <option value="" disabled>No hay periodos disponibles</option>
-                  </select>
-                  <CalendarDays size={16} />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label><Clock size={16} /> Configuración de horario</label>
-                <div className="time-grid">
-                  <div className="time-input-wrapper">
-                    <label><Clock size={14} /> Hora inicio</label>
-                    <div className="select-with-icon">
-                      <select className="form-select" value={modalForm.horaInicio}
-                        onChange={e => {
-                          setModalForm({ ...modalForm, horaInicio: e.target.value });
-                          setCapacidadDisplay(CAPACIDADES[e.target.value] ? `${CAPACIDADES[e.target.value]} personas` : 'Selecciona un horario');
-                        }}>
-                        <option value="">--:--</option>
-                        {HORARIOS_INICIO.map(h => <option key={h} value={h}>{h}</option>)}
-                      </select>
-                      <Clock size={14} />
-                    </div>
-                  </div>
-                  <div className="time-input-wrapper">
-                    <label><Clock size={14} /> Hora fin</label>
-                    <div className="select-with-icon">
-                      <select className="form-select" value={modalForm.horaFin}
-                        onChange={e => setModalForm({ ...modalForm, horaFin: e.target.value })}>
-                        <option value="">--:--</option>
-                        {HORARIOS_FIN.map(h => <option key={h} value={h}>{h}</option>)}
-                      </select>
-                      <Clock size={14} />
-                    </div>
-                  </div>
-                </div>
-                <div className="info-box">
-                  <div className="info-box-content">
-                    <Users size={16} />
-                    <span>Capacidad disponible: <strong>{capacidadDisplay}</strong></span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label><CalendarDays size={16} /> Días de la semana</label>
-                <div className="days-selector">
-                  {DIAS_SEMANA.map(dia => (
-                    <div key={dia}
-                      className={`day-chip ${modalForm.dias.includes(dia) ? 'selected' : ''}`}
-                      onClick={() => toggleDay(dia)}>
-                      {dia.charAt(0).toUpperCase() + dia.slice(1)}
-                    </div>
                   ))}
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label><MessageCircle size={16} /> Mensaje opcional</label>
-                <textarea className="form-textarea"
-                  placeholder="Agrega un mensaje opcional para el usuario… (Ctrl+Enter para enviar)"
-                  value={modalForm.mensaje}
-                  onChange={e => setModalForm({ ...modalForm, mensaje: e.target.value })}
-                />
-              </div>
-
+                </tbody>
+              </table>
             </div>
+          </section>
 
-            <div className="modal-footer">
-              <button className="btn btn--outline" onClick={closeModal}>Cancelar</button>
-              <button className="btn btn--blue" onClick={sendCounterProposal}>
-                <Send size={16} /> Enviar contrapropuesta
-              </button>
-            </div>
-
-          </div>
         </div>
-      )}
-    </>
+      </main>
+    </div>
   );
 }
