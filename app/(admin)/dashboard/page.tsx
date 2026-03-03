@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../../components/AdminSidebar';
+import styles from './page.module.css';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -33,17 +34,7 @@ export default function DashboardPage() {
   // ⏳ Loader para evitar parpadeo
   if (!autorizado) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          backgroundColor: '#0f172a',
-          color: '#fff',
-          fontSize: '14px',
-        }}
-      >
+      <div className="loader">
         <p>Cargando SchedMaster...</p>
       </div>
     );

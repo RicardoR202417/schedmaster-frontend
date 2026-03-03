@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../../components/AdminSidebar';
 
 const AVATAR_COLORS = ['ac1','ac2','ac3','ac4','ac5','ac6','ac7','ac8'] as const;
 const getAvatarClass = (id: number) => AVATAR_COLORS[id % AVATAR_COLORS.length];
@@ -67,7 +67,7 @@ export default function AdminAsistenciasPage() {
               <h2>Control de Asistencias</h2>
               <p>Registra y monitorea la asistencia de los usuarios</p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div className="date-container">
               <label className="date-label" htmlFor="fechaAsistencia">
   Seleccionar fecha
 </label>
@@ -83,19 +83,19 @@ export default function AdminAsistenciasPage() {
 
           {/* Filtros */}
           <div className="filter-bar">
-            <select className="select" value={filterHorario} onChange={e => setFilterHorario(e.target.value)}>
+            <select className="select" value={filterHorario} onChange={e => setFilterHorario(e.target.value)} aria-label="Filtrar por horario">
               <option value="">Todos los horarios</option>
             </select>
-            <select className="select" value={filterTipo} onChange={e => setFilterTipo(e.target.value)}>
+            <select className="select" value={filterTipo} onChange={e => setFilterTipo(e.target.value)} aria-label="Filtrar por tipo de entrenamiento">
               <option value="">Todos los tipos</option>
             </select>
-            <select className="select" value={filterEstado} onChange={e => setFilterEstado(e.target.value)}>
+            <select className="select" value={filterEstado} onChange={e => setFilterEstado(e.target.value)} aria-label="Filtrar por estado">
               <option value="">Todos los estados</option>
               <option value="pendiente">Pendientes</option>
               <option value="presente">Presentes</option>
               <option value="ausente">Ausentes</option>
             </select>
-            <select className="select" value={filterCarrera} onChange={e => setFilterCarrera(e.target.value)}>
+            <select className="select" value={filterCarrera} onChange={e => setFilterCarrera(e.target.value)} aria-label="Filtrar por carrera">
               <option value="">Todas las carreras</option>
             </select>
             <button className="btn btn--outline" type="button" onClick={() => console.log('Refrescar:', fecha)}>

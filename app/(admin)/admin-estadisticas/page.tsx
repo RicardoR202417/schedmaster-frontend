@@ -5,9 +5,9 @@ import {
   Users, Download, RefreshCw, TrendingUp, TrendingDown, Minus,
   Mail, CheckCircle, Clock, Eye, AlertTriangle, Flame, Sparkles,
   Activity, Award, Check, X, FileText, Database, CalendarCheck,
-  UserPlus, BarChart3,
+  UserPlus,
 } from 'lucide-react';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../../components/AdminSidebar';
 
 // ── Datos de demo ────────────────────────────────────────────────
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -83,7 +83,7 @@ const Sparkline = ({ data, secondary, color = '#00a4e0' }: { data: number[]; sec
   const toArea = (arr: number[]) => toPath(arr) + ` L ${(arr.length-1)*step} ${h} L 0 ${h} Z`;
   return (
     <div className="sparkline-wrap">
-      <svg viewBox={`0 0 ${w} ${h}`} className="sparkline-svg" style={{ height: 120 }} preserveAspectRatio="none">
+      <svg viewBox={`0 0 ${w} ${h}`} className="sparkline-svg" preserveAspectRatio="none">
         {[0.25,0.5,0.75].map(r => <line key={r} x1={0} x2={w} y1={h*(1-r)} y2={h*(1-r)} stroke="rgba(15,23,42,0.06)" strokeWidth={1} />)}
         {secondary && <path d={toArea(secondary)} fill="rgba(59,130,246,0.07)" />}
         <path d={toArea(data)} fill={`${color}18`} />
@@ -102,7 +102,7 @@ const Donut = ({ data, total }: { data: { label: string; count: number; color: s
   const segs = data.map(d => { const len = (d.count/total)*circ; const s = {...d,len,offset}; offset+=len; return s; });
   return (
     <div className="donut-wrap">
-      <div className="donut-svg-wrap" style={{ width:160, height:160 }}>
+      <div className="donut-svg-wrap">
         <svg width={160} height={160} viewBox="0 0 160 160">
           <circle cx={80} cy={80} r={r} fill="none" stroke="rgba(15,23,42,0.05)" strokeWidth={22} />
           {segs.map((s,i) => (
@@ -120,7 +120,7 @@ const Donut = ({ data, total }: { data: { label: string; count: number; color: s
         {data.map((d,i) => (
           <div key={i} className="donut-legend-item">
             <div className="donut-legend-left">
-              <div className="donut-dot" style={{ background: d.color }} />
+              <div className="donut-dot" data-color={d.color} />
               <span className="donut-legend-label">{d.label}</span>
             </div>
             <span className="donut-legend-count">{d.count.toLocaleString()}</span>
@@ -139,8 +139,8 @@ const BarChart = ({ data }: { data: { label: string; count: number }[] }) => {
       <div className="bar-chart-grid">{[0,1,2,3].map(i => <div key={i} className="grid-line" />)}</div>
       {data.map((d,i) => (
         <div key={i} className="bar-group">
-          <div className="bar-stack" style={{ height:160 }}>
-            <div className="bar" style={{ height:`${(d.count/max)*100}%`, background: colors[i%colors.length] }}>
+          <div className="bar-stack">
+            <div className="bar" data-index={i} data-height={`${(d.count/max)*100}%`} data-color={colors[i%colors.length]}>
               <div className="bar-tooltip">{d.count.toLocaleString()}</div>
             </div>
           </div>
@@ -164,7 +164,7 @@ const Funnel = () => {
               <span className="funnel-count">{row.count.toLocaleString()}</span>
             </div>
             <div className="funnel-track">
-              <div className="funnel-fill" style={{ width:`${(row.count/max)*100}%`, background: row.color }}>
+              <div className="funnel-fill" data-width={`${(row.count/max)*100}%`} data-color={row.color}>
                 <span className="funnel-pct">{((row.count/max)*100).toFixed(1)}%</span>
               </div>
             </div>
@@ -183,16 +183,16 @@ const Heatmap = () => (
         <div className="heatmap-day-label">{DIAS[di]}</div>
         <div className="heatmap-cells">
           {row.map((val,wi) => (
-            <div key={wi} className="heatmap-cell" style={{ background: getHeatColor(val) }} title={`${DIAS[di]} S${wi+1}: ${val}%`} />
+            <div key={wi} className="heatmap-cell" data-heat-color={getHeatColor(val)} title={`${DIAS[di]} S${wi+1}: ${val}%`} />
           ))}
         </div>
       </div>
     ))}
     <div className="heatmap-legend">
       <span className="heatmap-legend-label">Asistencia:</span>
-      {[['#fca5a5','<40%'],['#fde68a','40–60%'],['#bae6fd','60–75%'],['#38bdf8','75–90%'],['#00a4e0','90%+']].map(([c,l]) => (
+      {[['#fca5a5','<40%'],['#fde68a','40-60%'],['#bae6fd','60-75%'],['#38bdf8','75-90%'],['#00a4e0','90%+']].map(([c,l]) => (
         <div key={l} className="heatmap-legend-item">
-          <div className="heatmap-legend-dot" style={{ background: c }} />
+          <div className="heatmap-legend-dot" data-color={c} />
           <span className="heatmap-legend-text">{l}</span>
         </div>
       ))}
@@ -284,7 +284,7 @@ export default function AdminEstadisticasPage() {
                 <h2>Estadísticas y reportes</h2>
                 <p>Visión completa del ciclo: interesados → notificados → inscritos → asistencia.</p>
               </div>
-              <div className="row-actions" style={{ flexWrap: 'wrap' }}>
+              <div className="row-actions">
                 <div className="pill"><Users size={16} /> Inscritos totales: <strong>{totalInscritos.toLocaleString()}</strong></div>
                 <div className="pill"><Activity size={16} /> Convocatorias activas: <strong>{convActivas}</strong></div>
                 <button className="btn btn--outline" type="button"><RefreshCw size={16} /> Actualizar</button>
@@ -346,8 +346,8 @@ export default function AdminEstadisticasPage() {
                     <div className="chart-subtitle">Interesados vs inscripciones — últimos 12 meses</div>
                   </div>
                   <div className="chart-legend">
-                    <div className="legend-item"><div className="legend-dot" style={{ background: '#00a4e0' }} /> Inscritos</div>
-                    <div className="legend-item"><div className="legend-dot" style={{ background: '#3b82f6', opacity: 0.5 }} /> Interesados</div>
+                    <div className="legend-item"><div className="legend-dot bar-default" /> Inscritos</div>
+                    <div className="legend-item"><div className="legend-dot bar-secondary" /> Interesados</div>
                   </div>
                 </div>
                 <Sparkline data={inscripcionesMes} secondary={interesadosMes} />
@@ -377,7 +377,7 @@ export default function AdminEstadisticasPage() {
                   {topAsistencia.map((u,i) => (
                     <div key={i} className="ranking-row">
                       <div className={`ranking-pos ${i < 3 ? 'top' : ''}`}>{i < 3 ? '★' : i+1}</div>
-                      <div className="ranking-avatar" style={{ background: `${avatarColors[i%avatarColors.length]}22`, color: avatarColors[i%avatarColors.length] }}>
+                      <div className="ranking-avatar" data-color={avatarColors[i%avatarColors.length]}>
                         {getInitials(u.nombre)}
                       </div>
                       <div className="ranking-info">
@@ -385,7 +385,7 @@ export default function AdminEstadisticasPage() {
                         <div className="ranking-sub">{u.division}</div>
                       </div>
                       <div className="ranking-bar-wrap">
-                        <div className="ranking-bar-track"><div className="ranking-bar-fill" style={{ width:`${u.pct}%` }} /></div>
+                        <div className="ranking-bar-track"><div className="ranking-bar-fill" data-pct={u.pct} /></div>
                       </div>
                       <div className="ranking-pct">{u.pct}%</div>
                     </div>
@@ -399,7 +399,7 @@ export default function AdminEstadisticasPage() {
                   {actividadReciente.map((a,i) => (
                     <div key={i} className="activity-item">
                       <div className="activity-dot-wrap">
-                        <div className="activity-dot" style={{ background: a.color }} />
+                        <div className="activity-dot" data-color={a.color} />
                         <div className="activity-line" />
                       </div>
                       <div className="activity-content">
@@ -436,11 +436,11 @@ export default function AdminEstadisticasPage() {
                       const conv = ((row.inscritos/row.interesados)*100).toFixed(1);
                       return (
                         <tr key={i}>
-                          <td style={{ fontWeight:900, color:'var(--blue-900)' }}>{row.convocatoria}</td>
+                          <td className="table-convocatoria">{row.convocatoria}</td>
                           <td className="muted">{row.periodo}</td>
                           <td>{row.interesados.toLocaleString()}</td>
                           <td>{row.notificados.toLocaleString()}</td>
-                          <td style={{ fontWeight:900 }}>{row.inscritos.toLocaleString()}</td>
+                          <td className="table-inscritos">{row.inscritos.toLocaleString()}</td>
                           <td><span className="chip chip--pendiente"><TrendingUp size={12} /> {conv}%</span></td>
                           <td>
                             <span className={`chip ${row.asistencia >= 80 ? 'chip--activo' : row.asistencia >= 70 ? 'chip--pendiente' : 'chip--baja'}`}>
@@ -474,7 +474,7 @@ export default function AdminEstadisticasPage() {
 
             <div className="modal-header">
               <div><h3>Exportar reporte</h3><p>Elige el formato y el alcance del reporte</p></div>
-              <button className="btn-close" onClick={() => setModalExport(false)}><X /></button>
+              <button className="btn-close" onClick={() => setModalExport(false)} title="Cerrar"><X /></button>
             </div>
 
             <div className="modal-body">
@@ -499,8 +499,8 @@ export default function AdminEstadisticasPage() {
                 </div>
               </div>
               <div className="form-group">
-                <label className="input-label">Alcance del reporte</label>
-                <select className="form-select" value={exportScope} onChange={e => setExportScope(e.target.value)}>
+                <label htmlFor="export-scope" className="input-label">Alcance del reporte</label>
+                <select id="export-scope" className="form-select" value={exportScope} onChange={e => setExportScope(e.target.value)}>
                   <option value="general">Resumen general (KPIs + embudo)</option>
                   <option value="convocatorias">Detalle por convocatoria</option>
                   <option value="asistencia">Asistencia por usuario</option>
@@ -511,9 +511,9 @@ export default function AdminEstadisticasPage() {
 
             <div className="modal-footer">
               <button className="btn btn--outline" onClick={() => setModalExport(false)}>Cancelar</button>
-              <button className="btn btn--blue" onClick={handleExport} disabled={exporting} style={{ minWidth:160 }}>
+              <button className="btn btn--blue btn--export" onClick={handleExport} disabled={exporting}>
                 {exportDone ? <><Check size={16} /> ¡Descargado!</> :
-                 exporting  ? <><RefreshCw size={16} style={{ animation:'spin 1s linear infinite' }} /> Generando...</> :
+                 exporting  ? <><RefreshCw size={16} className="spin-animation" /> Generando...</> :
                               <><Download size={16} /> Descargar</>}
               </button>
             </div>

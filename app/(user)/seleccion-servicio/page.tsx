@@ -74,7 +74,7 @@ export default function HomePage() {
       {openModal && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
           <div className="modal-box">
-            <button className="modal-close" onClick={closeModal}><X size={20} /></button>
+            <button type="button" className="modal-close" onClick={closeModal} aria-label="Cerrar modal"><X size={20} /></button>
             {!sent ? (
               <>
                 <h2>Convocatoria cerrada</h2>

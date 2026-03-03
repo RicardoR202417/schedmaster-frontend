@@ -55,34 +55,33 @@ export default function HomeUserPage() {
       <section className="tips-section">
         <strong>Anuncios</strong>
         <h2>Tablón del gimnasio</h2>
-        <div className="tips-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+        <div className="tips-grid announcements-grid">
 
           <div className="card">
-            <div className="support-item" style={{ marginBottom: '16px' }}>
+            <div className="support-item">
               <div className="state">SM</div>
               <div>
-                <p style={{ fontWeight: 700, fontSize: '14px', color: 'var(--blue-900)', margin: 0 }}>
+                <p className="announcement-title">
                   Administración Gimnasio
                 </p>
-                <small style={{ fontSize: '12px', color: 'var(--gray)' }}>15 Feb 2026</small>
+                <small className="announcement-date">15 Feb 2026</small>
               </div>
             </div>
             <p className="message">
               Ya se encuentra disponible el registro para el nuevo periodo.
               Recuerda completar tu inscripción antes de la fecha límite.
             </p>
-            <img src="/demo-convocatoria.jpg" alt="anuncio"
-              style={{ width: '100%', borderRadius: '12px', objectFit: 'cover' }} />
+            <img src="/demo-convocatoria.jpg" alt="anuncio" className="announcement-image" />
           </div>
 
           <div className="card">
-            <div className="support-item" style={{ marginBottom: '16px' }}>
+            <div className="support-item">
               <div className="state">SM</div>
               <div>
-                <p style={{ fontWeight: 700, fontSize: '14px', color: 'var(--blue-900)', margin: 0 }}>
+                <p className="announcement-title">
                   Administración Gimnasio
                 </p>
-                <small style={{ fontSize: '12px', color: 'var(--gray)' }}>10 Feb 2026</small>
+                <small className="announcement-date">10 Feb 2026</small>
               </div>
             </div>
             <p className="message">

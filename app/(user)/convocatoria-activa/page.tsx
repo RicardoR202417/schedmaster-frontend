@@ -29,7 +29,7 @@ export default function ConvocatoriaActivaPage() {
                 Para participar debes registrarte dentro de las fechas establecidas.
               </p>
               {periodo && (
-                <div className="status" style={{ marginTop: 12 }}>
+                <div className="status status--with-margin">
                   <Calendar />
                   {periodo.nombre_periodo}
                 </div>
@@ -44,7 +44,7 @@ export default function ConvocatoriaActivaPage() {
                 {new Date(periodo.fecha_inicio_inscripcion).toLocaleDateString()} —{' '}
                 {new Date(periodo.fecha_fin_inscripcion).toLocaleDateString()}
               </p>
-              <p style={{ marginTop: 10 }}>
+              <p className="activities-paragraph">
                 <strong>Actividades:</strong><br />
                 {new Date(periodo.fecha_inicio_actividades).toLocaleDateString()} —{' '}
                 {new Date(periodo.fecha_fin_periodo).toLocaleDateString()}

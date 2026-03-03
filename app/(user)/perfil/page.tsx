@@ -29,7 +29,7 @@ export default function PerfilPage() {
               <User size={20} />
               <span>Información personal</span>
             </div>
-            <div className="form-row" style={{ flexWrap: 'wrap' }}>
+            <div className="form-row form-row-wrap">
               <div className="form-group">
                 <span className="input-label">Nombre</span>
                 <p>Ana López García</p>
@@ -65,7 +65,7 @@ export default function PerfilPage() {
             </div>
             <div className="tip-card">
               <p><strong>Día:</strong> Lunes y Miércoles</p>
-              <p style={{ marginTop: '8px' }}><strong>Hora:</strong> 18:00 - 19:00</p>
+              <p className="tip-card-hour"><strong>Hora:</strong> 18:00 - 19:00</p>
             </div>
           </div>
 

@@ -82,6 +82,7 @@ export default function Bitacora({
         <div className="log-filter-bar">
           <span className="log-filter-label">Ordenar por</span>
           <select className="select log-filter-select" value={sortOrder}
+            aria-label="Ordenar comentarios por fecha"
             onChange={e => setSortOrder(e.target.value as 'reciente' | 'lejano')}>
             <option value="reciente">Fecha más reciente</option>
             <option value="lejano">Fecha más lejana</option>

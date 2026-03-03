@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Plus, CalendarDays, Pencil, Power, PowerOff, X, Save } from 'lucide-react';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../../components/AdminSidebar';
 
 interface Convocatoria {
   id: number;
@@ -47,7 +47,7 @@ export default function AdminConvocatoriasPage() {
           <h3>{title}</h3>
           <p>{subtitle}</p>
         </div>
-        <button className="btn-close" onClick={onClose}><X /></button>
+        <button type="button" className="btn-close" onClick={onClose} title="Cerrar" aria-label="Cerrar"><X /></button>
       </div>
 
       {/* modal-body reemplaza modal-admin-body */}

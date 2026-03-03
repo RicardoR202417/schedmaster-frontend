@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, Search, Megaphone } from 'lucide-react';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../../components/AdminSidebar';
 
 interface Anuncio {
   id: number;

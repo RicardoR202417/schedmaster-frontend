@@ -7,7 +7,7 @@ import {
   Dumbbell, Stethoscope, Shield, Flame, Sparkles,
   CalendarDays
 } from 'lucide-react';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../../components/AdminSidebar';
 
 const generarHorarios = (inicio: number, fin: number, intervalo = 30) => {
   const h: string[] = [];

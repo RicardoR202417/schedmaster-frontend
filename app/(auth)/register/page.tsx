@@ -14,17 +14,11 @@ export default function RegisterPage() {
     password: '', confirmPassword: '', terms: false,
   });
 
-  const [divisiones,  setDivisiones]  = useState<any[]>([]);
   const [horarios,    setHorarios]    = useState<any[]>([]);
   const [diasHorario, setDiasHorario] = useState<any[]>([]);
   const [strength,    setStrength]    = useState(0);
   const [progress,    setProgress]    = useState(0);
   const [success,     setSuccess]     = useState(false);
-
-  useEffect(() => {
-    fetch('http://localhost:3001/api/catalogo/divisiones')
-      .then(r => r.json()).then(setDivisiones).catch(() => setDivisiones([]));
-  }, []);
 
   useEffect(() => {
     fetch('http://localhost:3001/api/horarios')
@@ -83,7 +77,7 @@ export default function RegisterPage() {
           <div className="card--glass">
 
             {/* btn--back reemplaza btn-secondary */}
-            <button className="btn btn--back" onClick={() => router.push('/login')}>
+            <button type="button" className="btn btn--back" onClick={() => router.push('/login')}>
               <ArrowLeft size={18} /> Volver al inicio
             </button>
 
@@ -94,14 +88,14 @@ export default function RegisterPage() {
             </div>
 
             <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${progress}%` }} />
+              <div className="progress-fill" data-progress={progress} />
             </div>
 
             <form onSubmit={handleSubmit}>
 
               <div className="form-group">
-                <label>Tipo de usuario</label>
-                <select name="tipo" value={form.tipo} className="auth-select" onChange={handleChange}>
+                <label htmlFor="tipo">Tipo de usuario</label>
+                <select id="tipo" name="tipo" value={form.tipo} title="Selecciona tipo de usuario" className="auth-select" onChange={handleChange}>
                   <option value="estudiante">Estudiante</option>
                   <option value="docente">Docente</option>
                 </select>
@@ -129,8 +123,8 @@ export default function RegisterPage() {
               </div>
 
               <div className="form-group">
-                <label>Horario</label>
-                <select name="horarioId" value={form.horarioId} className="auth-select" onChange={handleChange}>
+                <label htmlFor="horarioId">Horario</label>
+                <select id="horarioId" name="horarioId" value={form.horarioId} title="Selecciona un horario" className="auth-select" onChange={handleChange}>
                   <option value="">Selecciona horario</option>
                   {horarios.map(h => (
                     <option key={h.id_horario} value={h.id_horario}>{h.hora_inicio} - {h.hora_fin}</option>
@@ -166,8 +160,8 @@ export default function RegisterPage() {
               </div>
 
               <div className="checkbox-wrapper">
-                <input type="checkbox" name="terms" checked={form.terms} onChange={handleChange} />
-                <span>Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a></span>
+                <input id="terms" type="checkbox" name="terms" checked={form.terms} onChange={handleChange} />
+                <label htmlFor="terms">Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a></label>
               </div>
 
               {/* btn--full + btn--lg reemplaza btn-primary */}
@@ -178,7 +172,7 @@ export default function RegisterPage() {
             </form>
           </div>
         ) : (
-          <div className="card--glass" style={{ textAlign: 'center' }}>
+          <div className="card--glass card--center">
             <div className="success-icon"><CircleCheck size={40} /></div>
             <h2 className="success-title">¡Cuenta creada!</h2>
             <p className="success-text">Redirigiendo al inicio de sesión…</p>

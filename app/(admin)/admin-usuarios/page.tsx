@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Search, UserPlus, Pencil, Trash2, ClipboardList } from 'lucide-react';
-import AdminSidebar from '../components/AdminSidebar';
-import Bitacora, { type Comentario } from '../components/Bitacora';
+import AdminSidebar from '../../components/AdminSidebar';
+import Bitacora, { type Comentario } from '../../components/Bitacora';
 
 type Rol    = 'asistente' | 'admin' | 'docente' | 'entrenador' | 'nutriologa';
 type Estado = 'activo' | 'inactivo';
@@ -22,7 +22,7 @@ const ROL_LABELS: Record<Rol, string> = {
 };
 
 export default function AdminUsuariosPage() {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([
+  const [usuarios] = useState<Usuario[]>([
     {
       id: 1, nombre: 'María', apellido: 'González', iniciales: 'MG',
       correo: 'maria.gonzalez@uteq.edu.mx', matricula: '2021-001',
@@ -87,7 +87,7 @@ export default function AdminUsuariosPage() {
               <input type="search" placeholder="Buscar por nombre, matrícula o correo..."
                 value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             </div>
-            <select className="select" value={filterRol} onChange={e => setFilterRol(e.target.value)}>
+            <select className="select" aria-label="Filtrar por rol" value={filterRol} onChange={e => setFilterRol(e.target.value)}>
               <option value="">Todos los roles</option>
               <option value="asistente">Asistente</option>
               <option value="admin">Admin</option>
@@ -95,12 +95,12 @@ export default function AdminUsuariosPage() {
               <option value="entrenador">Entrenador</option>
               <option value="nutriologa">Nutrióloga</option>
             </select>
-            <select className="select" value={filterEstado} onChange={e => setFilterEstado(e.target.value)}>
+            <select className="select" aria-label="Filtrar por estado" value={filterEstado} onChange={e => setFilterEstado(e.target.value)}>
               <option value="">Todos los estados</option>
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
             </select>
-            <select className="select" value={filterCarrera} onChange={e => setFilterCarrera(e.target.value)}>
+            <select className="select" aria-label="Filtrar por carrera" value={filterCarrera} onChange={e => setFilterCarrera(e.target.value)}>
               <option value="">Todas las carreras</option>
             </select>
           </section>
