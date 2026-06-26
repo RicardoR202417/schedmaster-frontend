@@ -56,14 +56,14 @@ export default function ConfirmModal({
 
         <div className="modal-buttons">
 
-          <button
+          <button type="button"
             className="btn btn--outline"
             onClick={onCancel}
           >
             {cancelText}
           </button>
 
-          <button
+          <button type="button"
             className="btn btn--red"
             onClick={onConfirm}
           >

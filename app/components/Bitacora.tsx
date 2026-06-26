@@ -70,8 +70,7 @@ export default function Bitacora({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true"
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="modal-overlay">
 
       <div className="modal-box modal-box--wide log-modal">
 
@@ -83,7 +82,7 @@ export default function Bitacora({
             </div>
             <p>{usuarioNombre}</p>
           </div>
-          <button className="btn-close" onClick={onClose} aria-label="Cerrar"><X /></button>
+          <button type="button" className="btn-close" onClick={onClose} aria-label="Cerrar"><X /></button>
         </div>
 
         <div className="log-filter-bar">
@@ -130,7 +129,7 @@ export default function Bitacora({
           />
           <div className="log-compose-actions">
             <span className="log-hint muted">Ctrl+Enter para enviar</span>
-            <button className="btn btn--blue" onClick={handleEnviar} disabled={!nuevoTexto.trim()}>
+            <button type="button" className="btn btn--blue" onClick={handleEnviar} disabled={!nuevoTexto.trim()}>
               <Send size={16} /> Enviar
             </button>
           </div>

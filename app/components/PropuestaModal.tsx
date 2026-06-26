@@ -108,7 +108,7 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="modal-overlay">
       <div className="modal-box modal-box--wide">
         <div className="modal-header">
           <div>
@@ -120,7 +120,7 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
               Enviar propuesta a {correo}
             </p>
           </div>
-          <button className="btn-close" onClick={onClose} title="Cerrar">
+          <button type="button" className="btn-close" onClick={onClose} title="Cerrar">
             <X />
           </button>
         </div>
@@ -166,7 +166,7 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
         </div>
 
         <div className="log-compose-actions">
-          <button
+          <button type="button"
             className="btn btn--blue"
             onClick={enviarPropuesta}
             disabled={loading}

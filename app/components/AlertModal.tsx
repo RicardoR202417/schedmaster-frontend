@@ -29,7 +29,7 @@ export default function AlertModal({
 
       <div className="modal-box">
 
-        <button
+        <button type="button"
           className="modal-close"
           onClick={onClose}
           aria-label="Close modal"
@@ -46,7 +46,7 @@ export default function AlertModal({
 
         <div className="modal-actions">
 
-          <button
+          <button type="button"
             className="btn btn--blue"
             onClick={onClose}
           >

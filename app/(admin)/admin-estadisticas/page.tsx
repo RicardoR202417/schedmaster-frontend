@@ -53,7 +53,7 @@ export default function AdminEstadisticasPage() {
     { value: 'primavera', label: 'Primavera 2025' },
   ];
 
-  //Lógica de Filtrado Dinámico
+  //LÃ³gica de Filtrado DinÃ¡mico
   const datosFiltrados = periodoFiltro === 'todos' 
     ? datosTabla 
     : datosTabla.filter(d => d.periodo.toLowerCase().includes(periodoFiltro.toLowerCase()));
@@ -64,7 +64,7 @@ export default function AdminEstadisticasPage() {
   const handleExport = () => {
     setExporting(true);
     
-    // Elegimos qué datos exportar según lo que pidió el usuario
+    // Elegimos quÃ© datos exportar segÃºn lo que pidiÃ³ el usuario
     const datosExportar = exportScope === 'completo' ? datosTabla : datosFiltrados;
 
     setTimeout(() => {
@@ -72,11 +72,11 @@ export default function AdminEstadisticasPage() {
       
       if (exportFormat === 'csv') {
         const rows = [
-          ['Matrícula','Nombre','Carrera','Servicio','Periodo','Asistencia %','Estado'],
+          ['MatrÃ­cula','Nombre','Carrera','Servicio','Periodo','Asistencia %','Estado'],
           ...datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.periodo, r.asistencia, r.estado]),
         ];
         
-        //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ñ
+        //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ã‘
         const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
@@ -91,7 +91,7 @@ export default function AdminEstadisticasPage() {
         
         autoTable(doc, {
           startY: 20,
-          head: [['Matrícula', 'Nombre', 'Carrera', 'Servicio', 'Asistencia', 'Estado']],
+          head: [['MatrÃ­cula', 'Nombre', 'Carrera', 'Servicio', 'Asistencia', 'Estado']],
           body: datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.asistencia, r.estado]),
           headStyles: { fillColor: [0, 164, 224] }, // Azulito SchedMaster
         });
@@ -114,17 +114,17 @@ export default function AdminEstadisticasPage() {
             <header className="section-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
               <div>
                 <h2>Reportes</h2>
-                <p>Visión completa del ciclo: interesados → notificados → inscritos → asistencia.</p>
+                <p>VisiÃ³n completa del ciclo: interesados â†’ notificados â†’ inscritos â†’ asistencia.</p>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '15px' }}>
                 
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                   <div className="chip chip--blue" style={{ fontSize: '14px', padding: '8px 15px', background: '#e0f2fe', color: '#0369a1', borderRadius: '20px' }}>
-                    <span style={{ marginRight: '5px' }}>👥</span> Inscritos totales: <strong>{totalInscritos}</strong>
+                    <span style={{ marginRight: '5px' }}>ðŸ‘¥</span> Inscritos totales: <strong>{totalInscritos}</strong>
                   </div>
                   <div className="chip chip--outline" style={{ fontSize: '14px', padding: '8px 15px', border: '1px solid #ddd', borderRadius: '20px' }}>
-                    <span style={{ marginRight: '5px' }}>📈</span> Convocatorias activas: <strong>{convActivas}</strong>
+                    <span style={{ marginRight: '5px' }}>ðŸ“ˆ</span> Convocatorias activas: <strong>{convActivas}</strong>
                   </div>
                 </div>
 
@@ -169,7 +169,7 @@ export default function AdminEstadisticasPage() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                   <thead style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left', fontSize: '12px', color: '#64748b', textTransform: 'uppercase' }}>
                     <tr>
-                      <th style={{ padding: '15px' }}>Matrícula</th>
+                      <th style={{ padding: '15px' }}>MatrÃ­cula</th>
                       <th style={{ padding: '15px' }}>Nombre del alumno</th>
                       <th style={{ padding: '15px' }}>Carrera</th>
                       <th style={{ padding: '15px' }}>Servicio</th>
@@ -230,30 +230,29 @@ export default function AdminEstadisticasPage() {
       </div>
 
       {modalExport && (
-        <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) setModalExport(false); }}>
+        <div className="modal-overlay">
           <div className="modal-box modal-box--wide">
             <div className="modal-header">
               <div><h3>Exportar reporte</h3><p>Elige el formato y el alcance del reporte</p></div>
-              <button className="btn-close" onClick={() => setModalExport(false)} title="Cerrar"><X /></button>
+              <button type="button" className="btn-close" onClick={() => setModalExport(false)} title="Cerrar"><X /></button>
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label className="input-label">Formato de exportación</label>
+                <label className="input-label">Formato de exportaciÃ³n</label>
                 <div className="export-options">
-                  {/*LE DIMOS CUELLO AL JSON COMO PIDIÓ ARLET */}
+                  {/*LE DIMOS CUELLO AL JSON COMO PIDIÃ“ ARLET */}
                   {[
-                    { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cálculo' },
+                    { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cÃ¡lculo' },
                     { value:'pdf',  cls:'pdf',  icon:<FileText size={20} />, label:'PDF',         desc:'Reporte visual listo para presentar' },
                   ].map(opt => (
-                    <div key={opt.value} className={`export-option ${exportFormat === opt.value ? 'selected' : ''}`}
-                      onClick={() => setExportFormat(opt.value)}>
+                    <button key={opt.value} type="button" className={`export-option ${exportFormat === opt.value ? 'selected' : ''}`} onClick={() => setExportFormat(opt.value)}>
                       <div className={`export-option-icon ${opt.cls}`}>{opt.icon}</div>
                       <div className="export-option-info">
                         <div className="export-option-name">{opt.label}</div>
                         <div className="export-option-desc">{opt.desc}</div>
                       </div>
                       <div className="export-check"><Check size={12} /></div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -266,9 +265,9 @@ export default function AdminEstadisticasPage() {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn--outline" onClick={() => setModalExport(false)}>Cancelar</button>
-              <button className="btn btn--blue btn--export" onClick={handleExport} disabled={exporting}>
-                {exportDone ? <><Check size={16} /> ¡Descargado!</> :
+              <button type="button" className="btn btn--outline" onClick={() => setModalExport(false)}>Cancelar</button>
+              <button type="button" className="btn btn--blue btn--export" onClick={handleExport} disabled={exporting}>
+                {exportDone ? <><Check size={16} /> Â¡Descargado!</> :
                  exporting  ? <><RefreshCw size={16} className="spin-animation" /> Generando...</> :
                               <><Download size={16} /> Descargar</>}
               </button>

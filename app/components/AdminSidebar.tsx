@@ -87,10 +87,10 @@ export default function AdminSidebar({
           <div className="sb-brand-text">
             <h1>SchedMaster</h1>
             <p>Panel de Administración</p>
-            <div className="theme-switch" onClick={toggle}>
+            <button className="theme-switch" type="button" onClick={toggle}>
               {darkMode ? <Moon size={16} /> : <Sun size={16} />}
               <span>{darkMode ? 'Oscuro' : 'Claro'}</span>
-            </div>
+            </button>
           </div>
 
           <button className="sb-close" type="button" onClick={() => setOpen(false)} aria-label="Cerrar menú">
@@ -98,9 +98,9 @@ export default function AdminSidebar({
           </button>
         </div>
 
-        <nav className="nav" onClick={() => setOpen(false)}>
+        <nav className="nav">
           {NAV_ITEMS.map(({ href, icon: Icon, label }) => (
-            <Link key={href} href={href} className={pathname === href ? 'active' : ''}>
+            <Link key={href} href={href} className={pathname === href ? 'active' : ''} onClick={() => setOpen(false)}>
               <Icon /> {label}
             </Link>
           ))}

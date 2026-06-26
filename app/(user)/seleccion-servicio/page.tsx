@@ -98,7 +98,7 @@ export default function HomePage() {
             Accede al gimnasio universitario y mejora tu bienestar cada día.
           </p>
 
-          <button
+          <button type="button"
             className="btn btn--blue btn--lg"
             onClick={() => setOpenModal(true)}
           >
@@ -138,7 +138,7 @@ export default function HomePage() {
         <div className="card--glass">
           <div className="carousel">
 
-            <button className="carousel-btn left" onClick={prevImg} title="Imagen anterior">
+            <button type="button" className="carousel-btn left" onClick={prevImg} title="Imagen anterior">
               <ChevronLeft size={22} />
             </button>
 
@@ -146,7 +146,7 @@ export default function HomePage() {
               <img src={images[currentImg]} className="carousel-img" alt="Instalaciones del gimnasio" />
             </div>
 
-            <button className="carousel-btn right" onClick={nextImg} title="Siguiente imagen">
+            <button type="button" className="carousel-btn right" onClick={nextImg} title="Siguiente imagen">
               <ChevronRight size={22} />
             </button>
 
@@ -171,7 +171,7 @@ export default function HomePage() {
         <h2>Selecciona un servicio</h2>
 
         <div className="services-grid">
-          <button className="service-card" onClick={() => setOpenModal(true)}>
+          <button type="button" className="service-card" onClick={() => setOpenModal(true)}>
             <div className="service-icon"><Dumbbell size={28} /></div>
             <h3>Gimnasio</h3>
             <p>Reserva tu horario de entrenamiento</p>
@@ -193,9 +193,9 @@ export default function HomePage() {
 
       {/* MODAL */}
       {openModal && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
+        <div className="modal-overlay">
           <div className="modal-box">
-            <button className="modal-close" onClick={closeModal} title="Cerrar modal">
+            <button type="button" className="modal-close" onClick={closeModal} title="Cerrar modal">
               <X size={20} />
             </button>
 
@@ -213,7 +213,7 @@ export default function HomePage() {
                     required
                   />
 
-                  <button className="btn btn--blue btn--full btn--lg">
+                  <button type="button" className="btn btn--blue btn--full btn--lg">
                     Notificarme
                   </button>
                 </form>
