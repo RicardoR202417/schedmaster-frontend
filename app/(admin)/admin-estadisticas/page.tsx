@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { RefreshCw, Download, FileText, Check, X } from 'lucide-react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AlertModal from '../../components/AlertModal';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 interface DatoReporte {
@@ -15,7 +15,7 @@ interface DatoReporte {
   servicio: string;
   asistencia: string;
   estado: string;
-  periodo: string; // 👈 Agregamos el periodo que ahora manda el backend
+  periodo: string; //Agregamos el periodo que ahora manda el backend
 }
 
 export default function AdminEstadisticasPage() {
@@ -53,7 +53,7 @@ export default function AdminEstadisticasPage() {
     { value: 'primavera', label: 'Primavera 2025' },
   ];
 
-  // 👈 NUEVO: Lógica de Filtrado Dinámico
+  //Lógica de Filtrado Dinámico
   const datosFiltrados = periodoFiltro === 'todos' 
     ? datosTabla 
     : datosTabla.filter(d => d.periodo.toLowerCase().includes(periodoFiltro.toLowerCase()));
@@ -76,7 +76,7 @@ export default function AdminEstadisticasPage() {
           ...datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.periodo, r.asistencia, r.estado]),
         ];
         
-        // 👈 MAGIA DE EXCEL: Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ñ
+        //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ñ
         const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
@@ -85,7 +85,7 @@ export default function AdminEstadisticasPage() {
         URL.revokeObjectURL(url);
         
       } else if (exportFormat === 'pdf') {
-        // 👈 MAGIA DEL PDF
+        // MAGIA DEL PDF
         const doc = new jsPDF();
         doc.text("Reporte de Asistencias - SchedMaster", 14, 15);
         
@@ -240,7 +240,7 @@ export default function AdminEstadisticasPage() {
               <div className="form-group">
                 <label className="input-label">Formato de exportación</label>
                 <div className="export-options">
-                  {/* 👈 LE DIMOS CUELLO AL JSON COMO PIDIÓ ARLET */}
+                  {/*LE DIMOS CUELLO AL JSON COMO PIDIÓ ARLET */}
                   {[
                     { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cálculo' },
                     { value:'pdf',  cls:'pdf',  icon:<FileText size={20} />, label:'PDF',         desc:'Reporte visual listo para presentar' },
