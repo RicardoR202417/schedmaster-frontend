@@ -41,9 +41,9 @@ export default function AdminUsuariosPage() {
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterRol, setFilterRol] = useState('');
-  const [filterEstado, setFilterEstado] = useState('');
-  const [filterCarrera, setFilterCarrera] = useState('');
+  const [filterRol] = useState('');
+  const [filterEstado] = useState('');
+  const [filterCarrera] = useState('');
 
   const [bitacoraOpen, setBitacoraOpen] = useState(false);
   const [bitacoraUsuario, setBitacoraUsuario] = useState<{ id: number; nombre: string } | null>(null);
@@ -115,10 +115,10 @@ export default function AdminUsuariosPage() {
 
   const handleChangeEdit = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormEdit(prev => ({ ...prev, [name]: name === 'id_rol' ? parseInt(value) : value }));
+    setFormEdit(prev => ({ ...prev, [name]: name === 'id_rol' ? Number.parseInt(value) : value }));
   };
 
-  const handleSubmitEdit = async (e: React.FormEvent) => {
+  const handleSubmitEdit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!usuarioEditar) return;
     try {
@@ -139,10 +139,10 @@ export default function AdminUsuariosPage() {
 
   const handleChangeNuevo = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormNuevo(prev => ({ ...prev, [name]: name === 'id_rol' ? parseInt(value) : value }));
+    setFormNuevo(prev => ({ ...prev, [name]: name === 'id_rol' ? Number.parseInt(value) : value }));
   };
 
-  const handleSubmitNuevo = async (e: React.FormEvent) => {
+  const handleSubmitNuevo = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/crear`, {

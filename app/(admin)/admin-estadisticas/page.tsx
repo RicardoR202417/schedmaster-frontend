@@ -18,6 +18,32 @@ interface DatoReporte {
   periodo: string; //Agregamos el periodo que ahora manda el backend
 }
 
+function getAttendanceStyle(asistencia: string) {
+  const attendance = Number.parseInt(asistencia);
+
+  if (attendance >= 80) {
+    return { color: '#15803d', background: '#dcfce7' };
+  }
+
+  if (attendance > 0) {
+    return { color: '#b91c1c', background: '#fee2e2' };
+  }
+
+  return { color: '#64748b', background: '#f1f5f9' };
+}
+
+function getExportButtonContent(exportDone: boolean, exporting: boolean) {
+  if (exportDone) {
+    return <><Check size={16} /> Â¡Descargado!</>;
+  }
+
+  if (exporting) {
+    return <><RefreshCw size={16} className="spin-animation" /> Generando...</>;
+  }
+
+  return <><Download size={16} /> Descargar</>;
+}
+
 export default function AdminEstadisticasPage() {
   const [periodoFiltro, setPeriodoFiltro] = useState('todos');
   const [modalExport,   setModalExport]   = useState(false);
@@ -26,7 +52,7 @@ export default function AdminEstadisticasPage() {
   const [exporting,     setExporting]     = useState(false);
   const [exportDone,    setExportDone]    = useState(false);
   const [alertOpen,     setAlertOpen]     = useState(false);
-  const [alertMessage,  setAlertMessage]  = useState('');
+  const [alertMessage] = useState('');
 
   const [datosTabla, setDatosTabla] = useState<DatoReporte[]>([]);
 
@@ -193,9 +219,8 @@ export default function AdminEstadisticasPage() {
                           <td style={{ padding: '15px', color: '#64748b' }}>{fila.servicio}</td>
                           <td style={{ padding: '15px' }}>
                             <span style={{ 
-                              color: parseInt(fila.asistencia) >= 80 ? '#15803d' : parseInt(fila.asistencia) > 0 ? '#b91c1c' : '#64748b', 
+                              ...getAttendanceStyle(fila.asistencia),
                               fontWeight: 'bold',
-                              background: parseInt(fila.asistencia) >= 80 ? '#dcfce7' : parseInt(fila.asistencia) > 0 ? '#fee2e2' : '#f1f5f9',
                               padding: '4px 8px',
                               borderRadius: '4px'
                             }}>
@@ -238,7 +263,7 @@ export default function AdminEstadisticasPage() {
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label className="input-label">Formato de exportaciÃ³n</label>
+                <span className="input-label">Formato de exportaciÃ³n</span>
                 <div className="export-options">
                   {/*LE DIMOS CUELLO AL JSON COMO PIDIÃ“ ARLET */}
                   {[
@@ -267,9 +292,7 @@ export default function AdminEstadisticasPage() {
             <div className="modal-footer">
               <button type="button" className="btn btn--outline" onClick={() => setModalExport(false)}>Cancelar</button>
               <button type="button" className="btn btn--blue btn--export" onClick={handleExport} disabled={exporting}>
-                {exportDone ? <><Check size={16} /> Â¡Descargado!</> :
-                 exporting  ? <><RefreshCw size={16} className="spin-animation" /> Generando...</> :
-                              <><Download size={16} /> Descargar</>}
+                {getExportButtonContent(exportDone, exporting)}
               </button>
             </div>
           </div>

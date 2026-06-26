@@ -11,7 +11,7 @@ interface Props {
   onPropuestaEnviada: () => void;
 }
 
-export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnviada }: Props) {
+export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnviada }: Readonly<Props>) {
 
   const [horarios, setHorarios] = useState<any[]>([]);
   const [diasHorario, setDiasHorario] = useState<any[]>([]);
@@ -28,7 +28,10 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
     fetch(`http://localhost:3001/api/horarios`)
       .then(r => r.json())
       .then(d => setHorarios(Array.isArray(d) ? d : d?.data || []))
-      .catch(() => setHorarios([]));
+      .catch((error) => {
+        console.error('Error cargando horarios:', error);
+        setHorarios([]);
+      });
   }, [isOpen]);
 
   // 2. Cargar días (Ruta directa)
@@ -97,7 +100,8 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
         setAlertMessage('Error enviando propuesta.');
         setAlertOpen(true);
       }
-    } catch (e) {
+    } catch (error) {
+      console.error('Error enviando propuesta:', error);
       setAlertMessage('Error de conexión.');
       setAlertOpen(true);
     }
@@ -127,7 +131,7 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
 
         <div className="modal-body">
           <div className="form-group">
-            <label>Horario</label>
+            <label htmlFor="horarioId">Horario</label>
             <select
               className="select"
               aria-label="Selecciona horario"
@@ -148,7 +152,7 @@ export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnv
 
           {horarioId && (
             <div className="form-group">
-              <label>Días disponibles</label>
+              <span className="input-label">Días disponibles</span>
               <div className="dias-container">
                 {diasHorario.map(d => (
                   <button

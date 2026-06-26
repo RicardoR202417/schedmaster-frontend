@@ -29,10 +29,10 @@ export default function DashboardPage() {
   useEffect(() => {
     const verificarAcceso = () => {
       const usuarioLogueado = localStorage.getItem('user');
-      if (!usuarioLogueado) {
-        router.push('/login');
-      } else {
+      if (usuarioLogueado) {
         setAutorizado(true);
+      } else {
+        router.push('/login');
       }
     };
 

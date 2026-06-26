@@ -48,11 +48,11 @@ export default function PerfilPage() {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
 
-    if (!storedUser) {
-      router.push('/login');
-    } else {
+    if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
       setUser(parsedUser);
+    } else {
+      router.push('/login');
     }
   }, []);
 

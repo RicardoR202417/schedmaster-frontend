@@ -12,12 +12,14 @@ type PendingTwoFactor = {
   expiresAt: number;
 };
 
+const OTP_FIELD_IDS = ['otp-0', 'otp-1', 'otp-2', 'otp-3', 'otp-4', 'otp-5'] as const;
+const OTP_LENGTH = OTP_FIELD_IDS.length;
+
 export default function VerifyTwoFactorPage() {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const OTP_LENGTH = 6;
 
-  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''));
+  const [otp, setOtp] = useState<string[]>(new Array(OTP_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [pending, setPending] = useState<PendingTwoFactor | null>(null);
@@ -62,7 +64,8 @@ export default function VerifyTwoFactorPage() {
 
       setPending(parsed);
       setSecondsLeft(Math.max(Math.floor((parsed.expiresAt - Date.now()) / 1000), 0));
-    } catch {
+    } catch (error) {
+      console.error('Error leyendo sesion 2FA:', error);
       sessionStorage.removeItem('twoFactorLogin');
       router.replace('/login');
     }
@@ -163,7 +166,7 @@ export default function VerifyTwoFactorPage() {
     const pastedDigits = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
     if (!pastedDigits) return;
 
-    const nextOtp = Array(OTP_LENGTH).fill('');
+    const nextOtp = new Array(OTP_LENGTH).fill('');
     pastedDigits.split('').forEach((digit, index) => {
       nextOtp[index] = digit;
     });
@@ -172,13 +175,13 @@ export default function VerifyTwoFactorPage() {
     focusOtpIndex(Math.min(pastedDigits.length, OTP_LENGTH - 1));
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
+  const handleVerify = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!pending || loading) return;
 
     if (!/^\d{6}$/.test(code.trim())) {
-      setModalTitle('Código inválido');
-      setModalMessage('Ingresa un código de 6 dígitos.');
+      setModalTitle('CÃ³digo invÃ¡lido');
+      setModalMessage('Ingresa un cÃ³digo de 6 dÃ­gitos.');
       setModalOpen(true);
       return;
     }
@@ -202,7 +205,7 @@ export default function VerifyTwoFactorPage() {
         }
 
         setModalTitle('No se pudo verificar');
-        setModalMessage(data.message || 'Error verificando el código.');
+        setModalMessage(data.message || 'Error verificando el cÃ³digo.');
         setModalOpen(true);
         return;
       }
@@ -210,7 +213,7 @@ export default function VerifyTwoFactorPage() {
       redirectAfterLogin(data);
     } catch (error) {
       console.error('Error verificando 2FA:', error);
-      setModalTitle('Error de conexión');
+      setModalTitle('Error de conexiÃ³n');
       setModalMessage('No fue posible conectar con el servidor.');
       setModalOpen(true);
     } finally {
@@ -237,7 +240,7 @@ export default function VerifyTwoFactorPage() {
         }
 
         setModalTitle('No se pudo reenviar');
-        setModalMessage(data.message || 'No fue posible reenviar el código.');
+        setModalMessage(data.message || 'No fue posible reenviar el cÃ³digo.');
         setModalOpen(true);
         return;
       }
@@ -252,12 +255,12 @@ export default function VerifyTwoFactorPage() {
       setSecondsLeft(Math.max(Math.floor((nextExpiresAt - Date.now()) / 1000), 0));
       sessionStorage.setItem('twoFactorLogin', JSON.stringify(nextPending));
 
-      setModalTitle('Código reenviado');
-      setModalMessage('Te enviamos un nuevo código a tu correo.');
+      setModalTitle('CÃ³digo reenviado');
+      setModalMessage('Te enviamos un nuevo cÃ³digo a tu correo.');
       setModalOpen(true);
     } catch (error) {
       console.error('Error reenviando 2FA:', error);
-      setModalTitle('Error de conexión');
+      setModalTitle('Error de conexiÃ³n');
       setModalMessage('No fue posible conectar con el servidor.');
       setModalOpen(true);
     } finally {
@@ -272,12 +275,12 @@ export default function VerifyTwoFactorPage() {
           <div className="brand-logo">
             <img src="/logo.png" alt="Logo" width="60" height="60" />
           </div>
-          <h1 className="hero-title">Verificación 2FA</h1>
-          <p className="hero-subtitle">Protegemos tu acceso con un segundo factor de autenticación.</p>
+          <h1 className="hero-title">VerificaciÃ³n 2FA</h1>
+          <p className="hero-subtitle">Protegemos tu acceso con un segundo factor de autenticaciÃ³n.</p>
           <div className="feature-list verify-feature-list">
             <div className="feature-item">
               <div className="feature-icon"><ShieldCheck size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">Código temporal de un solo uso</span>
+              <span className="feature-text">CÃ³digo temporal de un solo uso</span>
             </div>
             <div className="feature-item">
               <div className="feature-icon"><Mail size={20} strokeWidth={2.5} /></div>
@@ -292,20 +295,20 @@ export default function VerifyTwoFactorPage() {
         <div className="decorative-shape shape-2" />
         <div className="login-container">
           <header className="login-header">
-            <h1>Ingresa tu <span className="highlight">código</span></h1>
-            <p>Revisa tu correo y escribe el código de 6 dígitos para continuar.</p>
+            <h1>Ingresa tu <span className="highlight">cÃ³digo</span></h1>
+            <p>Revisa tu correo y escribe el cÃ³digo de 6 dÃ­gitos para continuar.</p>
             <p className="verify-status-pill">
-              {secondsLeft > 0 ? `Expira en ${secondsLeft}s` : 'El código puede haber expirado. Solicita uno nuevo.'}
+              {secondsLeft > 0 ? `Expira en ${secondsLeft}s` : 'El cÃ³digo puede haber expirado. Solicita uno nuevo.'}
             </p>
           </header>
 
           <form onSubmit={handleVerify} className="verify-form">
             <div className="form-group verify-code-group">
-              <label>Código de verificación</label>
-              <div className="otp-grid" role="group" aria-label="Código de verificación de seis dígitos">
-                {otp.map((digit, index) => (
+              <span className="input-label">CÃ³digo de verificaciÃ³n</span>
+              <div className="otp-grid" role="group" aria-label="CÃ³digo de verificaciÃ³n de seis dÃ­gitos">
+                {OTP_FIELD_IDS.map((fieldId, index) => (
                   <input
-                    key={index}
+                    key={fieldId}
                     ref={(element) => {
                       otpRefs.current[index] = element;
                     }}
@@ -314,17 +317,17 @@ export default function VerifyTwoFactorPage() {
                     pattern="[0-9]*"
                     maxLength={1}
                     className="otp-input"
-                    value={digit}
+                    value={otp[index] ?? ''}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
                     onPaste={handleOtpPaste}
                     autoFocus={index === 0}
-                    aria-label={`Dígito ${index + 1}`}
+                    aria-label={`DÃ­gito ${index + 1}`}
                     required
                   />
                 ))}
               </div>
-              <p className="verify-code-hint">Puedes escribir o pegar los 6 dígitos.</p>
+              <p className="verify-code-hint">Puedes escribir o pegar los 6 dÃ­gitos.</p>
             </div>
 
             <button
@@ -332,7 +335,7 @@ export default function VerifyTwoFactorPage() {
               className="btn btn--blue btn--full btn--lg"
               disabled={loading || !pending || code.length !== OTP_LENGTH}
             >
-              {loading ? 'Verificando...' : 'Verificar código'}
+              {loading ? 'Verificando...' : 'Verificar cÃ³digo'}
             </button>
           </form>
 
@@ -343,11 +346,11 @@ export default function VerifyTwoFactorPage() {
               onClick={handleResend}
               disabled={resendLoading || !pending}
             >
-              <RotateCw size={16} /> {resendLoading ? 'Reenviando...' : 'Reenviar código'}
+              <RotateCw size={16} /> {resendLoading ? 'Reenviando...' : 'Reenviar cÃ³digo'}
             </button>
 
             <Link href="/login" className="verify-login-link">
-              Volver al inicio de sesión
+              Volver al inicio de sesiÃ³n
             </Link>
           </div>
         </div>

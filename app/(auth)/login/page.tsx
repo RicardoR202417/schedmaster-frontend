@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CircleCheck, ListOrdered, Bell, Sun, Moon } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
@@ -18,7 +17,7 @@ export default function LoginPage() {
   const [modalOpen,    setModalOpen]    = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
   e.preventDefault();
   if (loading) return;
   setLoading(true);
@@ -27,7 +26,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     const keyRes = await fetch(`${API_URL}/api/auth/public-key`);
-    if (!keyRes.ok) throw new Error('No se pudo obtener la clave pública');
+    if (!keyRes.ok) throw new Error('No se pudo obtener la clave pÃƒÆ’Ã‚Âºblica');
 
     const { keyId, publicKey: publicKeyPem } = await keyRes.json();
 
@@ -36,7 +35,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       .replace('-----END PUBLIC KEY-----', '')
       .replace(/\n/g, '');
 
-    const pemBuffer = Uint8Array.from(atob(pemBody), c => c.charCodeAt(0));
+    const pemBuffer = Uint8Array.from(atob(pemBody), c => c.codePointAt(0) ?? 0);
 
     const rsaPublicKey = await crypto.subtle.importKey(
       'spki',
@@ -135,7 +134,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   } catch (error) {
     console.error('Error login:', error);
-    setModalMessage('Error de conexión con el servidor');
+    setModalMessage('Error de conexiÃƒÆ’Ã‚Â³n con el servidor');
     setModalOpen(true);
   } finally {
     setLoading(false);
@@ -145,7 +144,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <div className="login-page">
 
-      {/* Botón flotante dark mode */}
+      {/* BotÃƒÆ’Ã‚Â³n flotante dark mode */}
       <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
         {darkMode ? <Moon size={18} /> : <Sun size={18} />}
       </button>
@@ -157,7 +156,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <img src="/logo.png" alt="Logo" width="60" height="60" />
           </div>
           <h1 className="hero-title">SchedMaster</h1>
-          <p className="hero-subtitle">Gestión inteligente de horarios UTEQ.</p>
+          <p className="hero-subtitle">GestiÃƒÆ’Ã‚Â³n inteligente de horarios UTEQ.</p>
           <div className="feature-list">
             <div className="feature-item">
               <div className="feature-icon"><CircleCheck size={20} strokeWidth={2.5} /></div>
@@ -188,7 +187,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Correo institucional</label>
+              <label htmlFor="login-correo">Correo institucional</label>
               <input
                 type="email"
                 className="auth-input"
@@ -200,17 +199,18 @@ const handleSubmit = async (e: React.FormEvent) => {
             </div>
 
             <div className="form-group">
-              <label>Contraseña</label>
+              <label htmlFor="login-password">ContraseÃƒÆ’Ã‚Â±a</label>
               <input
                 type="password"
+                id="login-password"
                 className="auth-input"
-                placeholder="••••••••"
+                placeholder="ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
               />
               <div className="forgot-password">
-                <a href="#">¿Olvidaste tu contraseña?</a>
+                <button type="button" className="link-button">Â¿Olvidaste tu contraseÃ±a?</button>
               </div>
             </div>
 
@@ -219,13 +219,13 @@ const handleSubmit = async (e: React.FormEvent) => {
               className="btn btn--blue btn--full btn--lg"
               disabled={loading}
             >
-              {loading ? 'Iniciando...' : 'Iniciar sesión'}
+              {loading ? 'Iniciando...' : 'Iniciar sesiÃƒÆ’Ã‚Â³n'}
             </button>
           </form>
 
-          {/* <div className="divider"><span>¿Primera vez?</span></div>
+          {/* <div className="divider"><span>Ãƒâ€šÃ‚Â¿Primera vez?</span></div>
           <div className="auth-link">
-            <Link href="/register">Crea tu cuenta aquí</Link>
+            <Link href="/register">Crea tu cuenta aquÃƒÆ’Ã‚Â­</Link>
           </div> */}
 
         </div>

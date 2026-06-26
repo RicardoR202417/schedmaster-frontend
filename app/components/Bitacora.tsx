@@ -32,7 +32,7 @@ const formatFecha = (iso: string) =>
 export default function Bitacora({
   isOpen, onClose, usuarioNombre, usuarioId,
   comentariosIniciales = [], onNuevoComentario,
-}: BitacoraProps) {
+}: Readonly<BitacoraProps>) {
   const [comentarios, setComentarios] = useState<Comentario[]>(comentariosIniciales);
   const [nuevoTexto,  setNuevoTexto]  = useState('');
   const [sortOrder,   setSortOrder]   = useState<'reciente' | 'lejano'>('reciente');

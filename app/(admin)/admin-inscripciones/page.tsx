@@ -81,7 +81,8 @@ export default function AdminInscripcionesPage() {
 
       }
 
-    } catch (err) {
+    } catch (error) {
+      console.error('Error cargando inscripciones:', error);
 
       setAlertTitle('Error');
       setAlertMessage('Error de conexión con el servidor');
@@ -150,7 +151,8 @@ export default function AdminInscripcionesPage() {
 
       }
 
-    } catch {
+    } catch (error) {
+      console.error('Error cambiando estado de inscripcion:', error);
 
       setAlertTitle('Error');
       setAlertMessage('Error de conexión con el servidor');

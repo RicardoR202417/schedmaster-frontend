@@ -16,16 +16,13 @@ export default function AlertModal({
   message,
   buttonText = "Aceptar",
   onClose
-}: AlertModalProps){
+}: Readonly<AlertModalProps>){
 
   if(!open) return null
 
   return(
 
-    <div
-      className="modal-overlay"
-      onClick={(e)=> e.target === e.currentTarget && onClose()}
-    >
+    <div className="modal-overlay">
 
       <div className="modal-box">
 

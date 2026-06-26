@@ -1,9 +1,15 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CircleCheck, Lock } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
+
+function getRoleId(tipo: string) {
+  if (tipo === 'estudiante') return 1;
+  if (tipo === 'docente') return 2;
+  return 3;
+}
 
 export default function RegisterPage() {
 
@@ -37,21 +43,24 @@ export default function RegisterPage() {
 
   const hasMinLength = form.password.length >= 8;
   const hasUppercase = /[A-Z]/.test(form.password);
-  const hasNumberOrSymbol = /[0-9]|[^A-Za-z0-9]/.test(form.password);
+  const hasNumberOrSymbol = /\d|[^A-Za-z0-9]/.test(form.password);
   const passwordStrength = [hasMinLength, hasUppercase, hasNumberOrSymbol].filter(Boolean).length;
   const passwordMeterLevel = form.password
     ? Math.min(4, Math.floor((passwordStrength / 3) * 4))
     : 0;
 
-  // 1. Cargar todos los horarios (Esto ya trae los días incluidos gracias a nuestro backend)
+  // 1. Cargar todos los horarios (Esto ya trae los dÃ­as incluidos gracias a nuestro backend)
   useEffect(()=>{
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/horarios`)
       .then(r=>r.json())
       .then(d=>setHorarios(Array.isArray(d)?d:d?.data||[]))
-      .catch(()=>setHorarios([]));
+      .catch((error)=>{
+        console.error('Error cargando horarios:', error);
+        setHorarios([]);
+      });
   },[]);
 
-  // 2.  SOLUCIÓN: Extraer los días directamente de la lista que ya tenemos en memoria
+  // 2.  SOLUCIÃ“N: Extraer los dÃ­as directamente de la lista que ya tenemos en memoria
   useEffect(() => {
     if (!form.horarioId) {
       setDiasHorario([]);
@@ -59,11 +68,11 @@ export default function RegisterPage() {
       return;
     }
 
-    // Buscamos el horario exacto que el alumno seleccionó en el dropdown
+    // Buscamos el horario exacto que el alumno seleccionÃ³ en el dropdown
     const horarioElegido = horarios.find(h => h.id_horario.toString() === form.horarioId.toString());
 
-    if (horarioElegido && horarioElegido.dias_ids) {
-      // Separamos el texto de los días ("Lunes, Miércoles") en un arreglo
+    if (horarioElegido?.dias_ids) {
+      // Separamos el texto de los dÃ­as ("Lunes, MiÃ©rcoles") en un arreglo
       const nombresDias = horarioElegido.dias_semana.split(', ');
       
       // Construimos el arreglo de objetos para que tus botones se puedan dibujar
@@ -73,7 +82,7 @@ export default function RegisterPage() {
       }));
       
       setDiasHorario(diasArmados);
-      // Limpiamos los días seleccionados por si el alumno cambió de horario a mitad del registro
+      // Limpiamos los dÃ­as seleccionados por si el alumno cambiÃ³ de horario a mitad del registro
       setForm(prev => ({ ...prev, diasSeleccionados: [] })); 
     } else {
       setDiasHorario([]);
@@ -88,7 +97,7 @@ export default function RegisterPage() {
       .catch(()=>setDivisiones([]));
   },[]);
 
-  // Cargar carreras según división
+  // Cargar carreras segÃºn divisiÃ³n
   useEffect(()=>{
     if(!form.division){
       setCarreras([]);
@@ -122,7 +131,7 @@ export default function RegisterPage() {
     }));
   };
 
-  // Toggle selección de días
+  // Toggle selecciÃ³n de dÃ­as
   const toggleDia=(id:number)=>{
     setForm(prev=>({
       ...prev,
@@ -132,7 +141,7 @@ export default function RegisterPage() {
     }));
   };
 
-  // Validación
+  // ValidaciÃ³n
   useEffect(()=>{
     const newErrors:any={};
     if(!form.nombre) newErrors.nombre="campo obligatorio";
@@ -144,10 +153,10 @@ export default function RegisterPage() {
       if(!form.carrera) newErrors.carrera="campo obligatorio";
     }
     if(!form.horarioId) newErrors.horarioId="campo obligatorio";
-    if(form.diasSeleccionados.length===0) newErrors.dias="selecciona al menos un día";
+    if(form.diasSeleccionados.length===0) newErrors.dias="selecciona al menos un dÃ­a";
     if(!form.password) newErrors.password="campo obligatorio";
-    if(form.confirmPassword!==form.password) newErrors.confirmPassword="las contraseñas no coinciden";
-    if(!form.terms) newErrors.terms="acepta los términos";
+    if(form.confirmPassword!==form.password) newErrors.confirmPassword="las contraseÃ±as no coinciden";
+    if(!form.terms) newErrors.terms="acepta los tÃ©rminos";
     setErrors(newErrors);
   },[form, form.diasSeleccionados.length]);
 
@@ -166,7 +175,7 @@ export default function RegisterPage() {
       password: form.password,
       id_carrera: form.carrera,
       id_division: form.division,
-      id_rol: form.tipo==='estudiante'?1: form.tipo==='docente'?2:3,
+      id_rol: getRoleId(form.tipo),
       id_horario: form.horarioId,
       dias_seleccionados: form.diasSeleccionados
     };
@@ -178,18 +187,19 @@ export default function RegisterPage() {
         body:JSON.stringify(datosParaBackend)
       });
 
-      if(!res.ok){
-        const errorData=await res.json();
-        setAlertMessage(`Error al registrar: ${errorData.message}`);
-        setAlertOpen(true);
+      if(res.ok){
+        setSuccess(true);
+        setTimeout(()=>router.push('/login'),2000);
         return;
       }
 
-      setSuccess(true);
-      setTimeout(()=>router.push('/login'),2000);
+      const errorData=await res.json();
+      setAlertMessage(`Error al registrar: ${errorData.message}`);
+      setAlertOpen(true);
 
-    }catch{
-      setAlertMessage('Error de conexión al registrar');
+    }catch(error){
+      console.error('Error registrando usuario:', error);
+      setAlertMessage('Error de conexion al registrar');
       setAlertOpen(true);
     }
   };
@@ -197,7 +207,13 @@ export default function RegisterPage() {
   return(
     <div className="register-page">
       <div className="register-page container">
-        {!success?(
+        {success ? (
+          <div className="card--glass card--center">
+            <div className="success-icon"><CircleCheck size={40}/></div>
+            <h2 className="success-title">Â¡Cuenta creada!</h2>
+            <p className="success-text">Redirigiendo al inicio de sesiÃ³nâ€¦</p>
+          </div>
+        ) : (
           <div className="card--glass">
             <button type="button" className="btn btn--back" onClick={()=>router.push('/login')}>
               <ArrowLeft size={18}/> Volver al inicio
@@ -205,8 +221,8 @@ export default function RegisterPage() {
 
             <div className="page-header">
               <div className="logo-badge"><CircleCheck size={32}/></div>
-              <h1 className="title">Únete a <span className="highlight">SchedMaster</span></h1>
-              <p className="subtitle">Completa tu información para crear tu cuenta</p>
+              <h1 className="title">Ãšnete a <span className="highlight">SchedMaster</span></h1>
+              <p className="subtitle">Completa tu informaciÃ³n para crear tu cuenta</p>
             </div>
 
             <div className="progress-bar">
@@ -250,13 +266,13 @@ export default function RegisterPage() {
                 {errors.email && <small className="error-text">{errors.email}</small>}
               </div>
 
-              {/* División y carrera */}
+              {/* DivisiÃ³n y carrera */}
               {form.tipo==="estudiante" && (
                 <>
                   <div className="form-group">
-                    <label htmlFor="division">División</label>
-                    <select id="division" title="División" name="division" value={form.division} className="auth-select" onChange={handleChange}>
-                      <option value="">Selecciona división</option>
+                    <label htmlFor="division">DivisiÃ³n</label>
+                    <select id="division" title="DivisiÃ³n" name="division" value={form.division} className="auth-select" onChange={handleChange}>
+                      <option value="">Selecciona divisiÃ³n</option>
                       {divisiones.map(d=>(<option key={d.id_division} value={d.id_division}>{d.nombre_division}</option>))}
                     </select>
                     {errors.division && <small className="error-text">{errors.division}</small>}
@@ -283,7 +299,7 @@ export default function RegisterPage() {
                 {errors.horarioId && <small className="error-text">{errors.horarioId}</small>}
               </div>
 
-              {/* Días */}
+              {/* DÃ­as */}
               {form.horarioId && (
                 <div className="dias-container">
                   {diasHorario.map(d=>(
@@ -302,11 +318,11 @@ export default function RegisterPage() {
 
               {/* Password */}
               <div className="form-group">
-                <label className="input-label" htmlFor="password"><Lock size={16}/> Contraseña</label>
-                <input id="password" title="Contraseña" name="password" type="password" className="auth-input" placeholder="Crea una contraseña segura" onChange={handleChange}/>
+                <label className="input-label" htmlFor="password"><Lock size={16}/> ContraseÃ±a</label>
+                <input id="password" title="ContraseÃ±a" name="password" type="password" className="auth-input" placeholder="Crea una contraseÃ±a segura" onChange={handleChange}/>
 
                 <div className="password-validator" aria-live="polite">
-                  <div className="password-validator-bars" role="presentation">
+                  <div className="password-validator-bars" aria-hidden="true">
                     <span className={`password-validator-bar ${passwordMeterLevel >= 1 ? 'is-active' : ''}`} />
                     <span className={`password-validator-bar ${passwordMeterLevel >= 2 ? 'is-active' : ''}`} />
                     <span className={`password-validator-bar ${passwordMeterLevel >= 3 ? 'is-active' : ''}`} />
@@ -316,15 +332,15 @@ export default function RegisterPage() {
                   <ul className="password-validator-list">
                     <li className={`password-validator-item ${hasMinLength ? 'is-met' : ''}`}>
                       <span className="password-validator-dot" aria-hidden="true" />
-                      <span>Mínimo 8 caracteres</span>
+                      <span>MÃ­nimo 8 caracteres</span>
                     </li>
                     <li className={`password-validator-item ${hasUppercase ? 'is-met' : ''}`}>
                       <span className="password-validator-dot" aria-hidden="true" />
-                      <span>Una letra mayúscula</span>
+                      <span>Una letra mayÃºscula</span>
                     </li>
                     <li className={`password-validator-item ${hasNumberOrSymbol ? 'is-met' : ''}`}>
                       <span className="password-validator-dot" aria-hidden="true" />
-                      <span>Un número o símbolo</span>
+                      <span>Un nÃºmero o sÃ­mbolo</span>
                     </li>
                   </ul>
                 </div>
@@ -333,25 +349,19 @@ export default function RegisterPage() {
               </div>
 
               <div className="form-group">
-                <label className="input-label" htmlFor="confirmPassword"><Lock size={16}/> Confirmar contraseña</label>
-                <input id="confirmPassword" title="Confirmar contraseña" name="confirmPassword" type="password" className="auth-input" placeholder="Confirma tu contraseña" onChange={handleChange}/>
+                <label className="input-label" htmlFor="confirmPassword"><Lock size={16}/> Confirmar contraseÃ±a</label>
+                <input id="confirmPassword" title="Confirmar contraseÃ±a" name="confirmPassword" type="password" className="auth-input" placeholder="Confirma tu contraseÃ±a" onChange={handleChange}/>
                 {!!form.confirmPassword && errors.confirmPassword && <small className="error-text">{errors.confirmPassword}</small>}
               </div>
 
               <div className="checkbox-wrapper">
                 <input id="terms" type="checkbox" name="terms" checked={form.terms} onChange={handleChange}/>
-                <label htmlFor="terms">Acepto los <a href="#">términos y condiciones</a></label>
+                <label htmlFor="terms">Acepto los <span>tÃ©rminos y condiciones</span></label>
               </div>
               {errors.terms && <small className="error-text">{errors.terms}</small>}
 
               <button type="submit" disabled={!formValid} className="btn btn--blue btn--full btn--lg">Crear mi cuenta</button>
             </form>
-          </div>
-        ):(
-          <div className="card--glass card--center">
-            <div className="success-icon"><CircleCheck size={40}/></div>
-            <h2 className="success-title">¡Cuenta creada!</h2>
-            <p className="success-text">Redirigiendo al inicio de sesión…</p>
           </div>
         )}
       </div>

@@ -53,7 +53,7 @@ const ModalContent = ({
     <div className="modal-body">
 
       <div className="form-group">
-        <label><CalendarDays /> Periodo</label>
+        <label htmlFor="periodo"><CalendarDays /> Periodo</label>
         <input
           className="form-select"
           type="text"
@@ -63,7 +63,7 @@ const ModalContent = ({
       </div>
 
       <div className="form-group">
-        <label>Fecha inicio inscripciones</label>
+        <label htmlFor="fechaInicio">Fecha inicio inscripciones</label>
         <input
           className="form-select"
           type="date"
@@ -72,7 +72,7 @@ const ModalContent = ({
       </div>
 
       <div className="form-group">
-        <label>Fecha fin inscripciones</label>
+        <label htmlFor="fechaFin">Fecha fin inscripciones</label>
         <input
           className="form-select"
           type="date"
@@ -81,7 +81,7 @@ const ModalContent = ({
       </div>
 
       <div className="form-group">
-        <label>Fecha ingreso oficial</label>
+        <label htmlFor="fechaIngreso">Fecha ingreso oficial</label>
         <input
           className="form-select"
           type="date"
@@ -90,7 +90,7 @@ const ModalContent = ({
       </div>
 
       <div className="form-group">
-        <label>Fecha fin del periodo</label>
+        <label htmlFor="fechaFinPeriodo">Fecha fin del periodo</label>
         <input
           className="form-select"
           type="date"
@@ -99,8 +99,8 @@ const ModalContent = ({
       </div>
 
       <div className="form-group">
-        <label>Estado</label>
-        <select className="form-select" {...field('estado')}>
+        <label htmlFor="estado">Estado</label>
+        <select id="estado" className="form-select" {...field('estado')}>
           <option value="activada">Activada</option>
           <option value="desactivada">Desactivada</option>
         </select>

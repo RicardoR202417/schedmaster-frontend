@@ -34,7 +34,7 @@ export default function AdminSidebar({
   userName     = 'Admin UTEQ',
   userRole     = 'Administrador',
   userInitials = 'AU',
-}: AdminSidebarProps) {
+}: Readonly<AdminSidebarProps>) {
 
   const [open, setOpen] = useState(false);
   const { darkMode, toggle } = useDarkMode();
@@ -48,15 +48,15 @@ export default function AdminSidebar({
 
   useEffect(() => {
     const closeOnDesktop = () => {
-      if (window.innerWidth > SIDEBAR_BREAKPOINT) {
+      if (globalThis.window.innerWidth > SIDEBAR_BREAKPOINT) {
         setOpen(false);
       }
     };
 
     closeOnDesktop();
 
-    window.addEventListener('resize', closeOnDesktop);
-    return () => window.removeEventListener('resize', closeOnDesktop);
+    globalThis.window.addEventListener('resize', closeOnDesktop);
+    return () => globalThis.window.removeEventListener('resize', closeOnDesktop);
   }, []);
 
   return (

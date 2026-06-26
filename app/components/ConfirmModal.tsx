@@ -20,16 +20,13 @@ export default function ConfirmModal({
   cancelText = "Cancelar",
   onConfirm,
   onCancel
-}: ConfirmModalProps) {
+}: Readonly<ConfirmModalProps>) {
 
   if (!open) return null;
 
   return (
 
-    <div
-      className="modal-overlay"
-      onClick={(e) => e.target === e.currentTarget && onCancel()}
-    >
+    <div className="modal-overlay">
 
       <div className="modal-box">
 

@@ -20,7 +20,7 @@ const HorarioForm = () => {
   };
 
   const handleDiaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const idDia = parseInt(e.target.value);
+    const idDia = Number.parseInt(e.target.value);
     if (e.target.checked) {
       setFormData({ ...formData, dias: [...formData.dias, idDia] });
     } else {
@@ -28,7 +28,7 @@ const HorarioForm = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:3001/api/horarios/crear', {
@@ -56,40 +56,40 @@ const HorarioForm = () => {
       <form onSubmit={handleSubmit} className="horario-form">
         
         <div className="form-group">
-          <label>ID del Periodo</label>
-          <input type="number" name="id_periodo" placeholder="Ej. 1" onChange={handleChange} required />
+          <label htmlFor="id_periodo">ID del Periodo</label>
+                <input id="id_periodo" type="number" name="id_periodo" placeholder="Ej. 1" onChange={handleChange} required />
         </div>
 
         <div className="form-row">
           <div className="form-group half-width">
-            <label>Hora Inicio</label>
-            <input type="time" name="hora_inicio" onChange={handleChange} required step="1" title="Hora de inicio" />
+            <label htmlFor="hora_inicio">Hora Inicio</label>
+                <input id="hora_inicio" type="time" name="hora_inicio" onChange={handleChange} required step="1" title="Hora de inicio" />
           </div>
           <div className="form-group half-width">
-            <label>Hora Fin</label>
-            <input type="time" name="hora_fin" onChange={handleChange} required step="1" title="Hora de fin" />
+            <label htmlFor="hora_fin">Hora Fin</label>
+                <input id="hora_fin" type="time" name="hora_fin" onChange={handleChange} required step="1" title="Hora de fin" />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group half-width">
-            <label>Tipo de Actividad</label>
-            <input type="text" name="tipo_actividad" placeholder="Ej. Crossfit" onChange={handleChange} required />
+            <label htmlFor="tipo_actividad">Tipo de Actividad</label>
+                <input id="tipo_actividad" type="text" name="tipo_actividad" placeholder="Ej. Crossfit" onChange={handleChange} required />
           </div>
           <div className="form-group half-width">
-            <label>Capacidad Máxima</label>
-            <input type="number" name="capacidad_maxima" placeholder="Ej. 20" onChange={handleChange} required />
+            <label htmlFor="capacidad_maxima">Capacidad Máxima</label>
+                <input id="capacidad_maxima" type="number" name="capacidad_maxima" placeholder="Ej. 20" onChange={handleChange} required />
           </div>
         </div>
 
         <div className="form-group">
-          <label>Días de la semana</label>
+          <span className="input-label">Días de la semana</span>
           <div className="checkbox-group">
-            <label className="checkbox-label"><input type="checkbox" value="1" onChange={handleDiaChange} /> Lunes</label>
-            <label className="checkbox-label"><input type="checkbox" value="2" onChange={handleDiaChange} /> Martes</label>
-            <label className="checkbox-label"><input type="checkbox" value="3" onChange={handleDiaChange} /> Miércoles</label>
-            <label className="checkbox-label"><input type="checkbox" value="4" onChange={handleDiaChange} /> Jueves</label>
-            <label className="checkbox-label"><input type="checkbox" value="5" onChange={handleDiaChange} /> Viernes</label>
+            <label htmlFor="horario-dia-lunes" className="checkbox-label"><input id="horario-dia-lunes" type="checkbox" value="1" onChange={handleDiaChange} /> Lunes</label>
+            <label htmlFor="horario-dia-martes" className="checkbox-label"><input id="horario-dia-martes" type="checkbox" value="2" onChange={handleDiaChange} /> Martes</label>
+            <label htmlFor="horario-dia-miercoles" className="checkbox-label"><input id="horario-dia-miercoles" type="checkbox" value="3" onChange={handleDiaChange} /> Miércoles</label>
+            <label htmlFor="horario-dia-jueves" className="checkbox-label"><input id="horario-dia-jueves" type="checkbox" value="4" onChange={handleDiaChange} /> Jueves</label>
+            <label htmlFor="horario-dia-viernes" className="checkbox-label"><input id="horario-dia-viernes" type="checkbox" value="5" onChange={handleDiaChange} /> Viernes</label>
           </div>
         </div>
 

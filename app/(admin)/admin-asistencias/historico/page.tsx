@@ -221,7 +221,7 @@ export default function HistoricoAsistenciasPage() {
                             className="btn-icon btn-icon--cyan"
                             title="Ver documento"
                             onClick={() => {
-                              window.open(`${API_URL}/${a.ruta_archivo}`, "_blank")
+                              globalThis.window.open(`${API_URL}/${a.ruta_archivo}`, "_blank")
                             }}
                           >
                             <Eye size={14} />
