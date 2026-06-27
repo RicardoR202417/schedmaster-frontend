@@ -33,7 +33,7 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     const pemBody = publicKeyPem
       .replace('-----BEGIN PUBLIC KEY-----', '')
       .replace('-----END PUBLIC KEY-----', '')
-      .replace(/\n/g, '');
+      .replaceAll('\n', '');
 
     const pemBuffer = Uint8Array.from(atob(pemBody), c => c.codePointAt(0) ?? 0);
 
@@ -68,12 +68,12 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     );
 
     const toBase64 = (buf: ArrayBuffer) =>
-      btoa(String.fromCharCode(...new Uint8Array(buf)));
+      btoa(String.fromCodePoint(...new Uint8Array(buf)));
 
     const payload = {
       keyId,
       encryptedKey: toBase64(encryptedKeyBuffer),
-      iv: btoa(String.fromCharCode(...iv)),
+      iv: btoa(String.fromCodePoint(...iv)),
       encryptedData: toBase64(encryptedDataBuffer),
     };
 

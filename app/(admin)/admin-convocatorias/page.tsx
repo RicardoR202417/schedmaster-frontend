@@ -348,10 +348,7 @@ export default function AdminConvocatoriasPage() {
       </main>
 
       {modalCrear && (
-        <div
-          className="modal-overlay"
-          onClick={e => e.target === e.currentTarget && closeCrear()}
-        >
+        <div className="modal-overlay">
           <ModalContent
             onClose={closeCrear}
             title="Nueva convocatoria"
@@ -364,10 +361,7 @@ export default function AdminConvocatoriasPage() {
       )}
 
       {modalEditar && (
-        <div
-          className="modal-overlay"
-          onClick={e => e.target === e.currentTarget && closeEditar()}
-        >
+        <div className="modal-overlay">
           <ModalContent
             onClose={closeEditar}
             title="Editar convocatoria"

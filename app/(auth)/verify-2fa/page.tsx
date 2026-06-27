@@ -305,7 +305,7 @@ export default function VerifyTwoFactorPage() {
           <form onSubmit={handleVerify} className="verify-form">
             <div className="form-group verify-code-group">
               <span className="input-label">CÃ³digo de verificaciÃ³n</span>
-              <div className="otp-grid" role="group" aria-label="CÃ³digo de verificaciÃ³n de seis dÃ­gitos">
+              <div className="otp-grid">
                 {OTP_FIELD_IDS.map((fieldId, index) => (
                   <input
                     key={fieldId}

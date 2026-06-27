@@ -33,7 +33,7 @@ const ROL_LABELS: Record<Rol, string> = {
   administrador_general: 'Admin General',
 };
 
-const ROLES_CON_BITACORA: Rol[] = ['estudiante', 'docente'];
+const ROLES_CON_BITACORA = new Set<Rol>(['estudiante', 'docente']);
 
 export default function AdminUsuariosPage() {
 
@@ -249,7 +249,7 @@ export default function AdminUsuariosPage() {
                 <div className="row-actions">
                   <span className={`chip chip--${usr.rol}`}>{ROL_LABELS[usr.rol]}</span>
                   <span className={`chip chip--${usr.estado}`}>{usr.estado}</span>
-                  {ROLES_CON_BITACORA.includes(usr.rol) && (
+                  {ROLES_CON_BITACORA.has(usr.rol) && (
                     <button
                       className="btn-icon btn-icon--blue"
                       onClick={() => handleBitacora(usr.id, `${usr.nombre} ${usr.apellido}`)}

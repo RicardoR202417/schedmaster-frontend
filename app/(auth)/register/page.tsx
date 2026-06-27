@@ -11,25 +11,43 @@ function getRoleId(tipo: string) {
   return 3;
 }
 
+const INITIAL_FORM = {
+  nombre: '',
+  apellido_paterno: '',
+  apellido_materno: '',
+  email: '',
+  tipo: 'estudiante',
+  division: '',
+  carrera: '',
+  horarioId: '',
+  diasSeleccionados: [] as number[],
+  password: '',
+  confirmPassword: '',
+  terms: false
+};
+
+function getValidationErrors(form: typeof INITIAL_FORM) {
+  const errors: Record<string, string> = {};
+  if (!form.nombre) errors.nombre = 'campo obligatorio';
+  if (!form.apellido_paterno) errors.apellido_paterno = 'campo obligatorio';
+  if (!form.apellido_materno) errors.apellido_materno = 'campo obligatorio';
+  if (!form.email) errors.email = 'campo obligatorio';
+  if (form.tipo === 'estudiante' && !form.division) errors.division = 'campo obligatorio';
+  if (form.tipo === 'estudiante' && !form.carrera) errors.carrera = 'campo obligatorio';
+  if (!form.horarioId) errors.horarioId = 'campo obligatorio';
+  if (form.diasSeleccionados.length === 0) errors.dias = 'selecciona al menos un dia';
+  if (!form.password) errors.password = 'campo obligatorio';
+  if (form.confirmPassword !== form.password) errors.confirmPassword = 'las contrasenas no coinciden';
+  if (!form.terms) errors.terms = 'acepta los terminos';
+  return errors;
+}
+
 export default function RegisterPage() {
 
   const router = useRouter();
   const progressFillRef = useRef<HTMLDivElement | null>(null);
 
-  const [form,setForm] = useState({
-    nombre: '',
-    apellido_paterno: '',
-    apellido_materno: '',
-    email: '',
-    tipo: 'estudiante', 
-    division: '',
-    carrera: '',
-    horarioId: '',
-    diasSeleccionados: [] as number[],
-    password: '',
-    confirmPassword: '',
-    terms: false
-  });
+  const [form,setForm] = useState(INITIAL_FORM);
 
   const [errors,setErrors] = useState<any>({});
   const [horarios,setHorarios] = useState<any[]>([]);
@@ -142,23 +160,9 @@ export default function RegisterPage() {
   };
 
   // ValidaciÃ³n
-  useEffect(()=>{
-    const newErrors:any={};
-    if(!form.nombre) newErrors.nombre="campo obligatorio";
-    if(!form.apellido_paterno) newErrors.apellido_paterno="campo obligatorio";
-    if(!form.apellido_materno) newErrors.apellido_materno="campo obligatorio";
-    if(!form.email) newErrors.email="campo obligatorio";
-    if(form.tipo==="estudiante"){
-      if(!form.division) newErrors.division="campo obligatorio";
-      if(!form.carrera) newErrors.carrera="campo obligatorio";
-    }
-    if(!form.horarioId) newErrors.horarioId="campo obligatorio";
-    if(form.diasSeleccionados.length===0) newErrors.dias="selecciona al menos un dÃ­a";
-    if(!form.password) newErrors.password="campo obligatorio";
-    if(form.confirmPassword!==form.password) newErrors.confirmPassword="las contraseÃ±as no coinciden";
-    if(!form.terms) newErrors.terms="acepta los tÃ©rminos";
-    setErrors(newErrors);
-  },[form, form.diasSeleccionados.length]);
+  useEffect(() => {
+    setErrors(getValidationErrors(form));
+  }, [form]);
 
   const formValid=Object.keys(errors).length===0;
 

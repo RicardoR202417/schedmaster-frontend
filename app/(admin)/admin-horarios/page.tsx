@@ -32,7 +32,7 @@ export default function AdminHorariosPage() {
       .then(data => {
         if (Array.isArray(data)) {
           setPeriodos(data);
-        } else if (data && data.data && Array.isArray(data.data)) {
+        } else if (Array.isArray(data?.data)) {
           setPeriodos(data.data);
         }
       })

@@ -36,18 +36,18 @@ export default function AdminAnunciosPage() {
       payload &&
       typeof payload === 'object' &&
       'data' in payload &&
-      Array.isArray((payload as { data: unknown }).data)
+      Array.isArray(payload.data)
     ) {
-      return (payload as { data: Anuncio[] }).data;
+      return payload.data;
     }
 
     if (
       payload &&
       typeof payload === 'object' &&
       'anuncios' in payload &&
-      Array.isArray((payload as { anuncios: unknown }).anuncios)
+      Array.isArray(payload.anuncios)
     ) {
-      return (payload as { anuncios: Anuncio[] }).anuncios;
+      return payload.anuncios;
     }
 
     return [];

@@ -267,7 +267,7 @@ export default function PendingAccountPage() {
 
                   <div>
 
-                    Correo:
+                    Correo:{' '}
                     <a href="mailto:soporte@schedmaster.uteq.mx">
                       soporte@schedmaster.uteq.mx
                     </a>
@@ -286,7 +286,7 @@ export default function PendingAccountPage() {
 
                   <div>
 
-                    Teléfono:
+                    Teléfono:{' '}
                     <a href="tel:+524421234567">
                       +52 442 123 4567
                     </a>
