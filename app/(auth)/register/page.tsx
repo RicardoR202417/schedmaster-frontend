@@ -26,14 +26,22 @@ const INITIAL_FORM = {
   terms: false
 };
 
+function addStudentValidationErrors(
+  form: typeof INITIAL_FORM,
+  errors: Record<string, string>
+) {
+  if (form.tipo !== 'estudiante') return;
+  if (!form.division) errors.division = 'campo obligatorio';
+  if (!form.carrera) errors.carrera = 'campo obligatorio';
+}
+
 function getValidationErrors(form: typeof INITIAL_FORM) {
   const errors: Record<string, string> = {};
   if (!form.nombre) errors.nombre = 'campo obligatorio';
   if (!form.apellido_paterno) errors.apellido_paterno = 'campo obligatorio';
   if (!form.apellido_materno) errors.apellido_materno = 'campo obligatorio';
   if (!form.email) errors.email = 'campo obligatorio';
-  if (form.tipo === 'estudiante' && !form.division) errors.division = 'campo obligatorio';
-  if (form.tipo === 'estudiante' && !form.carrera) errors.carrera = 'campo obligatorio';
+  addStudentValidationErrors(form, errors);
   if (!form.horarioId) errors.horarioId = 'campo obligatorio';
   if (form.diasSeleccionados.length === 0) errors.dias = 'selecciona al menos un dia';
   if (!form.password) errors.password = 'campo obligatorio';

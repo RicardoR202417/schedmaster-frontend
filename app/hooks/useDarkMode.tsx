@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 export function useDarkMode() {
   const [darkMode, setDarkMode] = useState(() => {
-    if (typeof globalThis.window === 'undefined') return false;
+    if (globalThis.window === undefined) return false;
     return localStorage.getItem('darkMode') === 'true';
   });
 
