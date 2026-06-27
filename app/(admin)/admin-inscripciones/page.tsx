@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import {
-  Users, RefreshCw, Check, X, Clock, Mail, GraduationCap, Briefcase
+  Users, RefreshCw, Check, X, Clock, Mail, GraduationCap, Briefcase,
+  Brain, AlertTriangle, CheckCircle
 } from 'lucide-react';
 
 import AdminSidebar from '../../components/AdminSidebar';
@@ -39,9 +40,28 @@ interface Inscripcion {
   }[];
 }
 
+type GraficaItem = {
+  id_horario: number;
+  hora: string;
+  ocupados: number;
+  capacidad: number;
+  disponibles: number;
+  dia: string;
+};
+
+// ── NUEVO: resultado de la neurona por usuario ────────────────
+interface ResultadoNeurona {
+  id: number;
+  nombre: string;
+  probabilidad: number;
+  clasificacion: 'Regular' | 'En riesgo';
+}
+
 export default function AdminInscripcionesPage() {
 
   const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
+  const [grafica, setGrafica] = useState<GraficaItem[]>([]);
+  const [diaSeleccionado, setDiaSeleccionado] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -53,11 +73,20 @@ export default function AdminInscripcionesPage() {
   const [inscripcionActual, setInscripcionActual] = useState<number | null>(null);
   const [propuestasEnviadas, setPropuestasEnviadas] = useState<number[]>([]);
 
+  // ── NUEVO: estado de la neurona ───────────────────────────────
+  const [neuronaMap, setNeuronaMap] = useState<Record<number, ResultadoNeurona>>({});
+  const [neuronaOk, setNeuronaOk] = useState(false);
+
+  useEffect(() => {
+    console.log("GRAFICA STATE:", grafica);
+  }, [grafica]);
+
   // ALERT STATE
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertTitle, setAlertTitle] = useState('Mensaje');
 
+  // ── fetchInscripciones — igual que antes ─────────────────────
   const fetchInscripciones = async () => {
 
     setLoading(true);
@@ -65,13 +94,15 @@ export default function AdminInscripcionesPage() {
     try {
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/inscripciones/pendientes`
+        `${process.env.NEXT_PUBLIC_API_URL}/inscripciones/pendientes`
       );
 
       if (res.ok) {
 
         const data = await res.json();
-        setInscripciones(data);
+        console.log("GRAFICA:", data.grafica);
+        setInscripciones(data.inscripciones || []);
+        setGrafica(data.grafica || []);
 
       } else {
 
@@ -96,8 +127,36 @@ export default function AdminInscripcionesPage() {
 
   };
 
+  // ── NUEVO: ejecutar neurona (entrena + evalúa) ───────────────
+  const ejecutarNeurona = async () => {
+    try {
+      // 1. Entrena con los datos actuales
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/neurona/entrenar`, { method: 'POST' });
+
+      // 2. Evalúa todos los usuarios
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/neurona/evaluar-todos`);
+      if (!res.ok) return;
+
+      const data: ResultadoNeurona[] = await res.json();
+
+      // 3. Mapa id → resultado para lookup rápido en la tabla
+      const map: Record<number, ResultadoNeurona> = {};
+      data.forEach(r => { map[r.id] = r; });
+      setNeuronaMap(map);
+      setNeuronaOk(true);
+    } catch {
+      // Falla silenciosamente — no interrumpe la carga normal
+      setNeuronaOk(false);
+    }
+  };
+
+  // ── MODIFICADO: Actualizar = inscripciones + neurona ─────────
+  const handleActualizar = () => {
+    Promise.all([fetchInscripciones(), ejecutarNeurona()]);
+  };
+
   useEffect(() => {
-    fetchInscripciones();
+    handleActualizar();
   }, []);
 
   const handleStatusChange = (id: number, nuevoEstado: string) => {
@@ -113,10 +172,9 @@ export default function AdminInscripcionesPage() {
 
     const { id, estado } = accionPendiente;
 
-    const endpoint =
-      estado === 'aprobado'
-        ? '/api/inscripciones/aceptar'
-        : '/api/inscripciones/rechazar';
+    const endpoint = estado === 'aprobado'
+      ? '/inscripciones/aceptar'
+      : '/inscripciones/rechazar';
 
     try {
 
@@ -167,6 +225,11 @@ export default function AdminInscripcionesPage() {
 
   };
 
+  const graficaFiltrada = (grafica || []).filter((h) => {
+    if (!diaSeleccionado) return true;
+    return h.dia?.toLowerCase() === diaSeleccionado.toLowerCase();
+  });
+
   const formatDias = (dias: any[] | undefined) =>
     dias?.length
       ? dias.map(d => d?.dia?.nombre?.substring(0, 3)).join(', ')
@@ -176,7 +239,7 @@ export default function AdminInscripcionesPage() {
     hora ? hora.substring(0, 5) : '--:--';
 
   const inscripcionesFiltradas =
-    inscripciones.filter(i => [1, 2].includes(i.usuario?.id_rol || 0));
+    (inscripciones || []).filter(i => [1, 2].includes(i.usuario?.id_rol || 0));
 
   return (
 
@@ -201,9 +264,17 @@ export default function AdminInscripcionesPage() {
                 <Clock size={14}/> {inscripcionesFiltradas.length} Solicitudes
               </div>
 
+              {/* NUEVO: indicador de neurona activa */}
+              {neuronaOk && (
+                <div className="chip chip--aprobado">
+                  <Brain size={14}/> Neurona activa
+                </div>
+              )}
+
+              {/* MODIFICADO: onClick ahora llama handleActualizar */}
               <button
                 className={`btn btn--blue ${loading ? 'loading' : ''}`}
-                onClick={fetchInscripciones}
+                onClick={handleActualizar}
               >
                 <RefreshCw size={16}/> {loading ? 'Cargando...' : 'Actualizar'}
               </button>
@@ -212,10 +283,68 @@ export default function AdminInscripcionesPage() {
 
           </header>
 
+          {/* 📊 GRAFICA — igual que antes */}
+          <h2 className="text-lg font-bold mb-2">
+            Cupo por horario
+          </h2>
+
+          <div className="filter-bar">
+            <select
+              className="select"
+              value={diaSeleccionado}
+              onChange={(e) => setDiaSeleccionado(e.target.value)}
+            >
+              <option value="">Todos los días</option>
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miércoles">Miércoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-4 gap-3">
+            {graficaFiltrada?.map((h) => {
+
+              const hora = h.hora ? h.hora.substring(0,5) : "--:--";
+              const porcentaje = h.capacidad > 0
+                ? Math.min((h.ocupados / h.capacidad) * 100, 100)
+                : 0;
+              const lleno = h.ocupados >= h.capacidad;
+
+              return (
+                <div key={`${h.id_horario}-${h.dia}-${h.hora}`} className="stat-card">
+
+                  <div className="stat-card-info">
+                    <span className="stat-card-label">Horario</span>
+                    <span className="stat-card-value">{hora}</span>
+                    <p className="text-xs text-gray-500">
+                      {h.dia} - {h.hora?.substring(0,5)}
+                    </p>
+                  </div>
+
+                  <div className="muted">
+                    👥 {h.ocupados} / {h.capacidad} cupos
+                  </div>
+
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{ width: `${porcentaje}%` }}
+                    />
+                  </div>
+
+                  <div className={`chip ${lleno ? "chip--rechazado" : "chip--aprobado"}`}>
+                    {lleno ? "Lleno" : "Disponible"}
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+
           <section className="table-area">
-
             <div className="table-scroll">
-
               <table className="modern-table">
 
                 <thead>
@@ -226,6 +355,8 @@ export default function AdminInscripcionesPage() {
                     <th>Horario</th>
                     <th>Días</th>
                     <th>Prioridad</th>
+                    {/* NUEVO: columna Riesgo IA — solo aparece si la neurona respondió */}
+                    {neuronaOk && <th>Riesgo IA</th>}
                     <th className="text-center">Acciones</th>
                   </tr>
                 </thead>
@@ -237,6 +368,13 @@ export default function AdminInscripcionesPage() {
                     inscripcionesFiltradas.map((insc) => {
 
                       const id = insc.id_inscripcion || insc.id || 0;
+
+                      // NUEVO: buscar resultado de neurona por nombre
+                      const neurona = Object.values(neuronaMap).find(r =>
+                        r.nombre?.toLowerCase().includes(
+                          (insc.usuario?.nombre || '').toLowerCase()
+                        )
+                      );
 
                       return (
 
@@ -265,6 +403,27 @@ export default function AdminInscripcionesPage() {
                           <td>
                             {(insc.prioridad || 'baja').toUpperCase()}
                           </td>
+
+                          {/* NUEVO: celda Riesgo IA */}
+                          {neuronaOk && (
+                            <td>
+                              {neurona ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                  <span className={`chip ${neurona.clasificacion === 'Regular' ? 'chip--presente' : 'chip--ausente'}`}>
+                                    {neurona.clasificacion === 'Regular'
+                                      ? <><CheckCircle size={11}/> Regular</>
+                                      : <><AlertTriangle size={11}/> En riesgo</>
+                                    }
+                                  </span>
+                                  <span style={{ fontSize: 11, color: 'var(--color-text-muted)', fontWeight: 700 }}>
+                                    {neurona.probabilidad}% asistencia
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="muted" style={{ fontSize: 12 }}>Sin historial</span>
+                              )}
+                            </td>
+                          )}
 
                           <td>
 
@@ -318,7 +477,7 @@ export default function AdminInscripcionesPage() {
                   ) : (
 
                     <tr>
-                      <td colSpan={7} className="empty-state">
+                      <td colSpan={neuronaOk ? 8 : 7} className="empty-state">
                         <Users size={48}/>
                         No hay inscripciones pendientes
                       </td>
@@ -329,16 +488,14 @@ export default function AdminInscripcionesPage() {
                 </tbody>
 
               </table>
-
             </div>
-
           </section>
 
         </div>
 
       </main>
 
-      {/* CONFIRM */}
+      {/* CONFIRM — igual que antes */}
       <ConfirmModal
         open={confirmOpen}
         title="Confirmar acción"
@@ -349,25 +506,23 @@ export default function AdminInscripcionesPage() {
         onCancel={() => setConfirmOpen(false)}
       />
 
-      {/* PROPUESTA */}
+      {/* PROPUESTA — igual que antes */}
       <PropuestaModal
-        isOpen={modalPropuestaOpen}
-        correo={correoPropuesta}
+        open={modalPropuestaOpen}
+        correoDestino={correoPropuesta}
+        idInscripcion={inscripcionActual || 0}
         onClose={() => setModalPropuestaOpen(false)}
-        onPropuestaEnviada={() => {
-
+        onSuccess={() => {
           if (inscripcionActual) {
             setPropuestasEnviadas(prev => [...prev, inscripcionActual]);
           }
-
           setAlertTitle('Éxito');
           setAlertMessage('Propuesta enviada correctamente');
           setAlertOpen(true);
-
         }}
       />
 
-      {/* ALERT */}
+      {/* ALERT — igual que antes */}
       <AlertModal
         open={alertOpen}
         title={alertTitle}

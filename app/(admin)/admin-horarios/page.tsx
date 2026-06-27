@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Filter, Calendar } from "lucide-react";
+=======
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Plus, Edit, Trash2, Filter, Search, Calendar } from "lucide-react";
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 import AdminSidebar from "../../components/AdminSidebar";
 import AlertModal from '../../components/AlertModal';
 import ConfirmModal from '../../components/ConfirmModal';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
@@ -27,7 +36,7 @@ export default function AdminHorariosPage() {
 
   useEffect(() => {
     fetchHorarios();
-    fetch(`http://localhost:3001/api/admin-convocatoria`)
+    fetch(`${API_URL}/admin-convocatoria`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -40,7 +49,7 @@ export default function AdminHorariosPage() {
   }, []);
 
   const fetchHorarios = () => {
-    fetch(`http://localhost:3001/api/horarios`)
+    fetch(`${API_URL}/horarios`)
       .then(res => res.json())
       .then(setHorarios)
       .catch(err => console.error("Error cargando horarios:", err));
@@ -69,9 +78,6 @@ export default function AdminHorariosPage() {
     setIsModalOpen(true);
   };
 
-  // ==========================================
-  // FUNCIÓN PARA ELIMINAR BLINDADA
-  // ==========================================
   const confirmarEliminarHorario = (id_horario: number) => {
     setPendingDeleteId(id_horario);
     setConfirmOpen(true);
@@ -81,7 +87,7 @@ export default function AdminHorariosPage() {
     if (!pendingDeleteId) return;
 
     try {
-      const res = await fetch(`http://localhost:3001/api/horarios/eliminar/${pendingDeleteId}`, {
+      const res = await fetch(`${API_URL}/horarios/eliminar/${pendingDeleteId}`, {
         method: 'DELETE',
       });
 
@@ -103,29 +109,20 @@ export default function AdminHorariosPage() {
     }
   };
 
-  // ==========================================
-  // FUNCIÓN EXTRA PARA LIMPIAR EL 1970 EN EL FRONTEND
-  // ==========================================
   const limpiarHora = (horaStr: string) => {
     if (!horaStr) return "";
-    // Si viene con formato de fecha completa (ej. 1970-01-01T16:42:00.000Z)
     if (horaStr.includes("T")) {
       return new Date(horaStr).toISOString().substring(11, 16);
     }
-    // Si ya viene limpia pero con segundos (ej. 16:42:00)
     if (horaStr.length >= 5) {
       return horaStr.substring(0, 5);
     }
     return horaStr;
   };
 
-  // ==========================================
-  // FUNCIÓN PARA EDITAR BLINDADA CONTRA NULOS
-  // ==========================================
   const handleEditar = (horario: any) => {
     setHorarioAEditar(horario.id_horario);
     
-    // Usamos validaciones ( ? y || ) para evitar el error Cannot read properties of undefined
     setFormData({
       id_periodo: String(horario.id_periodo ?? ""),
       hora_inicio: limpiarHora(horario.hora_inicio), 
@@ -161,8 +158,8 @@ export default function AdminHorariosPage() {
 
     try {
       const url = horarioAEditar 
-        ? `http://localhost:3001/api/horarios/editar/${horarioAEditar}` 
-        : `http://localhost:3001/api/horarios/crear`; 
+        ? `${API_URL}/horarios/editar/${horarioAEditar}` 
+        : `${API_URL}/horarios/crear`; 
 
       const method = horarioAEditar ? 'PUT' : 'POST';
 
@@ -242,8 +239,12 @@ export default function AdminHorariosPage() {
                 <tbody>
                   {horarios.map((h: any) => (
                     <tr key={h.id_horario}>
+<<<<<<< HEAD
                       <td>{h.periodo_nombre === 'Sin periodo' ? 'N/A' : h.periodo_nombre} {h.anio === 'N/A' ? '' : `(${h.anio})`}</td>
                       {/* Aquí usamos la misma función de limpiar para que se vea bonito en la tabla */}
+=======
+                      <td>{h.periodo_nombre !== 'Sin periodo' ? h.periodo_nombre : 'N/A'} {h.anio !== 'N/A' ? `(${h.anio})` : ''}</td>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                       <td><strong>{limpiarHora(h.hora_inicio)} - {limpiarHora(h.hora_fin)}</strong></td>
                       <td><span className="row-tag">{h.dias_semana || 'Sin días'}</span></td>
                       <td>{h.capacidad_maxima || 0} personas</td>

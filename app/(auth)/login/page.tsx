@@ -1,10 +1,16 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState } from 'react';
+=======
+import { useState, useEffect } from 'react';
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 import { useRouter } from 'next/navigation';
 import { CircleCheck, ListOrdered, Bell, Sun, Moon } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
 import { useDarkMode } from '../../hooks/useDarkMode';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 export default function LoginPage() {
   const { darkMode, toggle } = useDarkMode();
@@ -17,19 +23,36 @@ export default function LoginPage() {
   const [modalOpen,    setModalOpen]    = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
+<<<<<<< HEAD
 const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
   e.preventDefault();
   if (loading) return;
   setLoading(true);
+=======
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loading) return;
+    setLoading(true);
 
+<<<<<<< HEAD
   try {
     const keyRes = await fetch(`${API_URL}/api/auth/public-key`);
     if (!keyRes.ok) throw new Error('No se pudo obtener la clave pÃƒÆ’Ã‚Âºblica');
+=======
+    try {
+      const keyRes = await fetch(`${API_URL}/auth/public-key`);
+      if (!keyRes.ok) throw new Error('No se pudo obtener la clave pública');
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
-    const { keyId, publicKey: publicKeyPem } = await keyRes.json();
+      const { keyId, publicKey: publicKeyPem } = await keyRes.json();
 
+<<<<<<< HEAD
     const pemBody = publicKeyPem
       .replace('-----BEGIN PUBLIC KEY-----', '')
       .replace('-----END PUBLIC KEY-----', '')
@@ -99,35 +122,118 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
           correo: correo.toLowerCase().trim(),
           expiresAt: Date.now() + (Number(data.expiresInSeconds) || 0) * 1000
         })
+=======
+      const pemBody = publicKeyPem
+        .replace('-----BEGIN PUBLIC KEY-----', '')
+        .replace('-----END PUBLIC KEY-----', '')
+        .replace(/\n/g, '');
+
+      const pemBuffer = Uint8Array.from(atob(pemBody), c => c.charCodeAt(0));
+
+      const rsaPublicKey = await crypto.subtle.importKey(
+        'spki',
+        pemBuffer,
+        { name: 'RSA-OAEP', hash: 'SHA-256' },
+        false,
+        ['encrypt']
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       );
 
-      router.push('/verify-2fa');
-      return;
-    }
+      const aesKey = await crypto.subtle.generateKey(
+        { name: 'AES-CBC', length: 256 },
+        true,
+        ['encrypt']
+      );
 
-    if (data.status === 'pending') {
-      localStorage.setItem('user', JSON.stringify(data.usuario));
-      router.push('/pending');
-      return;
-    }
+      const iv = crypto.getRandomValues(new Uint8Array(16));
 
-    if (data.status === 'approved') {
-      localStorage.setItem('user', JSON.stringify(data.usuario));
+      const encryptedDataBuffer = await crypto.subtle.encrypt(
+        { name: 'AES-CBC', iv },
+        aesKey,
+        new TextEncoder().encode(JSON.stringify({ correo, password }))
+      );
 
-      if (data.usuario.id_rol === 1 || data.usuario.id_rol === 2) {
-        router.push('/anuncios');
+      const rawAesKey = await crypto.subtle.exportKey('raw', aesKey);
+
+      const encryptedKeyBuffer = await crypto.subtle.encrypt(
+        { name: 'RSA-OAEP' },
+        rsaPublicKey,
+        rawAesKey
+      );
+
+      const toBase64 = (buf: ArrayBuffer) =>
+        btoa(String.fromCharCode(...new Uint8Array(buf)));
+
+      const payload = {
+        keyId,
+        encryptedKey: toBase64(encryptedKeyBuffer),
+        iv: btoa(String.fromCharCode(...iv)),
+        encryptedData: toBase64(encryptedDataBuffer),
+      };
+
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setModalMessage(data.message || 'Error en login');
+        setModalOpen(true);
         return;
       }
 
-      if (data.usuario.id_rol === 3 || data.usuario.id_rol === 4) {
-        router.push('/dashboard');
+      if (data.requiresTwoFactor && data.twoFactorToken) {
+        sessionStorage.setItem(
+          'twoFactorLogin',
+          JSON.stringify({
+            twoFactorToken: data.twoFactorToken,
+            correo: correo.toLowerCase().trim(),
+            expiresAt: Date.now() + (Number(data.expiresInSeconds) || 0) * 1000
+          })
+        );
+
+        router.push('/verify-2fa');
         return;
       }
 
-      setModalMessage('Rol de usuario no reconocido');
+      if (data.status === 'pending') {
+        localStorage.setItem('user', JSON.stringify(data.usuario));
+        router.push('/pending');
+        return;
+      }
+
+      if (data.status === 'approved') {
+        localStorage.setItem('user', JSON.stringify(data.usuario));
+
+        if (data.usuario.id_rol === 1 || data.usuario.id_rol === 2) {
+          router.push('/anuncios');
+          return;
+        }
+
+        if (data.usuario.id_rol === 3 || data.usuario.id_rol === 4) {
+          router.push('/dashboard');
+          return;
+        }
+
+        setModalMessage('Rol de usuario no reconocido');
+        setModalOpen(true);
+        return;
+      }
+
+      setModalMessage('Estado de usuario no reconocido');
       setModalOpen(true);
-      return;
+
+    } catch (error) {
+      console.error('Error login:', error);
+      setModalMessage('Error de conexión con el servidor');
+      setModalOpen(true);
+    } finally {
+      setLoading(false);
     }
+<<<<<<< HEAD
 
     setModalMessage('Estado de usuario no reconocido');
     setModalOpen(true);
@@ -140,16 +246,25 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     setLoading(false);
   }
 };
+=======
+  };
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
   return (
     <div className="login-page">
 
+<<<<<<< HEAD
       {/* BotÃƒÆ’Ã‚Â³n flotante dark mode */}
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
-        {darkMode ? <Moon size={18} /> : <Sun size={18} />}
+        {mounted ? (
+          darkMode ? <Moon size={18} /> : <Sun size={18} />
+        ) : (
+          <span style={{ width: 18, height: 18, display: 'inline-block' }} />
+        )}
       </button>
 
-      {/* HERO */}
       <section className="hero-section">
         <div className="hero-content">
           <div className="brand-logo">
@@ -174,7 +289,6 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         </div>
       </section>
 
-      {/* LOGIN */}
       <section className="login-section">
         <div className="decorative-shape shape-1" />
         <div className="decorative-shape shape-2" />
@@ -223,11 +337,14 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
             </button>
           </form>
 
+<<<<<<< HEAD
           {/* <div className="divider"><span>Ãƒâ€šÃ‚Â¿Primera vez?</span></div>
           <div className="auth-link">
             <Link href="/register">Crea tu cuenta aquÃƒÆ’Ã‚Â­</Link>
           </div> */}
 
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         </div>
       </section>
 

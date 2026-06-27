@@ -6,6 +6,8 @@ import AdminSidebar from '../../components/AdminSidebar';
 import Bitacora, { Comentario } from '../../components/Bitacora';
 import ConfirmModal from '../../components/ConfirmModal';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
 type Rol = 'estudiante' | 'docente' | 'entrenador' | 'administrador_general';
 type Estado = 'activo' | 'inactivo';
 
@@ -30,28 +32,30 @@ const ROL_LABELS: Record<Rol, string> = {
   estudiante: 'Alumno',
   docente: 'Docente',
   entrenador: 'Entrenador',
-  administrador_general: 'Admin General',
+  administrador_general: 'Admin',
 };
 
 const ROLES_CON_BITACORA = new Set<Rol>(['estudiante', 'docente']);
 
 export default function AdminUsuariosPage() {
-
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
-
   const [searchQuery, setSearchQuery] = useState('');
+<<<<<<< HEAD
   const [filterRol] = useState('');
   const [filterEstado] = useState('');
   const [filterCarrera] = useState('');
 
+=======
+  const [filterRol, setFilterRol] = useState('');
+  const [filterEstado, setFilterEstado] = useState('');
+  const [filterCarrera, setFilterCarrera] = useState('');
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
   const [bitacoraOpen, setBitacoraOpen] = useState(false);
   const [bitacoraUsuario, setBitacoraUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [bitacoraComentarios, setBitacoraComentarios] = useState<Comentario[]>([]);
-
   const [openEditModal, setOpenEditModal] = useState(false);
   const [usuarioEditar, setUsuarioEditar] = useState<Usuario | null>(null);
-
   const [openNuevoModal, setOpenNuevoModal] = useState(false);
 
   const emptyEdit = { nombre: '', apellido_paterno: '', apellido_materno: '', correo: '', id_rol: 1 };
@@ -65,7 +69,7 @@ export default function AdminUsuariosPage() {
 
   const fetchUsuarios = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios`);
+      const res = await fetch(`${API_URL}/usuarios`);
       if (res.ok) {
         const data = await res.json();
         const formateados: Usuario[] = data.map((u: any) => ({
@@ -122,7 +126,7 @@ export default function AdminUsuariosPage() {
     e.preventDefault();
     if (!usuarioEditar) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/editar`, {
+      const res = await fetch(`${API_URL}/usuarios/editar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_usuario: usuarioEditar.id, nombre: formEdit.nombre, apellido_paterno: formEdit.apellido_paterno, apellido_materno: formEdit.apellido_materno, correo: formEdit.correo, id_rol: formEdit.id_rol, id_carrera: usuarioEditar.id_carrera }),
@@ -145,7 +149,7 @@ export default function AdminUsuariosPage() {
   const handleSubmitNuevo = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/crear`, {
+      const res = await fetch(`${API_URL}/usuarios/crear`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre: formNuevo.nombre, apellido_paterno: formNuevo.apellido_paterno, apellido_materno: formNuevo.apellido_materno, correo: formNuevo.correo, contrasena: formNuevo.contrasena, id_rol: formNuevo.id_rol }),
@@ -162,7 +166,7 @@ export default function AdminUsuariosPage() {
   const confirmarToggle = async () => {
     if (!usuarioToggle) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/toggle`, {
+      const res = await fetch(`${API_URL}/usuarios/toggle`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_usuario: usuarioToggle.id }),
@@ -178,7 +182,7 @@ export default function AdminUsuariosPage() {
     setBitacoraOpen(true);
     openModal();
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/bitacora/${id}`);
+      const res = await fetch(`${API_URL}/usuarios/bitacora/${id}`);
       if (res.ok) {
         const data = await res.json();
         const mapped: Comentario[] = data.map((e: any) => ({
@@ -195,7 +199,7 @@ export default function AdminUsuariosPage() {
 
   const handleNuevoComentario = async (usuarioId: number, texto: string) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/bitacora`, {
+      const res = await fetch(`${API_URL}/usuarios/bitacora`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_usuario: usuarioId, texto, autor_nombre: 'Admin UTEQ' }),
@@ -231,22 +235,70 @@ export default function AdminUsuariosPage() {
             </button>
           </header>
 
+          {/* ── FILTROS RESPONSIVOS ──────────────────────────────────── */}
           <section className="filter-bar">
             <div className="field">
               <Search />
-              <input type="search" placeholder="Buscar..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              <input
+                type="search"
+                placeholder="Buscar..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
             </div>
+
+            {/* Filtros que faltaban conectar al JSX */}
+            <select
+              className="select"
+              value={filterRol}
+              onChange={e => setFilterRol(e.target.value)}
+              aria-label="Filtrar por rol"
+            >
+              <option value="">Todos los roles</option>
+              <option value="estudiante">Alumno</option>
+              <option value="docente">Docente</option>
+              <option value="entrenador">Entrenador</option>
+              <option value="administrador_general">Admin General</option>
+            </select>
+
+            <select
+              className="select"
+              value={filterEstado}
+              onChange={e => setFilterEstado(e.target.value)}
+              aria-label="Filtrar por estado"
+            >
+              <option value="">Todos los estados</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+
+            <select
+              className="select"
+              value={filterCarrera}
+              onChange={e => setFilterCarrera(e.target.value)}
+              aria-label="Filtrar por carrera"
+            >
+              <option value="">Todas las carreras</option>
+              {Array.from(new Set(usuarios.map(u => u.carrera))).map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
           </section>
 
+          {/* ── LISTA DE USUARIOS ────────────────────────────────────── */}
           <section className="row-list">
             {filteredUsuarios.map(usr => (
               <div key={usr.id} className="row-card">
                 <div className={`row-avatar ${getAvatarClass(usr.id)}`}>{usr.iniciales}</div>
+
                 <div className="row-info">
                   <span className="row-name">{usr.nombre} {usr.apellido}</span>
                   <span className="row-sub muted">{usr.correo}</span>
+                  <span className="row-sub muted">{usr.carrera}</span>
                 </div>
-                <div className="row-actions">
+
+                {/* row-actions con flex-wrap para que no se desborde en móvil */}
+                <div className="row-actions" style={{ flexWrap: 'wrap', gap: '6px' }}>
                   <span className={`chip chip--${usr.rol}`}>{ROL_LABELS[usr.rol]}</span>
                   <span className={`chip chip--${usr.estado}`}>{usr.estado}</span>
                   {ROLES_CON_BITACORA.has(usr.rol) && (
@@ -279,9 +331,11 @@ export default function AdminUsuariosPage() {
               </div>
             ))}
           </section>
+
         </div>
       </main>
 
+      {/* ── MODAL EDITAR ─────────────────────────────────────────────── */}
       {openEditModal && (
         <div className="modal-overlay">
           <div className="modal-box modal-box--wide">
@@ -335,6 +389,7 @@ export default function AdminUsuariosPage() {
         </div>
       )}
 
+      {/* ── MODAL NUEVO USUARIO ──────────────────────────────────────── */}
       {openNuevoModal && (
         <div className="modal-overlay">
           <div className="modal-box modal-box--wide">
@@ -390,6 +445,7 @@ export default function AdminUsuariosPage() {
         </div>
       )}
 
+      {/* ── BITÁCORA ─────────────────────────────────────────────────── */}
       {bitacoraUsuario && (
         <Bitacora
           isOpen={bitacoraOpen}
@@ -408,7 +464,6 @@ export default function AdminUsuariosPage() {
         title={usuarioToggle?.activo ? 'Desactivar usuario' : 'Activar usuario'}
         message={usuarioToggle?.activo ? '¿Seguro que deseas desactivar este usuario?' : '¿Seguro que deseas activar este usuario?'}
       />
-
     </div>
   );
 }

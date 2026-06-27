@@ -5,9 +5,13 @@ import { User as UserIcon, Calendar, Clock, Home, LogOut, Sun, Moon } from 'luci
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDarkMode } from '../../hooks/useDarkMode';
+import AvisoPrivacidadModal from "@/app/components/AvisoPrivacidadModal"; 
 
-// INTERFAZ (SOLUCIONA EL ERROR)
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
 interface User {
+  id_usuario?: number;
+  id_rol?: number;
   nombre: string;
   apellido_paterno: string;
   apellido_materno: string;
@@ -42,19 +46,49 @@ export default function PerfilPage() {
   const router = useRouter();
   const { darkMode, toggle } = useDarkMode();
 
-  // YA TIPADO
   const [user, setUser] = useState<User | null>(null);
+  const [showAviso, setShowAviso] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const storedUser = localStorage.getItem('user');
 
     if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
+
+      // Render inicial inmediato para no bloquear vista por red.
       setUser(parsedUser);
+<<<<<<< HEAD
     } else {
       router.push('/login');
+=======
+
+      const syncProfile = async () => {
+        if (!parsedUser.id_usuario) return;
+
+        try {
+          const res = await fetch(`${API_URL}/auth/perfil/${parsedUser.id_usuario}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+
+          if (!res.ok) return;
+
+          const data = await res.json();
+          if (!data?.usuario) return;
+
+          setUser(data.usuario as User);
+          localStorage.setItem('user', JSON.stringify(data.usuario));
+        } catch (error) {
+          console.error('Error al sincronizar perfil:', error);
+        }
+      };
+
+      syncProfile();
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
     }
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -65,7 +99,6 @@ export default function PerfilPage() {
     return <p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando perfil...</p>;
   }
 
-  // DATOS REALES
   const inscripcion = user.ultimaInscripcion;
   const horario = inscripcion?.horario;
 
@@ -93,7 +126,6 @@ export default function PerfilPage() {
       <section className="services-section">
         <div className="services-grid">
 
-          {/* INFORMACIÓN PERSONAL */}
           <div className="card">
             <div className="card-header">
               <UserIcon size={20} />
@@ -123,7 +155,6 @@ export default function PerfilPage() {
             </div>
           </div>
 
-          {/* PERIODO */}
           <div className="card">
             <div className="card-header">
               <Calendar size={20} />
@@ -139,7 +170,6 @@ export default function PerfilPage() {
             </div>
           </div>
 
-          {/* HORARIO */}
           <div className="card">
             <div className="card-header">
               <Clock size={20} />
@@ -159,7 +189,6 @@ export default function PerfilPage() {
 
         </div>
 
-        {/* BOTONES */}
         <div style={{
           display: 'flex',
           justifyContent: 'center',
@@ -168,8 +197,20 @@ export default function PerfilPage() {
           marginTop: '40px',
           paddingBottom: '60px',
         }}>
+
           <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
-            {darkMode ? <Moon size={18} /> : <Sun size={18} />}
+            {mounted ? (
+              darkMode ? <Moon size={18} /> : <Sun size={18} />
+            ) : (
+              <span style={{ width: 18, height: 18, display: 'inline-block' }} />
+            )}
+          </button>
+
+          <button 
+            className="btn btn--outline"
+            onClick={() => setShowAviso(true)}
+          >
+            Aviso de privacidad
           </button>
 
           <button className="btn btn--outline" onClick={handleLogout}>
@@ -178,6 +219,12 @@ export default function PerfilPage() {
         </div>
 
       </section>
+
+      <AvisoPrivacidadModal 
+        open={showAviso} 
+        onClose={() => setShowAviso(false)} 
+      />
+
     </div>
   );
 }

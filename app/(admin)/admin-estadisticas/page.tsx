@@ -7,6 +7,8 @@ import AlertModal from '../../components/AlertModal';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
 interface DatoReporte {
   id: number;
   matricula: string;
@@ -15,6 +17,7 @@ interface DatoReporte {
   servicio: string;
   asistencia: string;
   estado: string;
+<<<<<<< HEAD
   periodo: string; //Agregamos el periodo que ahora manda el backend
 }
 
@@ -42,6 +45,9 @@ function getExportButtonContent(exportDone: boolean, exporting: boolean) {
   }
 
   return <><Download size={16} /> Descargar</>;
+=======
+  periodo: string;
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 }
 
 export default function AdminEstadisticasPage() {
@@ -58,7 +64,7 @@ export default function AdminEstadisticasPage() {
 
   const cargarReporte = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/asistencias/reporte');
+      const res = await fetch(`${API_URL}/asistencias/reporte`);
       if (res.ok) {
         const data = await res.json();
         setDatosTabla(data);
@@ -79,7 +85,10 @@ export default function AdminEstadisticasPage() {
     { value: 'primavera', label: 'Primavera 2025' },
   ];
 
+<<<<<<< HEAD
   //LÃ³gica de Filtrado DinÃ¡mico
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
   const datosFiltrados = periodoFiltro === 'todos' 
     ? datosTabla 
     : datosTabla.filter(d => d.periodo.toLowerCase().includes(periodoFiltro.toLowerCase()));
@@ -90,7 +99,10 @@ export default function AdminEstadisticasPage() {
   const handleExport = () => {
     setExporting(true);
     
+<<<<<<< HEAD
     // Elegimos quÃ© datos exportar segÃºn lo que pidiÃ³ el usuario
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
     const datosExportar = exportScope === 'completo' ? datosTabla : datosFiltrados;
 
     setTimeout(() => {
@@ -102,7 +114,10 @@ export default function AdminEstadisticasPage() {
           ...datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.periodo, r.asistencia, r.estado]),
         ];
         
+<<<<<<< HEAD
         //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ã‘
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
@@ -111,7 +126,10 @@ export default function AdminEstadisticasPage() {
         URL.revokeObjectURL(url);
         
       } else if (exportFormat === 'pdf') {
+<<<<<<< HEAD
         // MAGIA DEL PDF
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         const doc = new jsPDF();
         doc.text("Reporte de Asistencias - SchedMaster", 14, 15);
         
@@ -119,7 +137,7 @@ export default function AdminEstadisticasPage() {
           startY: 20,
           head: [['MatrÃ­cula', 'Nombre', 'Carrera', 'Servicio', 'Asistencia', 'Estado']],
           body: datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.asistencia, r.estado]),
-          headStyles: { fillColor: [0, 164, 224] }, // Azulito SchedMaster
+          headStyles: { fillColor: [0, 164, 224] },
         });
         
         doc.save(`reporte_asistencia_${new Date().toISOString().slice(0,10)}.pdf`);
@@ -149,8 +167,13 @@ export default function AdminEstadisticasPage() {
                   <div className="chip chip--blue" style={{ fontSize: '14px', padding: '8px 15px', background: '#e0f2fe', color: '#0369a1', borderRadius: '20px' }}>
                     <span style={{ marginRight: '5px' }}>ðŸ‘¥</span> Inscritos totales: <strong>{totalInscritos}</strong>
                   </div>
+<<<<<<< HEAD
                   <div className="chip chip--outline" style={{ fontSize: '14px', padding: '8px 15px', border: '1px solid #ddd', borderRadius: '20px' }}>
                     <span style={{ marginRight: '5px' }}>ðŸ“ˆ</span> Convocatorias activas: <strong>{convActivas}</strong>
+=======
+                  <div className="pill">
+                    <span style={{ marginRight: '5px' }}>📈</span> Convocatorias activas: <strong>{convActivas}</strong>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                   </div>
                 </div>
 
@@ -158,7 +181,7 @@ export default function AdminEstadisticasPage() {
                   <button className="btn btn--outline" type="button" onClick={cargarReporte}>
                     <RefreshCw size={18} style={{ marginRight: '5px' }} /> Actualizar
                   </button>
-                  <button className="btn btn--blue" type="button" onClick={() => setModalExport(true)} style={{ backgroundColor: '#00a4e0', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', display: 'flex', alignItems: 'center' }}>
+                  <button className="btn btn--blue" type="button" onClick={() => setModalExport(true)}>
                     <Download size={18} style={{ marginRight: '5px' }} /> Exportar reporte
                   </button>
                 </div>
@@ -173,15 +196,6 @@ export default function AdminEstadisticasPage() {
                       className={`tab ${periodoFiltro === t.value ? 'active' : ''}`}
                       type="button" 
                       onClick={() => setPeriodoFiltro(t.value)}
-                      style={{ 
-                        padding: '6px 12px', 
-                        borderRadius: '20px', 
-                        border: periodoFiltro === t.value ? 'none' : '1px solid #ddd',
-                        background: periodoFiltro === t.value ? '#e0f2fe' : 'transparent',
-                        color: periodoFiltro === t.value ? '#0369a1' : '#666',
-                        cursor: 'pointer',
-                        fontWeight: periodoFiltro === t.value ? 'bold' : 'normal'
-                      }}
                     >
                       {t.label}
                     </button>
@@ -192,26 +206,38 @@ export default function AdminEstadisticasPage() {
 
             <section className="table-area" style={{ marginTop: '12px' }}>
               <div className="table-scroll">
-                <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                  <thead style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left', fontSize: '12px', color: '#64748b', textTransform: 'uppercase' }}>
+                <table>
+                  <thead>
                     <tr>
+<<<<<<< HEAD
                       <th style={{ padding: '15px' }}>MatrÃ­cula</th>
                       <th style={{ padding: '15px' }}>Nombre del alumno</th>
                       <th style={{ padding: '15px' }}>Carrera</th>
                       <th style={{ padding: '15px' }}>Servicio</th>
                       <th style={{ padding: '15px' }}>Asistencia Prom.</th>
                       <th style={{ padding: '15px' }}>Estado</th>
+=======
+                      <th>Matrícula</th>
+                      <th>Nombre del alumno</th>
+                      <th>Carrera</th>
+                      <th>Servicio</th>
+                      <th>Asistencia Prom.</th>
+                      <th>Estado</th>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                     </tr>
                   </thead>
                   <tbody>
                     {datosFiltrados.length === 0 ? (
                       <tr>
-                        <td colSpan={6} style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
-                          Cargando reportes o no hay datos para el periodo seleccionado...
+                        <td colSpan={6} style={{ textAlign: 'center' }}>
+                           <div className="empty-state" style={{ padding: '40px', border: 'none', boxShadow: 'none' }}>
+                             <p>Cargando reportes o no hay datos para el periodo seleccionado...</p>
+                           </div>
                         </td>
                       </tr>
                     ) : (
                       datosFiltrados.map((fila) => (
+<<<<<<< HEAD
                         <tr key={fila.id} style={{ borderBottom: '1px solid #f1f5f9', fontSize: '14px' }}>
                           <td style={{ padding: '15px', color: '#475569', fontWeight: '500' }}>{fila.matricula}</td>
                           <td style={{ padding: '15px', fontWeight: 'bold', color: '#1e293b' }}>{fila.nombre}</td>
@@ -224,18 +250,20 @@ export default function AdminEstadisticasPage() {
                               padding: '4px 8px',
                               borderRadius: '4px'
                             }}>
+=======
+                        <tr key={fila.id}>
+                          <td>{fila.matricula}</td>
+                          <td style={{ fontWeight: 'bold' }}>{fila.nombre}</td>
+                          <td>{fila.carrera}</td>
+                          <td>{fila.servicio}</td>
+                          <td>
+                            <span className={`chip ${parseInt(fila.asistencia) >= 80 ? 'chip--presente' : parseInt(fila.asistencia) > 0 ? 'chip--ausente' : 'chip--pendiente'}`}>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                               {fila.asistencia}
                             </span>
                           </td>
-                          <td style={{ padding: '15px' }}>
-                            <span style={{
-                              fontSize: '12px',
-                              fontWeight: '600',
-                              padding: '4px 8px',
-                              borderRadius: '12px',
-                              backgroundColor: fila.estado === 'Activo' ? '#dcfce7' : '#f1f5f9',
-                              color: fila.estado === 'Activo' ? '#166534' : '#475569'
-                            }}>
+                          <td>
+                            <span className={`chip ${fila.estado.toLowerCase() === 'activo' ? 'chip--activo' : 'chip--inactivo'}`}>
                               {fila.estado.toUpperCase()}
                             </span>
                           </td>
@@ -245,7 +273,7 @@ export default function AdminEstadisticasPage() {
                   </tbody>
                 </table>
               </div>
-              <div style={{ padding: '15px', color: '#94a3b8', fontSize: '13px', textAlign: 'right' }}>
+              <div className="table-hint" style={{ textAlign: 'right' }}>
                 Mostrando {datosFiltrados.length} registros
               </div>
             </section>
@@ -265,7 +293,10 @@ export default function AdminEstadisticasPage() {
               <div className="form-group">
                 <span className="input-label">Formato de exportaciÃ³n</span>
                 <div className="export-options">
+<<<<<<< HEAD
                   {/*LE DIMOS CUELLO AL JSON COMO PIDIÃ“ ARLET */}
+=======
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                   {[
                     { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cÃ¡lculo' },
                     { value:'pdf',  cls:'pdf',  icon:<FileText size={20} />, label:'PDF',         desc:'Reporte visual listo para presentar' },

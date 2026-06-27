@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ArrowLeft, Upload, CheckCircle, Eye, Search } from 'lucide-react'
+import { ArrowLeft, Eye, Upload, CheckCircle, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import AdminSidebar from '../../../components/AdminSidebar'
 import AlertModal from "../../../components/AlertModal"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
-
+// Igual que las demás páginas admin — sin /api duplicado
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
 
 interface ArchivoHistorico {
   id_historico: number
@@ -23,30 +23,36 @@ export default function HistoricoAsistenciasPage() {
   const [archivos, setArchivos] = useState<ArchivoHistorico[]>([])
   const [archivo, setArchivo] = useState<File | null>(null)
   const [fecha, setFecha] = useState("")
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
 
   const [alertOpen, setAlertOpen] = useState(false)
   const [alertMessage, setAlertMessage] = useState("")
 
-  /* ==========================
-     CARGAR HISTORICO
-  ========================== */
+  /* ── CARGAR HISTORICO ─────────────────────────────────────── */
   const cargarHistorico = async (query = '') => {
     try {
       const term = query.trim()
+      // Usa el mismo patrón que asistencias: ${API_URL}/asistencias/...
       const endpoint = term
-        ? `${API_URL}/api/asistencias/historico?q=${encodeURIComponent(term)}`
-        : `${API_URL}/api/asistencias/historico`
+        ? `${API_URL}/asistencias/historico?q=${encodeURIComponent(term)}`
+        : `${API_URL}/asistencias/historico`
 
       const res = await fetch(endpoint)
-      
-      if (!res.ok) throw new Error("Error en la respuesta del servidor")
-      
+
+      if (!res.ok) {
+        // Intenta leer el mensaje del backend antes de mostrar error genérico
+        const errorData = await res.json().catch(() => null)
+        const msg = errorData?.message || `Error ${res.status}: ${res.statusText}`
+        setAlertMessage(msg)
+        setAlertOpen(true)
+        return
+      }
+
       const data = await res.json()
-      setArchivos(data)
+      setArchivos(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error(error)
-      setAlertMessage("Error cargando histórico")
+      setAlertMessage("No se pudo conectar con el servidor")
       setAlertOpen(true)
     }
   }
@@ -55,7 +61,6 @@ export default function HistoricoAsistenciasPage() {
     const timer = setTimeout(() => {
       cargarHistorico(searchQuery)
     }, 250)
-
     return () => clearTimeout(timer)
   }, [searchQuery])
 
@@ -63,39 +68,26 @@ export default function HistoricoAsistenciasPage() {
     cargarHistorico('')
   }, [])
 
-  /* ==========================
-     SUBIR ARCHIVO
-  ========================== */
   const handleSubir = async () => {
-    if (!archivo || !fecha) {
-      setAlertMessage("Selecciona archivo y fecha")
-      setAlertOpen(true)
-      return
-    }
+    if (!archivo || !fecha) return
 
     const formData = new FormData()
-    formData.append("archivo", archivo)
-    formData.append("fecha", fecha)
-    formData.append("id_usuario", "1") // Aquí asume el ID 1 del Admin
+    formData.append('archivo', archivo)
+    formData.append('fecha_lista', fecha)
 
     try {
-      const res = await fetch(`${API_URL}/api/asistencias/upload-and-hash`, {
-        method: "POST",
-        body: formData
+      const res = await fetch(`${API_URL}/asistencias/historico`, {
+        method: 'POST',
+        body: formData,
       })
 
-      const data = await res.json()
-      
-      if (res.ok) {
-        setAlertMessage("Archivo subido con éxito")
-      } else {
-        setAlertMessage(data.message || "Error al subir")
-      }
-      
-      setAlertOpen(true)
+      if (!res.ok) throw new Error("Error al subir archivo")
+
       setArchivo(null)
       setFecha("")
-      cargarHistorico(searchQuery)
+      cargarHistorico()
+      setAlertMessage("Archivo subido exitosamente")
+      setAlertOpen(true)
     } catch (error) {
       console.error(error)
       setAlertMessage("Error subiendo archivo")
@@ -103,12 +95,8 @@ export default function HistoricoAsistenciasPage() {
     }
   }
 
-  /* ==========================
-     FORMATEAR FECHA
-  ========================== */
   const formatDate = (date: string) => {
     if (!date) return "-"
-    // Aseguramos que la fecha no se desfase por la zona horaria al mostrarla
     return new Date(date).toISOString().split('T')[0]
   }
 
@@ -118,6 +106,7 @@ export default function HistoricoAsistenciasPage() {
 
       <main className="main">
         <div className="main-inner">
+
           <header className="section-header">
             <div>
               <h2>Histórico de Asistencias</h2>
@@ -140,7 +129,6 @@ export default function HistoricoAsistenciasPage() {
             <input
               type="file"
               id="archivoHistorico"
-              hidden
               className="hidden-input"
               onChange={(e) => {
                 const file = e.target.files?.[0] || null
@@ -221,7 +209,13 @@ export default function HistoricoAsistenciasPage() {
                             className="btn-icon btn-icon--cyan"
                             title="Ver documento"
                             onClick={() => {
+<<<<<<< HEAD
                               globalThis.window.open(`${API_URL}/${a.ruta_archivo}`, "_blank")
+=======
+                              // Construye la URL correcta para ver el archivo
+                              const base = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3001'
+                              window.open(`${base}/${a.ruta_archivo}`, "_blank")
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                             }}
                           >
                             <Eye size={14} />
