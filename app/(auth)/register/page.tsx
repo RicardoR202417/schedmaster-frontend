@@ -50,6 +50,19 @@ function getValidationErrors(form: typeof INITIAL_FORM) {
   return errors;
 }
 
+function getPasswordStatus(password: string) {
+  const hasMinLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumberOrSymbol = /\d|[^A-Za-z0-9]/.test(password);
+  const checks = [hasMinLength, hasUppercase, hasNumberOrSymbol];
+  const strength = checks.filter(Boolean).length;
+  const level = password
+    ? Math.min(4, Math.floor((strength / checks.length) * 4))
+    : 0;
+
+  return { hasMinLength, hasUppercase, hasNumberOrSymbol, level };
+}
+
 export default function RegisterPage() {
 
   const router = useRouter();
@@ -67,13 +80,12 @@ export default function RegisterPage() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const hasMinLength = form.password.length >= 8;
-  const hasUppercase = /[A-Z]/.test(form.password);
-  const hasNumberOrSymbol = /\d|[^A-Za-z0-9]/.test(form.password);
-  const passwordStrength = [hasMinLength, hasUppercase, hasNumberOrSymbol].filter(Boolean).length;
-  const passwordMeterLevel = form.password
-    ? Math.min(4, Math.floor((passwordStrength / 3) * 4))
-    : 0;
+  const {
+    hasMinLength,
+    hasUppercase,
+    hasNumberOrSymbol,
+    level: passwordMeterLevel
+  } = getPasswordStatus(form.password);
 
   // 1. Cargar todos los horarios (Esto ya trae los dÃ­as incluidos gracias a nuestro backend)
   useEffect(()=>{
