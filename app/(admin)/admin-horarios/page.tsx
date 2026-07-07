@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+"use client";
+import { useState, useEffect } from "react";
+import { Plus, Edit, Trash2, Filter, Calendar } from "lucide-react";
+=======
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Filter, Search, Calendar } from "lucide-react";
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 import AdminSidebar from "../../components/AdminSidebar";
 import AlertModal from '../../components/AlertModal';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -35,7 +41,7 @@ export default function AdminHorariosPage() {
       .then(data => {
         if (Array.isArray(data)) {
           setPeriodos(data);
-        } else if (data && data.data && Array.isArray(data.data)) {
+        } else if (Array.isArray(data?.data)) {
           setPeriodos(data.data);
         }
       })
@@ -118,10 +124,10 @@ export default function AdminHorariosPage() {
     setHorarioAEditar(horario.id_horario);
     
     setFormData({
-      id_periodo: horario.id_periodo ? String(horario.id_periodo) : "",
+      id_periodo: String(horario.id_periodo ?? ""),
       hora_inicio: limpiarHora(horario.hora_inicio), 
       hora_fin: limpiarHora(horario.hora_fin),
-      capacidad_maxima: horario.capacidad_maxima ? String(horario.capacidad_maxima) : ""
+      capacidad_maxima: String(horario.capacidad_maxima ?? "")
     });
 
     if (horario.dias_semana) {
@@ -146,7 +152,7 @@ export default function AdminHorariosPage() {
       id_periodo: formData.id_periodo,
       hora_inicio: formData.hora_inicio ? formData.hora_inicio + ":00" : "", 
       hora_fin: formData.hora_fin ? formData.hora_fin + ":00" : "",
-      capacidad_maxima: parseInt(formData.capacidad_maxima) || 0, 
+      capacidad_maxima: Number.parseInt(formData.capacidad_maxima) || 0, 
       dias: diasIds 
     };
 
@@ -233,7 +239,12 @@ export default function AdminHorariosPage() {
                 <tbody>
                   {horarios.map((h: any) => (
                     <tr key={h.id_horario}>
+<<<<<<< HEAD
+                      <td>{h.periodo_nombre === 'Sin periodo' ? 'N/A' : h.periodo_nombre} {h.anio === 'N/A' ? '' : `(${h.anio})`}</td>
+                      {/* Aquí usamos la misma función de limpiar para que se vea bonito en la tabla */}
+=======
                       <td>{h.periodo_nombre !== 'Sin periodo' ? h.periodo_nombre : 'N/A'} {h.anio !== 'N/A' ? `(${h.anio})` : ''}</td>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                       <td><strong>{limpiarHora(h.hora_inicio)} - {limpiarHora(h.hora_fin)}</strong></td>
                       <td><span className="row-tag">{h.dias_semana || 'Sin días'}</span></td>
                       <td>{h.capacidad_maxima || 0} personas</td>
@@ -271,8 +282,8 @@ export default function AdminHorariosPage() {
                 
                 <div className="modal-body">
                   <div className="form-group">
-                    <label>Periodo</label>
-                    <select className="auth-select" name="id_periodo" value={formData.id_periodo} onChange={handleChange}>
+                    <label htmlFor="id_periodo">Periodo</label>
+                <select id="id_periodo" className="auth-select" name="id_periodo" value={formData.id_periodo} onChange={handleChange}>
                       <option value="">Selecciona un periodo...</option>
                       {periodos.map((p: any) => (
                         <option key={p.id_periodo} value={p.id_periodo}>
@@ -284,24 +295,24 @@ export default function AdminHorariosPage() {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Hora Inicio</label>
-                      <input type="time" className="auth-input" name="hora_inicio" value={formData.hora_inicio} onChange={handleChange} />
+                      <label htmlFor="hora_inicio">Hora Inicio</label>
+                <input id="hora_inicio" type="time" className="auth-input" name="hora_inicio" value={formData.hora_inicio} onChange={handleChange} />
                     </div>
                     <div className="form-group">
-                      <label>Hora Fin</label>
-                      <input type="time" className="auth-input" name="hora_fin" value={formData.hora_fin} onChange={handleChange} />
+                      <label htmlFor="hora_fin">Hora Fin</label>
+                <input id="hora_fin" type="time" className="auth-input" name="hora_fin" value={formData.hora_fin} onChange={handleChange} />
                     </div>
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Capacidad Máxima</label>
-                      <input type="number" className="auth-input" name="capacidad_maxima" placeholder="Ej. 30" value={formData.capacidad_maxima} onChange={handleChange} />
+                      <label htmlFor="capacidad_maxima">Capacidad Máxima</label>
+                <input id="capacidad_maxima" type="number" className="auth-input" name="capacidad_maxima" placeholder="Ej. 30" value={formData.capacidad_maxima} onChange={handleChange} />
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label>Días de la semana</label>
+                    <span className="input-label">Días de la semana</span>
                     <div className="dias-container">
                       {DIAS_SEMANA.map(dia => (
                         <button 

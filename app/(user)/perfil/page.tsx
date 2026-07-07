@@ -54,13 +54,15 @@ export default function PerfilPage() {
     setMounted(true);
     const storedUser = localStorage.getItem('user');
 
-    if (!storedUser) {
-      router.push('/login');
-    } else {
+    if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
 
       // Render inicial inmediato para no bloquear vista por red.
       setUser(parsedUser);
+<<<<<<< HEAD
+    } else {
+      router.push('/login');
+=======
 
       const syncProfile = async () => {
         if (!parsedUser.id_usuario) return;
@@ -84,6 +86,7 @@ export default function PerfilPage() {
       };
 
       syncProfile();
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
     }
   }, [router]);
 

@@ -33,7 +33,7 @@ export default function AdminSidebar({
   userName     = 'Admin UTEQ',
   userRole     = 'Administrador',
   userInitials = 'AU',
-}: AdminSidebarProps) {
+}: Readonly<AdminSidebarProps>) {
 
   const [open, setOpen] = useState(false);
   const { darkMode, toggle } = useDarkMode();
@@ -47,15 +47,15 @@ export default function AdminSidebar({
 
   useEffect(() => {
     const closeOnDesktop = () => {
-      if (window.innerWidth > SIDEBAR_BREAKPOINT) {
+      if (globalThis.window.innerWidth > SIDEBAR_BREAKPOINT) {
         setOpen(false);
       }
     };
 
     closeOnDesktop();
 
-    window.addEventListener('resize', closeOnDesktop);
-    return () => window.removeEventListener('resize', closeOnDesktop);
+    globalThis.window.addEventListener('resize', closeOnDesktop);
+    return () => globalThis.window.removeEventListener('resize', closeOnDesktop);
   }, []);
 
   return (
@@ -86,10 +86,10 @@ export default function AdminSidebar({
           <div className="sb-brand-text">
             <h1>SchedMaster</h1>
             <p>Panel de Administración</p>
-            <div className="theme-switch" onClick={toggle}>
+            <button className="theme-switch" type="button" onClick={toggle}>
               {darkMode ? <Moon size={16} /> : <Sun size={16} />}
               <span>{darkMode ? 'Oscuro' : 'Claro'}</span>
-            </div>
+            </button>
           </div>
 
           <button className="sb-close" type="button" onClick={() => setOpen(false)} aria-label="Cerrar menú">
@@ -97,9 +97,9 @@ export default function AdminSidebar({
           </button>
         </div>
 
-        <nav className="nav" onClick={() => setOpen(false)}>
+        <nav className="nav">
           {NAV_ITEMS.map(({ href, icon: Icon, label }) => (
-            <Link key={href} href={href} className={pathname === href ? 'active' : ''}>
+            <Link key={href} href={href} className={pathname === href ? 'active' : ''} onClick={() => setOpen(false)}>
               <Icon /> {label}
             </Link>
           ))}

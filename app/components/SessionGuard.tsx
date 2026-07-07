@@ -1,8 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 type SessionUser = {
   id_usuario?: number;
@@ -21,7 +20,7 @@ function getDefaultRouteByRole(role?: number) {
   return '/login';
 }
 
-export default function SessionGuard({ children, allowedRoles, excludePaths = [] }: SessionGuardProps) {
+export default function SessionGuard({ children, allowedRoles, excludePaths = [] }: Readonly<SessionGuardProps>) {
   const router = useRouter();
   const pathname = usePathname();
   const [isChecking, setIsChecking] = useState(true);
@@ -54,7 +53,8 @@ export default function SessionGuard({ children, allowedRoles, excludePaths = []
       }
 
       setIsAuthorized(true);
-    } catch {
+    } catch (error) {
+      console.error('Error validando sesion:', error);
       localStorage.removeItem('user');
       router.replace('/login');
     } finally {

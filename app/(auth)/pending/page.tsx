@@ -230,7 +230,12 @@ export default function PendingAccountPage() {
                 <div className="support-item">
                   <Mail />
                   <div>
+<<<<<<< HEAD
+
+                    Correo:{' '}
+=======
                     Correo:
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                     <a href="mailto:soporte@schedmaster.uteq.mx">
                       soporte@schedmaster.uteq.mx
                     </a>
@@ -241,9 +246,22 @@ export default function PendingAccountPage() {
                 <div className="support-item">
                   <Phone />
                   <div>
+<<<<<<< HEAD
+
+                    Teléfono:{' '}
+                    <a href="tel:+524421234567">
+                      +52 442 123 4567
+                    </a>
+
+                    <small>
+                      Horario: Lunes a Viernes.
+                    </small>
+
+=======
                     Teléfono:
                     <a href="tel:+524421234567">+52 442 123 4567</a>
                     <small>Horario: Lunes a Viernes.</small>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                   </div>
                 </div>
               </div>

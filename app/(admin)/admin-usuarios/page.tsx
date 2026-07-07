@@ -35,15 +35,22 @@ const ROL_LABELS: Record<Rol, string> = {
   administrador_general: 'Admin',
 };
 
-const ROLES_CON_BITACORA: Rol[] = ['estudiante', 'docente'];
+const ROLES_CON_BITACORA = new Set<Rol>(['estudiante', 'docente']);
 
 export default function AdminUsuariosPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+<<<<<<< HEAD
+  const [filterRol] = useState('');
+  const [filterEstado] = useState('');
+  const [filterCarrera] = useState('');
+
+=======
   const [filterRol, setFilterRol] = useState('');
   const [filterEstado, setFilterEstado] = useState('');
   const [filterCarrera, setFilterCarrera] = useState('');
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
   const [bitacoraOpen, setBitacoraOpen] = useState(false);
   const [bitacoraUsuario, setBitacoraUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [bitacoraComentarios, setBitacoraComentarios] = useState<Comentario[]>([]);
@@ -112,10 +119,10 @@ export default function AdminUsuariosPage() {
 
   const handleChangeEdit = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormEdit(prev => ({ ...prev, [name]: name === 'id_rol' ? parseInt(value) : value }));
+    setFormEdit(prev => ({ ...prev, [name]: name === 'id_rol' ? Number.parseInt(value) : value }));
   };
 
-  const handleSubmitEdit = async (e: React.FormEvent) => {
+  const handleSubmitEdit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!usuarioEditar) return;
     try {
@@ -136,10 +143,10 @@ export default function AdminUsuariosPage() {
 
   const handleChangeNuevo = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormNuevo(prev => ({ ...prev, [name]: name === 'id_rol' ? parseInt(value) : value }));
+    setFormNuevo(prev => ({ ...prev, [name]: name === 'id_rol' ? Number.parseInt(value) : value }));
   };
 
-  const handleSubmitNuevo = async (e: React.FormEvent) => {
+  const handleSubmitNuevo = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await fetch(`${API_URL}/usuarios/crear`, {
@@ -294,7 +301,7 @@ export default function AdminUsuariosPage() {
                 <div className="row-actions" style={{ flexWrap: 'wrap', gap: '6px' }}>
                   <span className={`chip chip--${usr.rol}`}>{ROL_LABELS[usr.rol]}</span>
                   <span className={`chip chip--${usr.estado}`}>{usr.estado}</span>
-                  {ROLES_CON_BITACORA.includes(usr.rol) && (
+                  {ROLES_CON_BITACORA.has(usr.rol) && (
                     <button
                       className="btn-icon btn-icon--blue"
                       onClick={() => handleBitacora(usr.id, `${usr.nombre} ${usr.apellido}`)}

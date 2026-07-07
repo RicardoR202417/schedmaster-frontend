@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -104,7 +104,7 @@ export default function HomePage() {
       setSent(true);
 
     } catch {
-      setAlertMessage('Error de conexión');
+      setAlertMessage('Error de conexiÃ³n');
       setAlertOpen(true);
     }
   };
@@ -124,6 +124,9 @@ export default function HomePage() {
           <img src="/logo.png" alt="logo" />
           <span>SchedMaster</span>
         </div>
+<<<<<<< HEAD
+        <Link href="/login" className="btn btn--dark">Iniciar sesiÃ³n</Link>
+=======
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <button className="dark-toggle" onClick={toggle}>
@@ -138,6 +141,7 @@ export default function HomePage() {
             Iniciar sesión
           </Link>
         </div>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       </header>
 
       {/* HERO */}
@@ -152,10 +156,10 @@ export default function HomePage() {
           </h1>
 
           <p className="hero-subtitle">
-            Accede al gimnasio universitario y mejora tu bienestar cada día.
+            Accede al gimnasio universitario y mejora tu bienestar cada dÃ­a.
           </p>
 
-          <button
+          <button type="button"
             className="btn btn--blue btn--lg"
             onClick={handleQuieroEntrenar}
             disabled={loadingConvocatoria}
@@ -170,7 +174,7 @@ export default function HomePage() {
         <strong>Sobre el gimnasio</strong>
         <h2>Gimnasio universitario</h2>
         <p className="muted">
-          Nuestras instalaciones están diseñadas para brindarte un espacio completo de entrenamiento.
+          Nuestras instalaciones estÃ¡n diseÃ±adas para brindarte un espacio completo de entrenamiento.
           Las convocatorias se abren cada cuatrimestre para que puedas formar parte.
         </p>
       </section>
@@ -178,13 +182,13 @@ export default function HomePage() {
       {/* BENEFICIOS */}
       <section className="services-section">
         <strong>Beneficios</strong>
-        <h2>¿Por qué entrenar aquí?</h2>
+        <h2>Â¿Por quÃ© entrenar aquÃ­?</h2>
 
         <div className="services-grid">
-          <div className="service-card">💪 Mejora tu condición física</div>
-          <div className="service-card">🧠 Reduce el estrés</div>
-          <div className="service-card">⚡ Aumenta tu energía</div>
-          <div className="service-card">🏫 Instalaciones universitarias</div>
+          <div className="service-card">ðŸ’ª Mejora tu condiciÃ³n fÃ­sica</div>
+          <div className="service-card">ðŸ§  Reduce el estrÃ©s</div>
+          <div className="service-card">âš¡ Aumenta tu energÃ­a</div>
+          <div className="service-card">ðŸ« Instalaciones universitarias</div>
         </div>
       </section>
 
@@ -195,7 +199,12 @@ export default function HomePage() {
 
         <div className="card--glass">
           <div className="carousel">
+<<<<<<< HEAD
+
+            <button type="button" className="carousel-btn left" onClick={prevImg} title="Imagen anterior">
+=======
             <button className="carousel-btn left" onClick={prevImg}>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
               <ChevronLeft size={22} />
             </button>
 
@@ -203,9 +212,29 @@ export default function HomePage() {
               <img src={images[currentImg]} className="carousel-img" />
             </div>
 
+<<<<<<< HEAD
+            <button type="button" className="carousel-btn right" onClick={nextImg} title="Siguiente imagen">
+              <ChevronRight size={22} />
+            </button>
+
+            {/* DOTS */}
+            <div className="carousel-dots">
+              {images.map((image, index) => (
+                <button
+                  type="button"
+                  key={image}
+                  className={`dot ${index === currentImg ? 'active' : ''}`}
+                  onClick={() => setCurrentImg(index)}
+                  aria-label={`Mostrar imagen ${index + 1}`}
+                />
+              ))}
+            </div>
+
+=======
             <button className="carousel-btn right" onClick={nextImg}>
               <ChevronRight size={22} />
             </button>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
           </div>
         </div>
       </section>
@@ -216,13 +245,29 @@ export default function HomePage() {
         <h2>Selecciona un servicio</h2>
 
         <div className="services-grid">
+<<<<<<< HEAD
+          <button type="button" className="service-card" onClick={() => setOpenModal(true)}>
+            <div className="service-icon"><Dumbbell size={28} /></div>
+=======
           <button className="service-card" onClick={handleQuieroEntrenar}>
             <Dumbbell size={28} />
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
             <h3>Gimnasio</h3>
             <p>Reserva tu horario</p>
           </button>
 
           <Link href="/nutricion" className="service-card disabled">
+<<<<<<< HEAD
+            <div className="service-icon"><Apple size={28} /></div>
+            <h3>EnfermerÃ­a</h3>
+            <p>PrÃ³ximamente</p>
+          </Link>
+
+          <div className="service-card disabled">
+            <div className="service-icon"><Sparkles size={28} /></div>
+            <h3>PrÃ³ximamente</h3>
+            <p>Nuevos talleres en camino</p>
+=======
             <Apple size={28} />
             <h3>Enfermería</h3>
             <p>Próximamente</p>
@@ -231,26 +276,41 @@ export default function HomePage() {
           <div className="service-card disabled">
             <Sparkles size={28} />
             <h3>Próximamente</h3>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
           </div>
         </div>
       </section>
 
       {/* MODAL LISTA DE ESPERA */}
       {openModal && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
+        <div className="modal-overlay">
           <div className="modal-box">
+<<<<<<< HEAD
+            <button type="button" className="modal-close" onClick={closeModal} title="Cerrar modal">
+=======
 
             <button className="modal-close" onClick={closeModal}>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
               <X size={20} />
             </button>
 
-            {!sent ? (
+            {sent ? (
+              <div className="modal-success">
+                <div className="success-icon">OK</div>
+                <h3>Registro confirmado</h3>
+                <p>Te notificaremos cuando se habilite.</p>
+              </div>
+            ) : (
               <>
                 <h2>Convocatoria cerrada</h2>
+<<<<<<< HEAD
+                <p>Dejanos tu correo y te avisaremos cuando se abra.</p>
+=======
                 <p>
                   Actualmente no hay convocatoria abierta para el gimnasio.
                   Déjanos tu correo y te avisaremos cuando se habilite.
                 </p>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
                 <form className="modal-form" onSubmit={handleSubmit}>
                   <input
@@ -260,16 +320,24 @@ export default function HomePage() {
                     placeholder="tucorreo@uteq.edu.mx"
                     required
                   />
+<<<<<<< HEAD
+
+                  <button type="submit" className="btn btn--blue btn--full btn--lg">
+=======
                   <button className="btn btn--blue btn--full">
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                     Notificarme
                   </button>
                 </form>
               </>
+<<<<<<< HEAD
+=======
             ) : (
               <div className="modal-success">
                 <h3>Registro confirmado</h3>
                 <p>Te avisaremos cuando se abra la convocatoria.</p>
               </div>
+>>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
             )}
 
           </div>
