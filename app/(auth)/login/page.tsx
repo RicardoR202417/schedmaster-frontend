@@ -1,10 +1,6 @@
 'use client';
 
-<<<<<<< HEAD
 import { useState } from 'react';
-=======
-import { useState, useEffect } from 'react';
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 import { useRouter } from 'next/navigation';
 import { CircleCheck, ListOrdered, Bell, Sun, Moon } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
@@ -23,36 +19,22 @@ export default function LoginPage() {
   const [modalOpen,    setModalOpen]    = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-<<<<<<< HEAD
 const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
   e.preventDefault();
   if (loading) return;
   setLoading(true);
-=======
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
 
-<<<<<<< HEAD
   try {
     const keyRes = await fetch(`${API_URL}/api/auth/public-key`);
     if (!keyRes.ok) throw new Error('No se pudo obtener la clave pÃƒÆ’Ã‚Âºblica');
-=======
-    try {
-      const keyRes = await fetch(`${API_URL}/auth/public-key`);
-      if (!keyRes.ok) throw new Error('No se pudo obtener la clave pública');
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
       const { keyId, publicKey: publicKeyPem } = await keyRes.json();
 
-<<<<<<< HEAD
     const pemBody = publicKeyPem
       .replace('-----BEGIN PUBLIC KEY-----', '')
       .replace('-----END PUBLIC KEY-----', '')
@@ -122,21 +104,6 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
           correo: correo.toLowerCase().trim(),
           expiresAt: Date.now() + (Number(data.expiresInSeconds) || 0) * 1000
         })
-=======
-      const pemBody = publicKeyPem
-        .replace('-----BEGIN PUBLIC KEY-----', '')
-        .replace('-----END PUBLIC KEY-----', '')
-        .replace(/\n/g, '');
-
-      const pemBuffer = Uint8Array.from(atob(pemBody), c => c.charCodeAt(0));
-
-      const rsaPublicKey = await crypto.subtle.importKey(
-        'spki',
-        pemBuffer,
-        { name: 'RSA-OAEP', hash: 'SHA-256' },
-        false,
-        ['encrypt']
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       );
 
       const aesKey = await crypto.subtle.generateKey(
@@ -233,7 +200,6 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     } finally {
       setLoading(false);
     }
-<<<<<<< HEAD
 
     setModalMessage('Estado de usuario no reconocido');
     setModalOpen(true);
@@ -246,17 +212,11 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     setLoading(false);
   }
 };
-=======
-  };
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
   return (
     <div className="login-page">
 
-<<<<<<< HEAD
       {/* BotÃƒÆ’Ã‚Â³n flotante dark mode */}
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
         {mounted ? (
           darkMode ? <Moon size={18} /> : <Sun size={18} />
@@ -337,14 +297,11 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
             </button>
           </form>
 
-<<<<<<< HEAD
           {/* <div className="divider"><span>Ãƒâ€šÃ‚Â¿Primera vez?</span></div>
           <div className="auth-link">
             <Link href="/register">Crea tu cuenta aquÃƒÆ’Ã‚Â­</Link>
           </div> */}
 
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         </div>
       </section>
 

@@ -11,6 +11,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 const AVATAR_COLORS = ['ac1','ac2','ac3','ac4','ac5','ac6','ac7','ac8'] as const;
 const getAvatarClass = (id: number) => AVATAR_COLORS[id % AVATAR_COLORS.length];
 
+// ✅ Helper: obtiene "YYYY-MM-DD" en hora LOCAL (no UTC)
+const getLocalDateString = (d: Date): string => {
+  const anio = d.getFullYear();
+  const mes  = String(d.getMonth() + 1).padStart(2, '0');
+  const dia  = String(d.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+};
+
 interface Asistencia {
   id: number; 
   id_inscripcion: number;
@@ -30,22 +38,47 @@ export default function AdminAsistenciasPage() {
   const router = useRouter();
 
   const [asistencias, setAsistencias] = useState<Asistencia[]>([]);
-  const [fecha, setFecha] = useState<string>(() =>
-    new Date().toISOString().split('T')[0]
-  );
+  const [periodos, setPeriodos] = useState<any[]>([]); 
+  const [fecha, setFecha] = useState<string>(() => getLocalDateString(new Date()));
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [filterHorario, setFilterHorario] = useState('');
   const [filterTipo, setFilterTipo] = useState('');
   const [filterEstado, setFilterEstado] = useState(''); 
   const [filterCarrera, setFilterCarrera] = useState('');
+  const [filterPeriodo, setFilterPeriodo] = useState(''); 
+  
   const [filteredAsistencias, setFilteredAsistencias] = useState<Asistencia[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  const fetchPeriodos = async () => {
+    try {
+      const res = await fetch(`${API_URL}/periodos`); 
+      if (res.ok) {
+        const data = await res.json();
+        setPeriodos(data);
+        if (data.length > 0) {
+          const periodoActivo = data.find((p: any) => p.estado === 'activo') || data[0];
+          setFilterPeriodo(periodoActivo.id_periodo.toString());
+        }
+      }
+    } catch (error) {
+      console.error('Error al obtener periodos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPeriodos();
+  }, []);
 
   const fetchAsistencias = async (query = '') => {
     try {
       const params = new URLSearchParams();
       params.set('fecha', fecha);
+      
+      if (filterPeriodo) params.set('id_periodo', filterPeriodo);
+
       const term = query.trim();
       if (term) params.set('q', term);
 
@@ -65,8 +98,9 @@ export default function AdminAsistenciasPage() {
             nombre: item.usuario,
             apellido: '', 
             iniciales,
-            horarioInicio: inicio,
-            horarioFin: fin,
+            // Normalizar a HH:mm — el backend a veces devuelve "07:00:00"
+            horarioInicio: inicio.trim().slice(0, 5),
+            horarioFin:    fin.trim().slice(0, 5),
             tipoEntrenamiento: 'Gimnasio', 
             carrera: item.carrera,
             matricula: item.correo, 
@@ -80,7 +114,9 @@ export default function AdminAsistenciasPage() {
     }
   };
 
-  useEffect(() => { fetchAsistencias(); }, [fecha]);
+  useEffect(() => { 
+    if (filterPeriodo) fetchAsistencias(); 
+  }, [fecha, filterPeriodo]);
 
   useEffect(() => {
     let f = [...asistencias];
@@ -95,49 +131,85 @@ export default function AdminAsistenciasPage() {
   const totalReservas  = asistencias.length;
   const presentes      = asistencias.filter(a => a.estado === 'presente').length;
   const ausentes       = asistencias.filter(a => a.estado === 'ausente').length;
-  const tasaAsistencia = presentes + ausentes > 0
+  const tasaAsistencia = totalReservas > 0
     ? Math.round((presentes / totalReservas) * 100) : 0;
 
-  const isWithinSchedule = (inicio: string, fin: string) => {
-    if (!inicio || !fin || inicio === '00:00') return true; 
+  // ✅ Siempre recalcula en el momento del clic usando hora local
+  const getHoyString = () => getLocalDateString(new Date());
+
+  const isWithinSchedule = (inicio: string, fin: string): boolean => {
+    // Si no hay horario definido, permitir siempre
+    if (!inicio || !fin || inicio === '00:00') return true;
+
     const now = new Date();
-    const isToday = fecha === now.toISOString().split('T')[0];
-    if (!isToday) return true;
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    const currentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
-    if (inicio <= fin) return currentTime >= inicio && currentTime <= fin;
+    const hoy = getHoyString();
+
+    // Si la fecha seleccionada no es hoy, no aplica restricción de horario
+    if (fecha !== hoy) return true;
+
+    // Hora actual en formato HH:mm (local)
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hh}:${mm}`;
+
+    // Horario normal (ej. 07:00 - 09:00)
+    if (inicio <= fin) {
+      return currentTime >= inicio && currentTime <= fin;
+    }
+    // Horario que cruza medianoche (ej. 22:00 - 02:00)
     return currentTime >= inicio || currentTime <= fin;
   };
 
   const registrarAsistenciaBD = async (asist: Asistencia, asistio: boolean) => {
+    const hoy = getHoyString(); // ✅ Recalcula en el momento exacto del clic
+
+    if (fecha !== hoy) {
+      setModalMessage("Operación no permitida: Solo se puede registrar asistencia en el día actual.");
+      setModalOpen(true);
+      return;
+    }
+
     if (!isWithinSchedule(asist.horarioInicio, asist.horarioFin)) {
-      setModalMessage(`Acción denegada: no puedes pasar asistencia fuera de horario. El horario de ${asist.nombre} es de ${asist.horarioInicio} a ${asist.horarioFin}.`);
+      setModalMessage(
+        `Acción denegada: no puedes pasar asistencia fuera de horario. ` +
+        `El horario de ${asist.nombre} es de ${asist.horarioInicio} a ${asist.horarioFin}.`
+      );
       setModalOpen(true);
       return; 
     }
+
     try {
       const res = await fetch(`${API_URL}/asistencias/registrar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id_usuario: asist.id,
-          id_inscripcion: asist.id_inscripcion,
-          id_horario: asist.id_horario,
+          id_usuario:        asist.id,
+          id_inscripcion:    asist.id_inscripcion,
+          id_horario:        asist.id_horario,
           asistio,
           id_registrado_por: 1, 
-          fecha_registro: fecha
+          fecha_registro:    fecha,
         })
       });
+
       if (res.ok) {
         setAsistencias(prev => prev.map(a =>
           a.id === asist.id ? { ...a, estado: asistio ? 'presente' : 'ausente' } : a
         ));
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setModalMessage(`Error al registrar: ${err.message || res.status}`);
+        setModalOpen(true);
       }
     } catch (error) {
       console.error("Error al registrar asistencia:", error);
+      setModalMessage("Error de conexión al registrar asistencia.");
+      setModalOpen(true);
     }
   };
+
+  // ✅ isNotToday también recalcula en cada render con hora local
+  const isNotToday = fecha !== getHoyString();
 
   return (
     <div className="app app--admin-attendance">
@@ -165,9 +237,7 @@ export default function AdminAsistenciasPage() {
             </div>
           </header>
 
-          {/* ── BARRA DE FILTROS RESPONSIVA ─────────────────────────── */}
           <div className="filter-bar">
-            
             <div className="field">
               <Search size={18} color="#888" />
               <input
@@ -178,17 +248,18 @@ export default function AdminAsistenciasPage() {
               />
             </div>
 
+            <select className="select" value={filterPeriodo} onChange={e => setFilterPeriodo(e.target.value)} aria-label="Filtrar por Convocatoria">
+              {periodos.map(p => (
+                <option key={p.id_periodo} value={p.id_periodo}>
+                  {p.nombre_periodo} ({p.estado})
+                </option>
+              ))}
+            </select>
+
             <select className="select" value={filterHorario} onChange={e => setFilterHorario(e.target.value)} aria-label="Filtrar por horario">
               <option value="">Todos los horarios</option>
               {Array.from(new Set(asistencias.map(a => `${a.horarioInicio}-${a.horarioFin}`))).map(h => (
                 <option key={h} value={h}>{h}</option>
-              ))}
-            </select>
-
-            <select className="select" value={filterTipo} onChange={e => setFilterTipo(e.target.value)} aria-label="Filtrar por tipo de entrenamiento">
-              <option value="">Todos los tipos</option>
-              {Array.from(new Set(asistencias.map(a => a.tipoEntrenamiento))).map(t => (
-                <option key={t} value={t}>{t}</option>
               ))}
             </select>
 
@@ -219,7 +290,6 @@ export default function AdminAsistenciasPage() {
             </button>
           </div>
 
-          {/* ── STAT CARDS ───────────────────────────────────────────── */}
           <div className="stat-grid">
             <div className="stat-card">
               <div className="stat-card-info">
@@ -251,7 +321,6 @@ export default function AdminAsistenciasPage() {
             </div>
           </div>
 
-          {/* ── LISTA DE ASISTENCIAS ─────────────────────────────────── */}
           <section className="row-list">
             {filteredAsistencias.length === 0 ? (
               <div className="empty-state">
@@ -265,7 +334,6 @@ export default function AdminAsistenciasPage() {
 
                   <div className="row-info">
                     <span className="row-name">{asist.nombre} {asist.apellido}</span>
-                    {/* row-sub en móvil muestra datos en columna, no en línea */}
                     <span className="row-sub muted">
                       {asist.horarioInicio} - {asist.horarioFin}
                       &nbsp;·&nbsp;{asist.carrera}
@@ -279,15 +347,17 @@ export default function AdminAsistenciasPage() {
                     {asist.estado === 'pendiente' ? (
                       <>
                         <button
-                          className="btn-mini btn-mini--green"
+                          className={`btn-mini ${isNotToday ? 'opacity-50 cursor-not-allowed bg-gray-400 border-gray-400' : 'btn-mini--green'}`}
                           type="button"
+                          disabled={isNotToday}
                           onClick={() => registrarAsistenciaBD(asist, true)}
                         >
                           Presente
                         </button>
                         <button
-                          className="btn-mini btn-mini--red"
+                          className={`btn-mini ${isNotToday ? 'opacity-50 cursor-not-allowed bg-gray-400 border-gray-400' : 'btn-mini--red'}`}
                           type="button"
+                          disabled={isNotToday}
                           onClick={() => registrarAsistenciaBD(asist, false)}
                         >
                           Ausente
