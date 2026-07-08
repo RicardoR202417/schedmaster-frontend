@@ -70,13 +70,11 @@ export default function DashboardPage() {
       const usuarioLogueado = localStorage.getItem('user');
       if (usuarioLogueado) {
         setAutorizado(true);
+        return true;
       } else {
         router.push('/login');
-      } 
-      if (!localStorage.getItem('user')) {
-        router.push('/login');
         return false;
-      }
+      } 
     };
 
     const cargarStats = async () => {
