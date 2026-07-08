@@ -15,9 +15,8 @@ export default function ChatBot() {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-
+    // Actualizamos el estado con el nuevo mensaje del usuario
     setMessages((prev) => [...prev, { sender: "user", text: input }]);
-    setMessages(newMessages);
     setInput("");
     setIsLoading(true);
 
