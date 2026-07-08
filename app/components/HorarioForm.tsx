@@ -53,89 +53,29 @@ const HorarioForm = () => {
 
         {/* ID Periodo — form-select igual que modales admin */}
         <div className="form-group">
-<<<<<<< HEAD
           <label htmlFor="id_periodo">ID del Periodo</label>
                 <input id="id_periodo" type="number" name="id_periodo" placeholder="Ej. 1" onChange={handleChange} required />
-=======
-          <label>ID del Periodo</label>
-          <input
-            className="form-select"
-            type="number"
-            name="id_periodo"
-            placeholder="Ej. 1"
-            onChange={handleChange}
-            required
-          />
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         </div>
 
         <div className="form-row">
           <div className="form-group half-width">
-<<<<<<< HEAD
             <label htmlFor="hora_inicio">Hora Inicio</label>
                 <input id="hora_inicio" type="time" name="hora_inicio" onChange={handleChange} required step="1" title="Hora de inicio" />
           </div>
           <div className="form-group half-width">
             <label htmlFor="hora_fin">Hora Fin</label>
                 <input id="hora_fin" type="time" name="hora_fin" onChange={handleChange} required step="1" title="Hora de fin" />
-=======
-            <label>Hora Inicio</label>
-            <input
-              className="form-select"
-              type="time"
-              name="hora_inicio"
-              onChange={handleChange}
-              required
-              step="1"
-              title="Hora de inicio"
-            />
-          </div>
-          <div className="form-group half-width">
-            <label>Hora Fin</label>
-            <input
-              className="form-select"
-              type="time"
-              name="hora_fin"
-              onChange={handleChange}
-              required
-              step="1"
-              title="Hora de fin"
-            />
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group half-width">
-<<<<<<< HEAD
             <label htmlFor="tipo_actividad">Tipo de Actividad</label>
                 <input id="tipo_actividad" type="text" name="tipo_actividad" placeholder="Ej. Crossfit" onChange={handleChange} required />
           </div>
           <div className="form-group half-width">
             <label htmlFor="capacidad_maxima">Capacidad Máxima</label>
                 <input id="capacidad_maxima" type="number" name="capacidad_maxima" placeholder="Ej. 20" onChange={handleChange} required />
-=======
-            <label>Tipo de Actividad</label>
-            <input
-              className="form-select"
-              type="text"
-              name="tipo_actividad"
-              placeholder="Ej. Crossfit"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group half-width">
-            <label>Capacidad Máxima</label>
-            <input
-              className="form-select"
-              type="number"
-              name="capacidad_maxima"
-              placeholder="Ej. 20"
-              onChange={handleChange}
-              required
-            />
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
           </div>
         </div>
 

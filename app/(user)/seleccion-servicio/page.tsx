@@ -124,24 +124,7 @@ export default function HomePage() {
           <img src="/logo.png" alt="logo" />
           <span>SchedMaster</span>
         </div>
-<<<<<<< HEAD
-        <Link href="/login" className="btn btn--dark">Iniciar sesiÃ³n</Link>
-=======
-
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <button className="dark-toggle" onClick={toggle}>
-            {mounted ? (
-              darkMode ? <Moon size={18} /> : <Sun size={18} />
-            ) : (
-              <span style={{ width: 18, height: 18 }} />
-            )}
-          </button>
-
-          <Link href="/login" className="btn btn--dark">
-            Iniciar sesión
-          </Link>
-        </div>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
+        <Link href="/login" className="btn btn--dark">Iniciar sesión</Link>
       </header>
 
       {/* HERO */}
@@ -156,7 +139,7 @@ export default function HomePage() {
           </h1>
 
           <p className="hero-subtitle">
-            Accede al gimnasio universitario y mejora tu bienestar cada dÃ­a.
+            Accede al gimnasio universitario y mejora tu bienestar cada día.
           </p>
 
           <button type="button"
@@ -174,7 +157,7 @@ export default function HomePage() {
         <strong>Sobre el gimnasio</strong>
         <h2>Gimnasio universitario</h2>
         <p className="muted">
-          Nuestras instalaciones estÃ¡n diseÃ±adas para brindarte un espacio completo de entrenamiento.
+          Nuestras instalaciones están diseñadas para brindarte un espacio completo de entrenamiento.
           Las convocatorias se abren cada cuatrimestre para que puedas formar parte.
         </p>
       </section>
@@ -182,13 +165,13 @@ export default function HomePage() {
       {/* BENEFICIOS */}
       <section className="services-section">
         <strong>Beneficios</strong>
-        <h2>Â¿Por quÃ© entrenar aquÃ­?</h2>
+        <h2>¿Por qué entrenar aqui?</h2>
 
         <div className="services-grid">
-          <div className="service-card">ðŸ’ª Mejora tu condiciÃ³n fÃ­sica</div>
-          <div className="service-card">ðŸ§  Reduce el estrÃ©s</div>
-          <div className="service-card">âš¡ Aumenta tu energÃ­a</div>
-          <div className="service-card">ðŸ« Instalaciones universitarias</div>
+          <div className="service-card">Aquí Mejora tu condición fisica</div>
+          <div className="service-card">Reduce el estres</div>
+          <div className="service-card">Aumenta tu energia</div>
+          <div className="service-card">Instalaciones universitarias</div>
         </div>
       </section>
 
@@ -199,20 +182,15 @@ export default function HomePage() {
 
         <div className="card--glass">
           <div className="carousel">
-<<<<<<< HEAD
 
             <button type="button" className="carousel-btn left" onClick={prevImg} title="Imagen anterior">
-=======
-            <button className="carousel-btn left" onClick={prevImg}>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
               <ChevronLeft size={22} />
             </button>
 
             <div className="carousel-wrapper">
-              <img src={images[currentImg]} className="carousel-img" />
+              <img src={images[currentImg]} className="carousel-img" alt={`Imagen de instalaciones ${currentImg + 1}`} />
             </div>
 
-<<<<<<< HEAD
             <button type="button" className="carousel-btn right" onClick={nextImg} title="Siguiente imagen">
               <ChevronRight size={22} />
             </button>
@@ -230,11 +208,6 @@ export default function HomePage() {
               ))}
             </div>
 
-=======
-            <button className="carousel-btn right" onClick={nextImg}>
-              <ChevronRight size={22} />
-            </button>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
           </div>
         </div>
       </section>
@@ -245,38 +218,22 @@ export default function HomePage() {
         <h2>Selecciona un servicio</h2>
 
         <div className="services-grid">
-<<<<<<< HEAD
           <button type="button" className="service-card" onClick={() => setOpenModal(true)}>
             <div className="service-icon"><Dumbbell size={28} /></div>
-=======
-          <button className="service-card" onClick={handleQuieroEntrenar}>
-            <Dumbbell size={28} />
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
             <h3>Gimnasio</h3>
             <p>Reserva tu horario</p>
           </button>
 
           <Link href="/nutricion" className="service-card disabled">
-<<<<<<< HEAD
             <div className="service-icon"><Apple size={28} /></div>
-            <h3>EnfermerÃ­a</h3>
-            <p>PrÃ³ximamente</p>
-          </Link>
-
-          <div className="service-card disabled">
-            <div className="service-icon"><Sparkles size={28} /></div>
-            <h3>PrÃ³ximamente</h3>
-            <p>Nuevos talleres en camino</p>
-=======
-            <Apple size={28} />
             <h3>Enfermería</h3>
             <p>Próximamente</p>
           </Link>
 
           <div className="service-card disabled">
-            <Sparkles size={28} />
+            <div className="service-icon"><Sparkles size={28} /></div>
             <h3>Próximamente</h3>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
+            <p>Nuevos talleres en camino</p>
           </div>
         </div>
       </section>
@@ -285,12 +242,7 @@ export default function HomePage() {
       {openModal && (
         <div className="modal-overlay">
           <div className="modal-box">
-<<<<<<< HEAD
             <button type="button" className="modal-close" onClick={closeModal} title="Cerrar modal">
-=======
-
-            <button className="modal-close" onClick={closeModal}>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
               <X size={20} />
             </button>
 
@@ -303,14 +255,7 @@ export default function HomePage() {
             ) : (
               <>
                 <h2>Convocatoria cerrada</h2>
-<<<<<<< HEAD
                 <p>Dejanos tu correo y te avisaremos cuando se abra.</p>
-=======
-                <p>
-                  Actualmente no hay convocatoria abierta para el gimnasio.
-                  Déjanos tu correo y te avisaremos cuando se habilite.
-                </p>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
                 <form className="modal-form" onSubmit={handleSubmit}>
                   <input
@@ -320,24 +265,12 @@ export default function HomePage() {
                     placeholder="tucorreo@uteq.edu.mx"
                     required
                   />
-<<<<<<< HEAD
 
                   <button type="submit" className="btn btn--blue btn--full btn--lg">
-=======
-                  <button className="btn btn--blue btn--full">
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                     Notificarme
                   </button>
                 </form>
               </>
-<<<<<<< HEAD
-=======
-            ) : (
-              <div className="modal-success">
-                <h3>Registro confirmado</h3>
-                <p>Te avisaremos cuando se abra la convocatoria.</p>
-              </div>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
             )}
 
           </div>

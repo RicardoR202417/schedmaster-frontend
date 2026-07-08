@@ -17,7 +17,6 @@ interface DatoReporte {
   servicio: string;
   asistencia: string;
   estado: string;
-<<<<<<< HEAD
   periodo: string; //Agregamos el periodo que ahora manda el backend
 }
 
@@ -45,9 +44,6 @@ function getExportButtonContent(exportDone: boolean, exporting: boolean) {
   }
 
   return <><Download size={16} /> Descargar</>;
-=======
-  periodo: string;
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 }
 
 export default function AdminEstadisticasPage() {
@@ -85,10 +81,7 @@ export default function AdminEstadisticasPage() {
     { value: 'primavera', label: 'Primavera 2025' },
   ];
 
-<<<<<<< HEAD
   //LÃ³gica de Filtrado DinÃ¡mico
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
   const datosFiltrados = periodoFiltro === 'todos' 
     ? datosTabla 
     : datosTabla.filter(d => d.periodo.toLowerCase().includes(periodoFiltro.toLowerCase()));
@@ -99,10 +92,7 @@ export default function AdminEstadisticasPage() {
   const handleExport = () => {
     setExporting(true);
     
-<<<<<<< HEAD
     // Elegimos quÃ© datos exportar segÃºn lo que pidiÃ³ el usuario
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
     const datosExportar = exportScope === 'completo' ? datosTabla : datosFiltrados;
 
     setTimeout(() => {
@@ -114,10 +104,7 @@ export default function AdminEstadisticasPage() {
           ...datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.periodo, r.asistencia, r.estado]),
         ];
         
-<<<<<<< HEAD
         //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ã‘
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
@@ -126,10 +113,7 @@ export default function AdminEstadisticasPage() {
         URL.revokeObjectURL(url);
         
       } else if (exportFormat === 'pdf') {
-<<<<<<< HEAD
         // MAGIA DEL PDF
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
         const doc = new jsPDF();
         doc.text("Reporte de Asistencias - SchedMaster", 14, 15);
         
@@ -158,22 +142,17 @@ export default function AdminEstadisticasPage() {
             <header className="section-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
               <div>
                 <h2>Reportes</h2>
-                <p>VisiÃ³n completa del ciclo: interesados â†’ notificados â†’ inscritos â†’ asistencia.</p>
+                <p>Visión completa del ciclo: interesados, notificados, inscritos, asistencia.</p>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '15px' }}>
                 
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                   <div className="chip chip--blue" style={{ fontSize: '14px', padding: '8px 15px', background: '#e0f2fe', color: '#0369a1', borderRadius: '20px' }}>
-                    <span style={{ marginRight: '5px' }}>ðŸ‘¥</span> Inscritos totales: <strong>{totalInscritos}</strong>
+                    <span style={{ marginRight: '5px' }}></span> Inscritos totales: <strong>{totalInscritos}</strong>
                   </div>
-<<<<<<< HEAD
                   <div className="chip chip--outline" style={{ fontSize: '14px', padding: '8px 15px', border: '1px solid #ddd', borderRadius: '20px' }}>
-                    <span style={{ marginRight: '5px' }}>ðŸ“ˆ</span> Convocatorias activas: <strong>{convActivas}</strong>
-=======
-                  <div className="pill">
-                    <span style={{ marginRight: '5px' }}>📈</span> Convocatorias activas: <strong>{convActivas}</strong>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
+                    <span style={{ marginRight: '5px' }}></span> Convocatorias activas: <strong>{convActivas}</strong>
                   </div>
                 </div>
 
@@ -209,21 +188,12 @@ export default function AdminEstadisticasPage() {
                 <table>
                   <thead>
                     <tr>
-<<<<<<< HEAD
                       <th style={{ padding: '15px' }}>MatrÃ­cula</th>
                       <th style={{ padding: '15px' }}>Nombre del alumno</th>
                       <th style={{ padding: '15px' }}>Carrera</th>
                       <th style={{ padding: '15px' }}>Servicio</th>
                       <th style={{ padding: '15px' }}>Asistencia Prom.</th>
                       <th style={{ padding: '15px' }}>Estado</th>
-=======
-                      <th>Matrícula</th>
-                      <th>Nombre del alumno</th>
-                      <th>Carrera</th>
-                      <th>Servicio</th>
-                      <th>Asistencia Prom.</th>
-                      <th>Estado</th>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                     </tr>
                   </thead>
                   <tbody>
@@ -237,7 +207,6 @@ export default function AdminEstadisticasPage() {
                       </tr>
                     ) : (
                       datosFiltrados.map((fila) => (
-<<<<<<< HEAD
                         <tr key={fila.id} style={{ borderBottom: '1px solid #f1f5f9', fontSize: '14px' }}>
                           <td style={{ padding: '15px', color: '#475569', fontWeight: '500' }}>{fila.matricula}</td>
                           <td style={{ padding: '15px', fontWeight: 'bold', color: '#1e293b' }}>{fila.nombre}</td>
@@ -250,15 +219,6 @@ export default function AdminEstadisticasPage() {
                               padding: '4px 8px',
                               borderRadius: '4px'
                             }}>
-=======
-                        <tr key={fila.id}>
-                          <td>{fila.matricula}</td>
-                          <td style={{ fontWeight: 'bold' }}>{fila.nombre}</td>
-                          <td>{fila.carrera}</td>
-                          <td>{fila.servicio}</td>
-                          <td>
-                            <span className={`chip ${parseInt(fila.asistencia) >= 80 ? 'chip--presente' : parseInt(fila.asistencia) > 0 ? 'chip--ausente' : 'chip--pendiente'}`}>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                               {fila.asistencia}
                             </span>
                           </td>
@@ -293,10 +253,7 @@ export default function AdminEstadisticasPage() {
               <div className="form-group">
                 <span className="input-label">Formato de exportaciÃ³n</span>
                 <div className="export-options">
-<<<<<<< HEAD
                   {/*LE DIMOS CUELLO AL JSON COMO PIDIÃ“ ARLET */}
-=======
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                   {[
                     { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cÃ¡lculo' },
                     { value:'pdf',  cls:'pdf',  icon:<FileText size={20} />, label:'PDF',         desc:'Reporte visual listo para presentar' },

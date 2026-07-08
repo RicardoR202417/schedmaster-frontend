@@ -1,55 +1,11 @@
-<<<<<<< HEAD
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
-
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-  /* ==========================================
-    1. VARIABLES — Light mode (default)
-    ========================================== */
-
-  :root {
-    --blue-900:  #234D7B;
-    --blue-500:  #00A4E0;
-    --yellow:    #EBBA3D;
-    --gray:      #71706F;
-    --gray-700:  #334155;
-    --white:     #FFFFFF;
-    --bg:        #F7FAFC;
-    --s-1: 8px;
-    --s-2: 16px;
-    --s-3: 24px;
-    --s-4: 32px;
-    --s-5: 48px;
-    --s-6: 64px;
-    --radius: 16px;
-    --shadow: 0 16px 48px rgba(0,0,0,.10);
-    --font: 'Montserrat', system-ui, Arial, sans-serif;
-
-    /* Tokens semánticos — light */
-    --color-bg:           #F7FAFC;
-    --color-surface:      #FFFFFF;
-    --color-surface-alt:  #F8FAFC;
-    --color-border:       rgba(15,23,42,.08);
-    --color-border-mid:   rgba(15,23,42,.12);
-    --color-text-primary: #1f2937;
-    --color-text-muted:   #71706F;
-    --color-text-heading: #234D7B;
-    --color-input-bg:     #fafafa;
-    --color-input-border: #e8e8e8;
-    --color-table-head:   #f8fafc;
-    --color-table-hover:  #f8fafc;
-    --color-shadow:       rgba(0,0,0,.08);
-    --color-card-shadow:  0 10px 26px rgba(0,0,0,.08);
-=======
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ==========================================
-   1. VARIABLES — Light mode (default)
+   1. VARIABLES ÔÇö Light mode (default)
    ========================================== */
 
 :root {
@@ -70,7 +26,7 @@
   --shadow: 0 16px 48px rgba(0,0,0,.10);
   --font: 'Montserrat', system-ui, Arial, sans-serif;
 
-  /* Tokens semánticos — light */
+  /* Tokens sem+ínticos ÔÇö light */
   --color-bg:            #F7FAFC;
   --color-surface:       #FFFFFF;
   --color-surface-alt:   #F8FAFC;
@@ -88,7 +44,7 @@
 }
 
 /* ==========================================
-   1b. VARIABLES — Dark mode
+   1b. VARIABLES ÔÇö Dark mode
    ========================================== */
 
 html.dark {
@@ -131,7 +87,7 @@ html, body {
 }
 
 /* ==========================================
-   3. TIPOGRAFÍA
+   3. TIPOGRAF+ìA
    ========================================== */
 
 .title {
@@ -272,6 +228,7 @@ html.dark .btn--dark {
 
 .btn--back {
   background: var(--color-surface);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 2px solid rgba(0,164,224,.2);
   color: var(--blue-500); font-size: 12px;
@@ -395,6 +352,7 @@ html.dark .btn-logout:hover { background: rgba(255,255,255,.14); }
 
 .card--glass {
   background: var(--color-surface);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-radius: 32px; padding: var(--s-3);
   box-shadow: var(--color-card-shadow);
@@ -477,7 +435,7 @@ html.dark .btn-logout:hover { background: rgba(255,255,255,.14); }
 .forgot-password a:hover { color: var(--color-text-heading); }
 
 /* ==========================================
-   11. DÍAS (selector)
+   11. D+ìAS (selector)
    ========================================== */
 
 .dias-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 24px; }
@@ -506,9 +464,9 @@ html.dark .btn-logout:hover { background: rgba(255,255,255,.14); }
   border-radius: 12px; padding: 12px 14px; margin-top: 10px;
 }
 .hint { font-size: 13px; color: var(--color-text-muted); margin: 4px 0; display: flex; align-items: center; gap: 6px; }
-.hint::before { content: "○"; }
+.hint::before { content: "Ôùï"; }
 .hint.ok { color: var(--blue-500); font-weight: 600; }
-.hint.ok::before { content: "✔"; }
+.hint.ok::before { content: "Ô£ö"; }
 
 .password-validator {
   margin-top: 12px;
@@ -604,7 +562,7 @@ html.dark .btn-logout:hover { background: rgba(255,255,255,.14); }
 }
 
 /* ==========================================
-   15. LAYOUT — REGISTRO
+   15. LAYOUT ÔÇö REGISTRO
    ========================================== */
 
 .register-page {
@@ -656,7 +614,7 @@ html.dark .page-header .title {
 }
 
 /* ==========================================
-   16. LAYOUT — LOGIN
+   16. LAYOUT ÔÇö LOGIN
    ========================================== */
 
 .login-page {
@@ -700,7 +658,7 @@ html.dark .page-header .title {
 .feature-item {
   display: flex; align-items: center; gap: 12px;
   background: rgba(255,255,255,.1); padding: 12px 18px;
-  border-radius: 12px; backdrop-filter: blur(10px);
+  border-radius: 12px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,.2);
 }
 .feature-icon {
@@ -824,7 +782,7 @@ html.dark .page-header .title {
 }
 
 /* ==========================================
-   17. LAYOUT — HOME
+   17. LAYOUT ÔÇö HOME
    ========================================== */
 
 .home-page { min-height: 100vh; background: var(--color-bg); font-family: var(--font); }
@@ -952,7 +910,7 @@ html.dark .page-header .title {
 }
 
 /* ==========================================
-   19. PÁGINA PENDING / CONVOCATORIA ACTIVA
+   19. P+üGINA PENDING / CONVOCATORIA ACTIVA
    ========================================== */
 
 .page {
@@ -1033,7 +991,7 @@ html.dark .page-header .title {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==========================================
-   21. ADMIN — Layout, Sidebar
+   21. ADMIN ÔÇö Layout, Sidebar
    ========================================== */
 
 .app {
@@ -1103,6 +1061,9 @@ html.dark .sidebar {
   border: 1px solid rgba(255,255,255,.14);
   border-radius: 999px; padding: 4px 10px;
   cursor: pointer; transition: background .18s ease;
+  -webkit-user-select: none; /* Safari 3+, iOS 3+ */
+  -moz-user-select: none;    /* Old Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
   user-select: none;
 }
 .theme-switch:hover { background: rgba(255,255,255,.14); color: #fff; }
@@ -1528,7 +1489,7 @@ html.dark .pill {
 .table-area .empty-state svg { color: var(--color-text-muted); margin-bottom: 12px; opacity: .4; }
 
 /* ==========================================
-   29. BITÁCORA
+   29. BIT+üCORA
    ========================================== */
 
 .log-modal { max-width: 560px; display: flex; flex-direction: column; max-height: 90vh; }
@@ -1570,7 +1531,7 @@ html.dark .pill {
 .log-hint              { font-size: 11px; color: var(--color-text-muted); }
 
 /* ==========================================
-   30. ESTADÍSTICAS
+   30. ESTAD+ìSTICAS
    ========================================== */
 
 .tabs-bar     { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -1833,11 +1794,10 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
 
   .app--admin-users .main {
     overflow: visible;
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
   }
 
   /* ==========================================
-    1b. VARIABLES — Dark mode
+    1b. VARIABLES ÔÇö Dark mode
     ========================================== */
 
   html.dark {
@@ -1880,7 +1840,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   }
 
   /* ==========================================
-    3. TIPOGRAFÍA
+    3. TIPOGRAF+ìA
     ========================================== */
 
   .title {
@@ -2021,6 +1981,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
 
   .btn--back {
     background: var(--color-surface);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 2px solid rgba(0,164,224,.2);
     color: var(--blue-500); font-size: 12px;
@@ -2144,6 +2105,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
 
   .card--glass {
     background: var(--color-surface);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border-radius: 32px; padding: var(--s-3);
     box-shadow: var(--color-card-shadow);
@@ -2226,7 +2188,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   .forgot-password a:hover { color: var(--color-text-heading); }
 
   /* ==========================================
-    11. DÍAS (selector)
+    11. D+ìAS (selector)
     ========================================== */
 
   .dias-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 24px; }
@@ -2255,9 +2217,9 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
     border-radius: 12px; padding: 12px 14px; margin-top: 10px;
   }
   .hint { font-size: 13px; color: var(--color-text-muted); margin: 4px 0; display: flex; align-items: center; gap: 6px; }
-  .hint::before { content: "○"; }
+  .hint::before { content: "Ôùï"; }
   .hint.ok { color: var(--blue-500); font-weight: 600; }
-  .hint.ok::before { content: "✔"; }
+  .hint.ok::before { content: "Ô£ö"; }
 
   .password-validator {
     margin-top: 12px;
@@ -2277,10 +2239,6 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
     transition: background .2s ease;
   }
 
-<<<<<<< HEAD
-  .password-validator-bar.is-active {
-    background: var(--blue-500);
-=======
   .app--admin-stats table thead th:nth-child(5),
   .app--admin-stats table tbody td:nth-child(5),
   .app--admin-stats table thead th:nth-child(6),
@@ -2305,7 +2263,6 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
 @media (max-width: 768px) {
   .app--admin-inscriptions .modal-overlay {
     padding: 8px !important;
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
   }
 
   .password-validator-list {
@@ -2380,7 +2337,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   }
 
   /* ==========================================
-    15. LAYOUT — REGISTRO
+    15. LAYOUT ÔÇö REGISTRO
     ========================================== */
 
   .register-page {
@@ -2432,7 +2389,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   }
 
   /* ==========================================
-    16. LAYOUT — LOGIN
+    16. LAYOUT ÔÇö LOGIN
     ========================================== */
 
   .login-page {
@@ -2476,7 +2433,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   .feature-item {
     display: flex; align-items: center; gap: 12px;
     background: rgba(255,255,255,.1); padding: 12px 18px;
-    border-radius: 12px; backdrop-filter: blur(10px);
+    border-radius: 12px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,.2);
   }
   .feature-icon {
@@ -2600,7 +2557,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   }
 
   /* ==========================================
-    17. LAYOUT — HOME
+    17. LAYOUT ÔÇö HOME
     ========================================== */
 
   .home-page { min-height: 100vh; background: var(--color-bg); font-family: var(--font); }
@@ -2728,7 +2685,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   }
 
   /* ==========================================
-    19. PÁGINA PENDING / CONVOCATORIA ACTIVA
+    19. P+üGINA PENDING / CONVOCATORIA ACTIVA
     ========================================== */
 
   .page {
@@ -2809,7 +2766,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ==========================================
-    21. ADMIN — Layout, Sidebar
+    21. ADMIN ÔÇö Layout, Sidebar
     ========================================== */
 
   .app {
@@ -2879,6 +2836,8 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
     border: 1px solid rgba(255,255,255,.14);
     border-radius: 999px; padding: 4px 10px;
     cursor: pointer; transition: background .18s ease;
+    -webkit-user-select: none; /* Safari 3+, iOS 3+ */
+    -ms-user-select: none; /* IE 10+ */
     user-select: none;
   }
   .theme-switch:hover { background: #eef2f7; color: #234D7B; }
@@ -3252,7 +3211,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   .table-area .empty-state svg { color: var(--color-text-muted); margin-bottom: 12px; opacity: .4; }
 
   /* ==========================================
-    29. BITÁCORA
+    29. BIT+üCORA
     ========================================== */
 
   .log-modal { max-width: 560px; display: flex; flex-direction: column; max-height: 90vh; }
@@ -3294,7 +3253,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   .log-hint              { font-size: 11px; color: var(--color-text-muted); }
 
   /* ==========================================
-    30. ESTADÍSTICAS
+    30. ESTAD+ìSTICAS
     ========================================== */
 
   .tabs-bar     { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -3763,9 +3722,23 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
 
     .app--admin-stats .table-scroll {
       overflow-x: auto;
+      /* Hide scrollbars: Firefox uses scrollbar-width, IE/Edge old uses -ms-overflow-style,
+         WebKit browsers use the ::-webkit-scrollbar pseudo-element */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
-    .app--admin-stats table {
+    .app--admin-stats .table-scroll::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      background: transparent;
+    }
+
+    /* WebKit (Chrome, Safari) hide scrollbar for the sidebar */
+    .sidebar::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      background: transparent;
       min-width: 600px;
     }
   }
@@ -3975,9 +3948,19 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
       padding: 18px;
       gap: 14px;
       overflow-y: auto;
+      /* Hide native scrollbars where supported */
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
-
-    .app--admin-inscriptions .form-group {
+    /* Hide scrollbars: Firefox uses scrollbar-width, IE/Edge old uses -ms-overflow-style,
+       WebKit browsers use the ::-webkit-scrollbar pseudo-element */
+    .app--admin-stats .table-scroll::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    
+    .app--admin-stats table {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -4084,7 +4067,7 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
     }
   }
 
-  /* Histórico de asistencias: espaciados según guía */
+  /* Hist+¦rico de asistencias: espaciados seg+¦n gu+¡a */
   .app--admin-attendance-history .section-header > div p {
     margin-top: 16px;
   }
@@ -4098,54 +4081,15 @@ html:not(.dark) .export-option-icon.pdf  { color: #ef4444; }
   .app--admin-attendance-history .filter-bar {
     margin-top: 64px;
   }
-<<<<<<< HEAD
-
-  @media (max-width: 768px) {
-    .app--admin-attendance-history .section-header > div p {
-      margin-top: 8px;
-    }
-
-    .app--admin-attendance-history .controls-container {
-      margin-top: 16px;
-      gap: 12px;
-    }
-
-    .app--admin-attendance-history .filter-bar {
-      margin-top: 32px;
-    }
-  }
-
-html.dark .chip--docente { background: #312e81; color: #eef2ff; }
-html.dark .chip--entrenador { background: #7c2d12; color: #fff7ed; }
-html.dark .chip--nutriologa { background: #831843; color: #fdf2f8; }
-html.dark .chip--activo,
-html.dark .chip--aprobado,
-html.dark .chip--activada,
-html.dark .chip--presente,
-html.dark .kpi-icon.green,
-html.dark .insight-icon.green,
-html.dark .kpi-badge.up,
-html.dark .export-option-icon.csv { background: #14532d; color: #f0fdf4; }
-html.dark .chip--inactivo,
-html.dark .chip--rechazado,
-html.dark .chip--desactivada,
-html.dark .chip--ausente,
-html.dark .kpi-badge.down,
-html.dark .export-option-icon.pdf { background: #7f1d1d; color: #fef2f2; }
-html.dark .kpi-icon.purple { background: #4c1d95; color: #f5f3ff; }
-html.dark .kpi-icon.yellow,
-html.dark .insight-icon.yellow { background: #713f12; color: #fffbeb; }
-html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
-=======
 }
 /* ============================================================
-   RESPONSIVE FIX — Agregar al final de globals.css
+   RESPONSIVE FIX ÔÇö Agregar al final de globals.css
    ============================================================ */
 
-/* ── FILTER-BAR MÓVIL ─────────────────────────────────────── */
+/* ÔöÇÔöÇ FILTER-BAR M+ôVIL ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */
 @media (max-width: 1200px) {
 
-  /* El field del buscador ocupa todo el ancho en móvil */
+  /* El field del buscador ocupa todo el ancho en m+¦vil */
   .filter-bar .field {
     min-width: 0;
     width: 100%;
@@ -4181,7 +4125,7 @@ html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
     justify-content: center;
   }
 
-  /* stat-grid en móvil: 2 columnas en lugar de 1 */
+  /* stat-grid en m+¦vil: 2 columnas en lugar de 1 */
   .stat-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -4194,7 +4138,7 @@ html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
     gap: 6px;
   }
 
-  /* row-card ajusta el layout en pantallas pequeñas */
+  /* row-card ajusta el layout en pantallas peque+¦as */
   .row-card {
     flex-wrap: wrap;
     gap: 12px;
@@ -4205,7 +4149,7 @@ html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
     max-width: calc(100% - 70px);
   }
 
-  /* row-name no corta el texto en móvil si es necesario */
+  /* row-name no corta el texto en m+¦vil si es necesario */
   .row-name {
     white-space: normal;
     overflow: visible;
@@ -4220,10 +4164,10 @@ html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
   }
 }
 
-/* ── PANTALLAS MUY PEQUEÑAS (< 480px) ────────────────────── */
+/* ÔöÇÔöÇ PANTALLAS MUY PEQUE+æAS (< 480px) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */
 @media (max-width: 480px) {
 
-  /* stat-grid pasa a 1 columna en pantallas muy pequeñas */
+  /* stat-grid pasa a 1 columna en pantallas muy peque+¦as */
   .stat-grid {
     grid-template-columns: 1fr;
   }
@@ -4243,7 +4187,7 @@ html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
     margin: 0 8px;
   }
 
-  /* stat-card-value un poco más pequeño */
+  /* stat-card-value un poco m+ís peque+¦o */
   .stat-card-value {
     font-size: 28px;
   }
@@ -4267,4 +4211,3 @@ html.dark .export-option-icon.json { background: #1e3a8a; color: #eff6ff; }
     gap: 12px;
   }
 }
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
