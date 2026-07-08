@@ -37,12 +37,12 @@ export default function Bitacora({
   const [nuevoTexto,  setNuevoTexto]  = useState('');
   const [sortOrder,   setSortOrder]   = useState<'reciente' | 'lejano'>('reciente');
 
-  // ✅ FIX: sincronizar cuando el page cargue los comentarios desde la BD
+  // FIX: sincronizar cuando el page cargue los comentarios desde la BD
   useEffect(() => {
     setComentarios(comentariosIniciales);
   }, [comentariosIniciales]);
 
-  // ✅ FIX: limpiar texto al cerrar/cambiar usuario
+  // FIX: limpiar texto al cerrar/cambiar usuario
   useEffect(() => {
     if (!isOpen) setNuevoTexto('');
   }, [isOpen]);

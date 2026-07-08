@@ -19,11 +19,7 @@ const OTP_LENGTH = OTP_FIELD_IDS.length;
 
 export default function VerifyTwoFactorPage() {
   const router = useRouter();
-<<<<<<< HEAD
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-=======
-  const OTP_LENGTH = 6;
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
   const [otp, setOtp] = useState<string[]>(new Array(OTP_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);

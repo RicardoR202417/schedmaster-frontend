@@ -59,34 +59,8 @@ export default function PerfilPage() {
 
       // Render inicial inmediato para no bloquear vista por red.
       setUser(parsedUser);
-<<<<<<< HEAD
     } else {
       router.push('/login');
-=======
-
-      const syncProfile = async () => {
-        if (!parsedUser.id_usuario) return;
-
-        try {
-          const res = await fetch(`${API_URL}/auth/perfil/${parsedUser.id_usuario}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-          });
-
-          if (!res.ok) return;
-
-          const data = await res.json();
-          if (!data?.usuario) return;
-
-          setUser(data.usuario as User);
-          localStorage.setItem('user', JSON.stringify(data.usuario));
-        } catch (error) {
-          console.error('Error al sincronizar perfil:', error);
-        }
-      };
-
-      syncProfile();
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
     }
   }, [router]);
 

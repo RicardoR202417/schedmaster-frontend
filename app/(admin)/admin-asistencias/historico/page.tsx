@@ -209,13 +209,7 @@ export default function HistoricoAsistenciasPage() {
                             className="btn-icon btn-icon--cyan"
                             title="Ver documento"
                             onClick={() => {
-<<<<<<< HEAD
                               globalThis.window.open(`${API_URL}/${a.ruta_archivo}`, "_blank")
-=======
-                              // Construye la URL correcta para ver el archivo
-                              const base = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3001'
-                              window.open(`${base}/${a.ruta_archivo}`, "_blank")
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                             }}
                           >
                             <Eye size={14} />

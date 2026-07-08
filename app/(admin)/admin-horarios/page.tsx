@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Filter, Calendar } from "lucide-react";
-=======
-'use client';
-
-import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Filter, Search, Calendar } from "lucide-react";
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 import AdminSidebar from "../../components/AdminSidebar";
 import AlertModal from '../../components/AlertModal';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -239,27 +232,29 @@ export default function AdminHorariosPage() {
                 <tbody>
                   {horarios.map((h: any) => (
                     <tr key={h.id_horario}>
-<<<<<<< HEAD
                       <td>{h.periodo_nombre === 'Sin periodo' ? 'N/A' : h.periodo_nombre} {h.anio === 'N/A' ? '' : `(${h.anio})`}</td>
                       {/* Aquí usamos la misma función de limpiar para que se vea bonito en la tabla */}
-=======
-                      <td>{h.periodo_nombre !== 'Sin periodo' ? h.periodo_nombre : 'N/A'} {h.anio !== 'N/A' ? `(${h.anio})` : ''}</td>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
                       <td><strong>{limpiarHora(h.hora_inicio)} - {limpiarHora(h.hora_fin)}</strong></td>
                       <td><span className="row-tag">{h.dias_semana || 'Sin días'}</span></td>
                       <td>{h.capacidad_maxima || 0} personas</td>
                       <td>
                         <div className="row-actions">
-                          <button 
+                          <button
+                            type="button"
                             className="btn-icon btn-icon--cyan"
                             onClick={() => handleEditar(h)}
+                            aria-label="Editar horario"
+                            title="Editar horario"
                           >
                             <Edit />
                           </button>
                           
-                          <button 
+                          <button
+                            type="button"
                             className="btn-icon btn-icon--red"
                             onClick={() => confirmarEliminarHorario(h.id_horario)}
+                            aria-label="Eliminar horario"
+                            title="Eliminar horario"
                           >
                             <Trash2 />
                           </button>

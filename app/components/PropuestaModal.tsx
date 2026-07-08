@@ -14,11 +14,7 @@ interface Props {
   onSuccess: (disponibles?: number) => void;
 }
 
-<<<<<<< HEAD
-export default function PropuestaModal({ isOpen, onClose, correo, onPropuestaEnviada }: Readonly<Props>) {
-=======
-export default function PropuestaModal({ open, onClose, idInscripcion, correoDestino, onSuccess }: Props) {
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
+export default function PropuestaModal({ open, onClose, idInscripcion, correoDestino, onSuccess }: Readonly<Props>) {
 
   const [horarios, setHorarios]                   = useState<any[]>([]);
   const [diasHorario, setDiasHorario]             = useState<any[]>([]);
@@ -34,16 +30,11 @@ export default function PropuestaModal({ open, onClose, idInscripcion, correoDes
     fetch(`${API_URL}/horarios`)
       .then(r => r.json())
       .then(d => setHorarios(Array.isArray(d) ? d : d?.data || []))
-<<<<<<< HEAD
       .catch((error) => {
         console.error('Error cargando horarios:', error);
         setHorarios([]);
       });
-  }, [isOpen]);
-=======
-      .catch(() => setHorarios([]));
   }, [open]);
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
 
   // Cargar días del horario seleccionado
   useEffect(() => {
@@ -100,24 +91,8 @@ export default function PropuestaModal({ open, onClose, idInscripcion, correoDes
         setAlertOpen(true);
         return;
       }
-<<<<<<< HEAD
     } catch (error) {
       console.error('Error enviando propuesta:', error);
-=======
-
-      if (!res.ok) {
-        setAlertMessage(data?.message || 'Error enviando propuesta.');
-        setAlertOpen(true);
-        return;
-      }
-
-      // Éxito — cerrar y notificar con disponibles
-      onClose();
-      resetForm();
-      onSuccess(data.disponibles);
-
-    } catch {
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       setAlertMessage('Error de conexión.');
       setAlertOpen(true);
     } finally {
@@ -128,14 +103,7 @@ export default function PropuestaModal({ open, onClose, idInscripcion, correoDes
   if (!open) return null;
 
   return (
-<<<<<<< HEAD
     <div className="modal-overlay">
-=======
-    <div
-      className="modal-overlay"
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
-    >
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
       <div className="modal-box modal-box--wide">
 
         <div className="modal-header">
@@ -146,13 +114,8 @@ export default function PropuestaModal({ open, onClose, idInscripcion, correoDes
             </div>
             <p className="muted">Enviar propuesta a {correoDestino}</p>
           </div>
-<<<<<<< HEAD
           <button type="button" className="btn-close" onClick={onClose} title="Cerrar">
             <X />
-=======
-          <button className="btn-close" onClick={onClose} title="Cerrar">
-            <X/>
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
           </button>
         </div>
 

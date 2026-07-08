@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CircleCheck, ListOrdered, Bell, Sun, Moon } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
@@ -11,6 +11,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 export default function LoginPage() {
   const { darkMode, toggle } = useDarkMode();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   const [correo,   setCorreo]   = useState('');
   const [password, setPassword] = useState('');
@@ -19,91 +20,33 @@ export default function LoginPage() {
   const [modalOpen,    setModalOpen]    = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  if (loading) return;
-  setLoading(true);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading) return;
     setLoading(true);
 
-  try {
-    const keyRes = await fetch(`${API_URL}/api/auth/public-key`);
-    if (!keyRes.ok) throw new Error('No se pudo obtener la clave pÃƒÆ’Ã‚Âºblica');
+    try {
+      const keyRes = await fetch(`${API_URL}/api/auth/public-key`);
+      if (!keyRes.ok) throw new Error('No se pudo obtener la clave pública');
 
       const { keyId, publicKey: publicKeyPem } = await keyRes.json();
 
-    const pemBody = publicKeyPem
-      .replace('-----BEGIN PUBLIC KEY-----', '')
-      .replace('-----END PUBLIC KEY-----', '')
-      .replaceAll('\n', '');
+      const pemBody = publicKeyPem
+        .replace('-----BEGIN PUBLIC KEY-----', '')
+        .replace('-----END PUBLIC KEY-----', '')
+        .replaceAll('\n', '');
 
-    const pemBuffer = Uint8Array.from(atob(pemBody), c => c.codePointAt(0) ?? 0);
+      const pemBuffer = Uint8Array.from(atob(pemBody), c => c.codePointAt(0) ?? 0);
 
-    const rsaPublicKey = await crypto.subtle.importKey(
-      'spki',
-      pemBuffer,
-      { name: 'RSA-OAEP', hash: 'SHA-256' },
-      false,
-      ['encrypt']
-    );
-
-    const aesKey = await crypto.subtle.generateKey(
-      { name: 'AES-CBC', length: 256 },
-      true,
-      ['encrypt']
-    );
-
-    const iv = crypto.getRandomValues(new Uint8Array(16));
-
-    const encryptedDataBuffer = await crypto.subtle.encrypt(
-      { name: 'AES-CBC', iv },
-      aesKey,
-      new TextEncoder().encode(JSON.stringify({ correo, password }))
-    );
-
-    const rawAesKey = await crypto.subtle.exportKey('raw', aesKey);
-
-    const encryptedKeyBuffer = await crypto.subtle.encrypt(
-      { name: 'RSA-OAEP' },
-      rsaPublicKey,
-      rawAesKey
-    );
-
-    const toBase64 = (buf: ArrayBuffer) =>
-      btoa(String.fromCodePoint(...new Uint8Array(buf)));
-
-    const payload = {
-      keyId,
-      encryptedKey: toBase64(encryptedKeyBuffer),
-      iv: btoa(String.fromCodePoint(...iv)),
-      encryptedData: toBase64(encryptedDataBuffer),
-    };
-
-    const res = await fetch(`${API_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setModalMessage(data.message || 'Error en login');
-      setModalOpen(true);
-      return;
-    }
-
-    if (data.requiresTwoFactor && data.twoFactorToken) {
-      sessionStorage.setItem(
-        'twoFactorLogin',
-        JSON.stringify({
-          twoFactorToken: data.twoFactorToken,
-          correo: correo.toLowerCase().trim(),
-          expiresAt: Date.now() + (Number(data.expiresInSeconds) || 0) * 1000
-        })
+      const rsaPublicKey = await crypto.subtle.importKey(
+        'spki',
+        pemBuffer,
+        { name: 'RSA-OAEP', hash: 'SHA-256' },
+        false,
+        ['encrypt']
       );
 
       const aesKey = await crypto.subtle.generateKey(
@@ -129,16 +72,16 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
       );
 
       const toBase64 = (buf: ArrayBuffer) =>
-        btoa(String.fromCharCode(...new Uint8Array(buf)));
+        btoa(String.fromCodePoint(...new Uint8Array(buf)));
 
       const payload = {
         keyId,
         encryptedKey: toBase64(encryptedKeyBuffer),
-        iv: btoa(String.fromCharCode(...iv)),
+        iv: btoa(String.fromCodePoint(...iv)),
         encryptedData: toBase64(encryptedDataBuffer),
       };
 
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -192,7 +135,6 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 
       setModalMessage('Estado de usuario no reconocido');
       setModalOpen(true);
-
     } catch (error) {
       console.error('Error login:', error);
       setModalMessage('Error de conexión con el servidor');
@@ -200,23 +142,12 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     } finally {
       setLoading(false);
     }
-
-    setModalMessage('Estado de usuario no reconocido');
-    setModalOpen(true);
-
-  } catch (error) {
-    console.error('Error login:', error);
-    setModalMessage('Error de conexiÃƒÆ’Ã‚Â³n con el servidor');
-    setModalOpen(true);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="login-page">
 
-      {/* BotÃƒÆ’Ã‚Â³n flotante dark mode */}
+      {/* Botón flotante dark mode */}
       <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
         {mounted ? (
           darkMode ? <Moon size={18} /> : <Sun size={18} />
@@ -231,7 +162,7 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
             <img src="/logo.png" alt="Logo" width="60" height="60" />
           </div>
           <h1 className="hero-title">SchedMaster</h1>
-          <p className="hero-subtitle">GestiÃƒÆ’Ã‚Â³n inteligente de horarios UTEQ.</p>
+          <p className="hero-subtitle">Gestión inteligente de horarios UTEQ.</p>
           <div className="feature-list">
             <div className="feature-item">
               <div className="feature-icon"><CircleCheck size={20} strokeWidth={2.5} /></div>
@@ -264,6 +195,7 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
               <label htmlFor="login-correo">Correo institucional</label>
               <input
                 type="email"
+                id="login-correo"
                 className="auth-input"
                 placeholder="usuario@uteq.edu.mx"
                 value={correo}
@@ -273,19 +205,19 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="login-password">ContraseÃƒÆ’Ã‚Â±a</label>
+              <label htmlFor="login-password">Contraseña</label>
               <input
                 type="password"
                 id="login-password"
                 className="auth-input"
-                placeholder="ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢"
+                placeholder="Contraseña"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
               />
-              <div className="forgot-password">
-                <button type="button" className="link-button">Â¿Olvidaste tu contraseÃ±a?</button>
-              </div>
+              {/* <div className="forgot-password">
+                <button type="button" className="link-button">¿Olvidaste tu contraseña?</button>
+              </div> */}
             </div>
 
             <button
@@ -293,13 +225,13 @@ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
               className="btn btn--blue btn--full btn--lg"
               disabled={loading}
             >
-              {loading ? 'Iniciando...' : 'Iniciar sesiÃƒÆ’Ã‚Â³n'}
+              {loading ? 'Iniciando...' : 'Iniciar sesión'}
             </button>
           </form>
 
-          {/* <div className="divider"><span>Ãƒâ€šÃ‚Â¿Primera vez?</span></div>
+          {/* <div className="divider"><span>¿Primera vez?</span></div>
           <div className="auth-link">
-            <Link href="/register">Crea tu cuenta aquÃƒÆ’Ã‚Â­</Link>
+            <Link href="/register">Crea tu cuenta aquí</Link>
           </div> */}
 
         </div>

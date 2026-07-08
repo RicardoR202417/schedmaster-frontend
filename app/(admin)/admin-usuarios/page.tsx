@@ -41,16 +41,10 @@ export default function AdminUsuariosPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-<<<<<<< HEAD
-  const [filterRol] = useState('');
-  const [filterEstado] = useState('');
-  const [filterCarrera] = useState('');
-
-=======
   const [filterRol, setFilterRol] = useState('');
   const [filterEstado, setFilterEstado] = useState('');
   const [filterCarrera, setFilterCarrera] = useState('');
->>>>>>> 13b389d226f34e57ca51f476304ff1a8e2a7e34a
+
   const [bitacoraOpen, setBitacoraOpen] = useState(false);
   const [bitacoraUsuario, setBitacoraUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [bitacoraComentarios, setBitacoraComentarios] = useState<Comentario[]>([]);

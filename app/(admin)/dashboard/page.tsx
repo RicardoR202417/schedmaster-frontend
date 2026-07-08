@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminSidebar from '../../components/AdminSidebar';
@@ -24,8 +25,8 @@ const Sparkline = ({ data, secondary, color = '#00a4e0' }: { data: number[]; sec
   const mesesLabels = obtenerNombresMeses();
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '280px', marginTop: '20px' }}>
-      <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: '85%', overflow: 'visible' }} preserveAspectRatio="none">
+    <div className="sparkline-container">
+      <svg viewBox={`0 0 ${w} ${h}`} className="sparkline-svg" preserveAspectRatio="none">
         {[0.25,0.5,0.75].map(r => <line key={r} x1={0} x2={w} y1={h*(1-r)} y2={h*(1-r)} stroke="rgba(15,23,42,0.06)" strokeWidth={1} />)}
         {secondary && <path d={toArea(secondary)} fill="rgba(59,130,246,0.07)" />}
         <path d={toArea(data)} fill={`${color}18`} />
@@ -33,7 +34,7 @@ const Sparkline = ({ data, secondary, color = '#00a4e0' }: { data: number[]; sec
         <path d={toPath(data)} fill="none" stroke={color} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
         {data.map((v,i) => <circle key={i} cx={i*step} cy={h-(v/max)*h} r={4} fill={color} stroke="white" strokeWidth={1.5} />)}
       </svg>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', fontSize: '13px', fontWeight: '500' }} className="kpi-label">
+      <div className="kpi-label kpi-months">
         {mesesLabels.map((m, i) => <span key={i}>{m}</span>)}
       </div>
     </div>
@@ -41,7 +42,7 @@ const Sparkline = ({ data, secondary, color = '#00a4e0' }: { data: number[]; sec
 };
 
 const CompactKpi = ({ icon, color, label, value, suffix = '' }: any) => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0' }} className="kpi-row">
+  <div className="kpi-row flex items-center justify-between py-3">
     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
       <div style={{ backgroundColor: `${color}15`, color: color, padding: '10px', borderRadius: '10px', display: 'flex' }}>
         {icon}
@@ -76,8 +77,6 @@ export default function DashboardPage() {
         router.push('/login');
         return false;
       }
-      setAutorizado(true);
-      return true;
     };
 
     const cargarStats = async () => {
