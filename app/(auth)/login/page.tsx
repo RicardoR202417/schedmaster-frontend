@@ -29,7 +29,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const keyRes = await fetch(`${API_URL}/api/auth/public-key`);
+      const keyRes = await fetch(`${API_URL}/auth/public-key`);
       if (!keyRes.ok) throw new Error('No se pudo obtener la clave pública');
 
       const { keyId, publicKey: publicKeyPem } = await keyRes.json();
@@ -81,7 +81,7 @@ export default function LoginPage() {
         encryptedData: toBase64(encryptedDataBuffer),
       };
 
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -151,9 +151,7 @@ export default function LoginPage() {
       <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
         {mounted ? (
           darkMode ? <Moon size={18} /> : <Sun size={18} />
-        ) : (
-          <span style={{ width: 18, height: 18, display: 'inline-block' }} />
-        )}
+        ) : null}
       </button>
 
       <section className="hero-section">
