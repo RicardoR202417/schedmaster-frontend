@@ -4,7 +4,7 @@ import "./styles/globals.css";
 import "./styles/carrusel.css";
 
 // 1. Asegúrate de tener esta línea para importar el bot
-import ChatBot from "./components/ChatBot.tsx"; 
+import ChatBot from "./components/ChatBot"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
