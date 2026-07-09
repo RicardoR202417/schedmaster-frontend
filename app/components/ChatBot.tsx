@@ -26,7 +26,13 @@ export default function ChatBot() {
       });
 
       const data = await response.json();
-      setMessages((prev) => [...prev, { sender: "bot", text: data.reply || "Mensaje recibido" }]);
+      
+      // Revisamos si n8n manda un arreglo (como en tu captura) o un objeto directo, y sacamos el "output"
+      const botText = Array.isArray(data) && data.length > 0 
+        ? data[0].output 
+        : data.output || "Error al leer la respuesta de la IA";
+
+      setMessages((prev) => [...prev, { sender: "bot", text: botText }]);
     } catch (error) {
       console.error("Error al conectar con el bot:", error);
       setMessages((prev) => [...prev, { sender: "bot", text: "Error de conexión con el servidor." }]);
