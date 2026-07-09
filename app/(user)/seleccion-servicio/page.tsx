@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Dumbbell, Apple, Sparkles, X, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
 import { useDarkMode } from '../../hooks/useDarkMode';
+import ChatBot from '../../components/ChatBot'; // 🔥 AQUÍ IMPORTAMOS EL BOT
 
 export default function HomePage() {
   const [openModal, setOpenModal] = useState(false);
@@ -104,7 +105,7 @@ export default function HomePage() {
       setSent(true);
 
     } catch {
-      setAlertMessage('Error de conexiÃ³n');
+      setAlertMessage('Error de conexión');
       setAlertOpen(true);
     }
   };
@@ -283,6 +284,8 @@ export default function HomePage() {
         message={alertMessage}
         onClose={() => setAlertOpen(false)}
       />
+
+      <ChatBot />
 
     </div>
   );

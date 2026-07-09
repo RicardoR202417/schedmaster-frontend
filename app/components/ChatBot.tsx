@@ -9,13 +9,11 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Generamos un ID temporal único al iniciar el componente. 
-  // Combinamos la fecha actual con texto aleatorio para asegurar que no se repita.
   const [sessionId] = useState(() => "session_" + Date.now().toString(36) + Math.random().toString(36).substring(2));
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    // Actualizamos el estado con el nuevo mensaje del usuario
     setMessages((prev) => [...prev, { sender: "user", text: input }]);
     setInput("");
     setIsLoading(true);
@@ -23,18 +21,11 @@ export default function ChatBot() {
     try {
       const response = await fetch("https://159.65.111.84.sslip.io/webhook/bot-demo-web", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Aquí enviamos el mensaje Y el sessionId temporal a n8n
-        body: JSON.stringify({ 
-          message: input, 
-          sessionId: sessionId 
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input, sessionId: sessionId }),
       });
 
       const data = await response.json();
-      
       setMessages((prev) => [...prev, { sender: "bot", text: data.reply || "Mensaje recibido" }]);
     } catch (error) {
       console.error("Error al conectar con el bot:", error);
@@ -45,49 +36,84 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 99999, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      
+      {/* Ventana del Chat */}
       {isOpen && (
-        <div className="w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col mb-4 border border-gray-200 overflow-hidden transition-all">
-          <div className="bg-green-600 text-white p-4 font-bold flex justify-between items-center">
-            <span>Asistente SchedMaster</span>
-            <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-200">
+        <div style={{
+          width: '320px', height: '420px', backgroundColor: '#ffffff', borderRadius: '16px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column',
+          marginBottom: '16px', border: '1px solid #eaeaea', overflow: 'hidden'
+        }}>
+          
+          {/* Cabecera */}
+          <div style={{ backgroundColor: '#005c8a', color: '#ffffff', padding: '16px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>🤖 Asistente SchedMaster</span>
+            <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', fontSize: '18px', padding: 0 }}>
               ✕
             </button>
           </div>
           
-          <div className="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+          {/* Área de Mensajes */}
+          <div style={{ flex: 1, padding: '16px', overflowY: 'auto', backgroundColor: '#f9fafb', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {messages.length === 0 && (
-              <p className="text-gray-400 text-sm text-center mt-4">¡Hola! ¿En qué te puedo ayudar hoy?</p>
+              <div style={{ textAlign: 'center', color: '#6b7280', fontSize: '14px', marginTop: '20px' }}>
+                <span style={{ fontSize: '40px', display: 'block', marginBottom: '8px' }}>🏋️‍♂️</span>
+                <p>¡Hola! ¿Tienes dudas sobre el gimnasio, aforos o reservas?</p>
+              </div>
             )}
+            
             {messages.map((msg, index) => (
-              <div key={index} className={`max-w-[80%] p-3 rounded-lg text-sm ${msg.sender === "user" ? "bg-green-500 text-white self-end rounded-br-none" : "bg-gray-200 text-gray-800 self-start rounded-bl-none"}`}>
+              <div key={index} style={{
+                maxWidth: '85%', padding: '10px 14px', borderRadius: '12px', fontSize: '14px',
+                alignSelf: msg.sender === "user" ? 'flex-end' : 'flex-start',
+                backgroundColor: msg.sender === "user" ? '#009ce3' : '#ffffff',
+                color: msg.sender === "user" ? '#ffffff' : '#1f2937',
+                border: msg.sender === "user" ? 'none' : '1px solid #e5e7eb',
+                borderBottomRightRadius: msg.sender === "user" ? '0' : '12px',
+                borderBottomLeftRadius: msg.sender === "bot" ? '0' : '12px',
+              }}>
                 {msg.text}
               </div>
             ))}
-            {isLoading && <p className="text-gray-400 text-xs italic self-start">Escribiendo...</p>}
+            
+            {isLoading && (
+              <div style={{ backgroundColor: '#e5e7eb', color: '#4b5563', alignSelf: 'flex-start', padding: '10px 14px', borderRadius: '12px', borderBottomLeftRadius: '0', fontSize: '12px', fontStyle: 'italic' }}>
+                Escribiendo...
+              </div>
+            )}
           </div>
 
-          <div className="p-3 border-t bg-white flex gap-2">
+          {/* Caja de Texto y Envío */}
+          <div style={{ padding: '12px', borderTop: '1px solid #f3f4f6', backgroundColor: '#ffffff', display: 'flex', gap: '8px' }}>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Escribe tu duda..."
-              className="flex-1 border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-green-500 text-black"
+              style={{ flex: 1, padding: '8px 16px', borderRadius: '999px', border: '1px solid #d1d5db', outline: 'none', fontSize: '14px', color: '#000000' }}
             />
-            <button onClick={sendMessage} className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition">
-              Enviar
+            <button 
+              onClick={sendMessage} 
+              style={{ backgroundColor: '#005c8a', color: '#ffffff', border: 'none', borderRadius: '50%', width: '38px', height: '38px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              ➤
             </button>
           </div>
         </div>
       )}
 
+      {/* Botón Flotante */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-green-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-green-700 transition-transform transform hover:scale-105 float-right"
+        style={{
+          backgroundColor: '#005c8a', color: '#ffffff', width: '60px', height: '60px', borderRadius: '50%',
+          border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', cursor: 'pointer', fontSize: '24px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', float: 'right'
+        }}
       >
-        💬
+        {isOpen ? '✕' : '💬'}
       </button>
     </div>
   );
