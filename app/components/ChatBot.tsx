@@ -1,15 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { loadExerciseIndex, findExercisesInText, type ExerciseEntry } from "../lib/exerciseSearch";
+import ExerciseCard from "./ExerciseCard";
+
+type ChatMessage = {
+  sender: "user" | "bot";
+  text: string;
+  exercises?: ExerciseEntry[];
+};
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{ sender: "user" | "bot"; text: string }[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Generamos un ID temporal único al iniciar el componente. 
+  // Generamos un ID temporal único al iniciar el componente.
   const [sessionId] = useState(() => "session_" + Date.now().toString(36) + Math.random().toString(36).substring(2));
+
+  // Precargamos el indice del dataset de ejercicios apenas se abre el chat, para
+  // no tener que esperar la descarga cuando llegue la primera respuesta de la IA.
+  const exerciseIndexRef = useRef<ExerciseEntry[] | null>(null);
+  useEffect(() => {
+    if (isOpen && !exerciseIndexRef.current) {
+      loadExerciseIndex().then((index) => {
+        exerciseIndexRef.current = index;
+      });
+    }
+  }, [isOpen]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -26,13 +45,17 @@ export default function ChatBot() {
       });
 
       const data = await response.json();
-      
+
       // Revisamos si n8n manda un arreglo (como en tu captura) o un objeto directo, y sacamos el "output"
-      const botText = Array.isArray(data) && data.length > 0 
-        ? data[0].output 
+      const botText = Array.isArray(data) && data.length > 0
+        ? data[0].output
         : data.output || "Error al leer la respuesta de la IA";
 
-      setMessages((prev) => [...prev, { sender: "bot", text: botText }]);
+      const exerciseIndex = exerciseIndexRef.current ?? (await loadExerciseIndex());
+      exerciseIndexRef.current = exerciseIndex;
+      const exercises = findExercisesInText(botText, exerciseIndex);
+
+      setMessages((prev) => [...prev, { sender: "bot", text: botText, exercises }]);
     } catch (error) {
       console.error("Error al conectar con el bot:", error);
       setMessages((prev) => [...prev, { sender: "bot", text: "Error de conexión con el servidor." }]);
@@ -71,15 +94,28 @@ export default function ChatBot() {
             
             {messages.map((msg, index) => (
               <div key={index} style={{
-                maxWidth: '85%', padding: '10px 14px', borderRadius: '12px', fontSize: '14px',
+                maxWidth: '85%', display: 'flex', flexDirection: 'column', gap: '8px',
                 alignSelf: msg.sender === "user" ? 'flex-end' : 'flex-start',
-                backgroundColor: msg.sender === "user" ? '#009ce3' : '#ffffff',
-                color: msg.sender === "user" ? '#ffffff' : '#1f2937',
-                border: msg.sender === "user" ? 'none' : '1px solid #e5e7eb',
-                borderBottomRightRadius: msg.sender === "user" ? '0' : '12px',
-                borderBottomLeftRadius: msg.sender === "bot" ? '0' : '12px',
               }}>
-                {msg.text}
+                <div style={{
+                  padding: '10px 14px', borderRadius: '12px', fontSize: '14px',
+                  backgroundColor: msg.sender === "user" ? '#009ce3' : '#ffffff',
+                  color: msg.sender === "user" ? '#ffffff' : '#1f2937',
+                  border: msg.sender === "user" ? 'none' : '1px solid #e5e7eb',
+                  borderBottomRightRadius: msg.sender === "user" ? '0' : '12px',
+                  borderBottomLeftRadius: msg.sender === "bot" ? '0' : '12px',
+                }}>
+                  {msg.text}
+                </div>
+
+                {/* Tarjetas ricas: animaciones de ejercicios detectadas en la respuesta de la IA */}
+                {msg.exercises && msg.exercises.length > 0 && (
+                  <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+                    {msg.exercises.map((exercise) => (
+                      <ExerciseCard key={exercise.id} exercise={exercise} />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             

@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# dataset de ejercicios descargado (generado por npm run fetch:exercises)
+/public/exercises-dataset/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

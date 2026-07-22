@@ -4,7 +4,8 @@ import "./styles/globals.css";
 import "./styles/carrusel.css";
 
 // 1. Asegúrate de tener esta línea para importar el bot
-import ChatBot from "./components/ChatBot"; 
+import ChatBot from "./components/ChatBot";
+import CustomCursor from "./components/CustomCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,8 @@ export default function RootLayout({
 
         {/* 2. Asegúrate de que el componente esté AQUÍ, justo antes de cerrar el body */}
         <ChatBot />
-        
+        <CustomCursor />
+
       </body>
     </html>
   );
