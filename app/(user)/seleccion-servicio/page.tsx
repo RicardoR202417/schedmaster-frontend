@@ -327,7 +327,7 @@ export default function HomePage() {
                     <div className="carousel-wrapper">
                       <img
                         src={images[currentImg]}
-                        className="w-full h-full object-cover"
+                        className="w-full h-96 object-cover"
                         alt={`Instalación ${currentImg + 1}`}
                       />
                     </div>

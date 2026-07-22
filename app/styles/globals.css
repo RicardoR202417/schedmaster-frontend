@@ -1,8 +1,10 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* El toggle de modo oscuro de la app usa la clase html.dark (ver useDarkMode.tsx),
+   asi que le decimos a Tailwind v4 que las variantes dark: sigan esa clase en vez
+   de prefers-color-scheme (su comportamiento por defecto). */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ==========================================
    1. VARIABLES ÔÇö Light mode (default)
