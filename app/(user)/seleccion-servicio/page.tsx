@@ -3,10 +3,23 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Dumbbell, Apple, Sparkles, X, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
+import {
+  Dumbbell,
+  Apple,
+  Sparkles,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
+  Activity,
+  RefreshCw,
+  CheckCircle2,
+  AlertTriangle,
+  Users
+} from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
 import { useDarkMode } from '../../hooks/useDarkMode';
-import ChatBot from '../../components/ChatBot'; // 🔥 AQUÍ IMPORTAMOS EL BOT
 
 export default function HomePage() {
   const [openModal, setOpenModal] = useState(false);
@@ -117,163 +130,348 @@ export default function HomePage() {
   };
 
   return (
-    <div className="home-page">
-
+    <div className="home-page min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* HEADER */}
-      <header className="home-header">
-        <div className="logo-section">
-          <img src="/logo.png" alt="logo" />
-          <span>SchedMaster</span>
+      <header className="home-header bg-white dark:bg-gray-900/50 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img src="/logo.png" alt="logo" className="h-8" />
+            <span className="text-xl font-bold text-gray-900 dark:text-white">SchedMaster</span>
+          </div>
+          <Link href="/login" className="btn btn--blue px-4 py-2 hover-lift transition-transform">
+            Iniciar sesión
+          </Link>
         </div>
-        <Link href="/login" className="btn btn--dark">Iniciar sesión</Link>
       </header>
 
-      {/* HERO */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="brand-logo">
-            <Dumbbell />
-          </div>
+      {/* MAIN CONTENT */}
+      <main className="flex-1">
+        {/* HERO SECTION */}
+        <section className="relative pt-20 pb-24">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 items-center gap-12">
+              <div className="space-y-6">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+                  Transforma tu <span className="text-blue-500">cuerpo y mente</span>
+                </h1>
+                <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl">
+                  Accede al gimnasio universitario y mejora tu bienestar cada día con nuestras
+                  instalaciones de primera clase y programas personalizados.
+                </p>
+                <div className="flex space-x-4">
+                  <button
+                    type="button"
+                    onClick={handleQuieroEntrenar}
+                    disabled={loadingConvocatoria}
+                    className="flex-1 btn btn--blue px-8 py-3 text-lg font-medium hover-lift transition-transform relative overflow-hidden"
+                  >
+                    {loadingConvocatoria ? (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                        Cargando...
+                      </>
+                    ) : (
+                      'Quiero Entrenar'
+                    )}
+                  </button>
+                  <Link
+                    href="/nosotros"
+                    className="flex-1 btn btn--outline px-8 py-3 text-lg font-medium hover-lift transition-transform"
+                  >
+                    Conócenos
+                  </Link>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="w-full h-96 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/10"></div>
+                  <div className="relative z-10 flex items-center justify-center p-4">
+                    <img
+                      src={images[currentImg]}
+                      className="w-full h-full object-cover rounded-lg transition-transform duration-700 hover:scale-105"
+                      alt={`Instalaciones del gimnasio ${currentImg + 1}`}
+                    />
+                  </div>
+                </div>
 
-          <h1 className="hero-title">
-            Transforma tu <span className="highlight">cuerpo y mente</span>
-          </h1>
-
-          <p className="hero-subtitle">
-            Accede al gimnasio universitario y mejora tu bienestar cada día.
-          </p>
-
-          <button type="button"
-            className="btn btn--blue btn--lg"
-            onClick={handleQuieroEntrenar}
-            disabled={loadingConvocatoria}
-          >
-            {loadingConvocatoria ? 'Cargando...' : 'Quiero entrenar'}
-          </button>
-        </div>
-      </section>
-
-      {/* INFO */}
-      <section className="services-section">
-        <strong>Sobre el gimnasio</strong>
-        <h2>Gimnasio universitario</h2>
-        <p className="muted">
-          Nuestras instalaciones están diseñadas para brindarte un espacio completo de entrenamiento.
-          Las convocatorias se abren cada cuatrimestre para que puedas formar parte.
-        </p>
-      </section>
-
-      {/* BENEFICIOS */}
-      <section className="services-section">
-        <strong>Beneficios</strong>
-        <h2>¿Por qué entrenar aqui?</h2>
-
-        <div className="services-grid">
-          <div className="service-card">Aquí Mejora tu condición fisica</div>
-          <div className="service-card">Reduce el estres</div>
-          <div className="service-card">Aumenta tu energia</div>
-          <div className="service-card">Instalaciones universitarias</div>
-        </div>
-      </section>
-
-      {/* CARRUSEL */}
-      <section className="services-section">
-        <strong>Instalaciones</strong>
-        <h2>Conoce el gimnasio</h2>
-
-        <div className="card--glass">
-          <div className="carousel">
-
-            <button type="button" className="carousel-btn left" onClick={prevImg} title="Imagen anterior">
-              <ChevronLeft size={22} />
-            </button>
-
-            <div className="carousel-wrapper">
-              <img src={images[currentImg]} className="carousel-img" alt={`Imagen de instalaciones ${currentImg + 1}`} />
+                {/* Carousel controls */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImg(index)}
+                      className={`w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full transition-all duration-300 ${
+                        currentImg === index
+                          ? 'bg-blue-500 w-6 h-6'
+                          : 'hover:bg-gray-400 dark:hover:bg-gray-500'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
+          </div>
 
-            <button type="button" className="carousel-btn right" onClick={nextImg} title="Siguiente imagen">
-              <ChevronRight size={22} />
-            </button>
+          {/* Animated background elements */}
+          <div className="absolute inset-0 pointer-none opacity-5">
+            <div className="absolute top-10 left-10 w-16 h-16 bg-blue-500/10 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-20 right-20 w-20 h-20 bg-blue-500/10 rounded-full animate-pulse delay-200"></div>
+          </div>
+        </section>
 
-            {/* DOTS */}
-            <div className="carousel-dots">
-              {images.map((image, index) => (
-                <button
-                  type="button"
-                  key={image}
-                  className={`dot ${index === currentImg ? 'active' : ''}`}
-                  onClick={() => setCurrentImg(index)}
-                  aria-label={`Mostrar imagen ${index + 1}`}
-                />
-              ))}
+        {/* INFO SECTION */}
+        <section className="py-16 bg-white dark:bg-gray-900">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="space-y-6 text-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Sobre el gimnasio universitario
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Nuestras instalaciones están diseñadas para brindarte un espacio completo de entrenamiento.
+                Las convocatorias se abren cada cuatrimestre para que puedas formar parte de nuestra
+                comunidad activa y comprometida con el bienestar.
+              </p>
             </div>
-
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SERVICIOS */}
-      <section className="services-section">
-        <strong>Servicios</strong>
-        <h2>Selecciona un servicio</h2>
+        {/* BENEFITS SECTION */}
+        <section className="py-16 bg-gray-50 dark:bg-gray-800">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="space-y-8">
+              <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+                ¿Por qué entrenar aquí?
+              </h2>
+              <p className="text-center text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+                Descubre los beneficios que te esperan en nuestro gimnasio universitario
+              </p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {/* Benefit 1 */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Dumbbell className="text-blue-500 h-5 w-5" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Mejora tu condición física
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Equipos de última generación y programas adaptados a todos los niveles.
+                  </p>
+                </div>
 
-        <div className="services-grid">
-          <button type="button" className="service-card" onClick={() => setOpenModal(true)}>
-            <div className="service-icon"><Dumbbell size={28} /></div>
-            <h3>Gimnasio</h3>
-            <p>Reserva tu horario</p>
-          </button>
+                {/* Benefit 2 */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <RefreshCw className="text-blue-500 h-5 w-5" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Reduce el estrés
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    El ejercicio regular ayuda a liberar tensiones y mejorar tu estado de ánimo.
+                  </p>
+                </div>
 
-          <Link href="/nutricion" className="service-card disabled">
-            <div className="service-icon"><Apple size={28} /></div>
-            <h3>Enfermería</h3>
-            <p>Próximamente</p>
-          </Link>
+                {/* Benefit 3 */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Activity className="text-blue-500 h-5 w-5" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Aumenta tu energía
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Siente más vitalidad y rendimiento en tus actividades diarias.
+                  </p>
+                </div>
 
-          <div className="service-card disabled">
-            <div className="service-icon"><Sparkles size={28} /></div>
-            <h3>Próximamente</h3>
-            <p>Nuevos talleres en camino</p>
+                {/* Benefit 4 */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Users className="text-blue-500 h-5 w-5" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Comunidad universitaria
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Entrena junto a otros estudiantes comprometidos con su bienestar.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* MODAL LISTA DE ESPERA */}
+        {/* FACILITIES SECTION */}
+        <section className="py-16 bg-white dark:bg-gray-900">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="space-y-8">
+              <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+                Conoce nuestras instalaciones
+              </h2>
+              <p className="text-center text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+                Espacios diseñados para tu máximo rendimiento y comodidad
+              </p>
+              <div className="relative">
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/5"></div>
+                  <div className="relative z-10">
+                    <div className="carousel-wrapper">
+                      <img
+                        src={images[currentImg]}
+                        className="w-full h-full object-cover"
+                        alt={`Instalación ${currentImg + 1}`}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Carousel navigation */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImg(index)}
+                      className={`w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full transition-all duration-300 ${
+                        currentImg === index
+                          ? 'bg-blue-500 w-6 h-6'
+                          : 'hover:bg-gray-400 dark:hover:bg-gray-500'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SERVICES SECTION */}
+        <section className="py-16 bg-gray-50 dark:bg-gray-800">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="space-y-8">
+              <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+                Selecciona un servicio
+              </h2>
+              <p className="text-center text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+                Elige el servicio que mejor se adapte a tus necesidades
+              </p>
+              <div className="grid md:grid-cols-3 gap-8">
+                {/* Gym Service */}
+                <div
+                  onClick={() => setOpenModal(true)}
+                  className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform cursor-pointer"
+                >
+                  <div className="mb-4">
+                    <div className="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Dumbbell className="text-blue-500 h-6 w-6" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Gimnasio
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Reserva tu horario y entrena cuando mejor te convenga
+                  </p>
+                </div>
+
+                {/* Nursing Service */}
+                <Link
+                  href="/nutricion"
+                  className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform opacity-50 pointer-events-none"
+                >
+                  <div className="mb-4">
+                    <div className="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Apple className="text-blue-500 h-6 w-6" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Enfermería
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Próximamente
+                  </p>
+                </Link>
+
+                {/* Coming Soon */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg hover-lift transition-transform opacity-50 pointer-events-none">
+                  <div className="mb-4">
+                    <div className="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Sparkles className="text-blue-500 h-6 w-6" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Próximamente
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Nuevos talleres en camino
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* MODAL WAITING LIST */}
       {openModal && (
-        <div className="modal-overlay">
-          <div className="modal-box">
-            <button type="button" className="modal-close" onClick={closeModal} title="Cerrar modal">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl p-8 w-full max-w-md shadow-2xl transform scale-95 animate-pop-in">
+            <button
+              type="button"
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              onClick={closeModal}
+              title="Cerrar"
+            >
               <X size={20} />
             </button>
 
             {sent ? (
-              <div className="modal-success">
-                <div className="success-icon">OK</div>
-                <h3>Registro confirmado</h3>
-                <p>Te notificaremos cuando se habilite.</p>
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center w-12 h-12 bg-green-500/10 rounded-full mx-auto mb-4">
+                  <CheckCircle2 className="text-green-500 h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Registro confirmado
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Te notificaremos cuando se habilite la próxima convocatoria.
+                </p>
               </div>
             ) : (
-              <>
-                <h2>Convocatoria cerrada</h2>
-                <p>Dejanos tu correo y te avisaremos cuando se abra.</p>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Convocatoria cerrada
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  Déjanos tu correo y te avisaremos cuando se abra la próxima convocatoria.
+                </p>
 
-                <form className="modal-form" onSubmit={handleSubmit}>
+                <div className="relative">
                   <input
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="tucorreo@uteq.edu.mx"
                     required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-
-                  <button type="submit" className="btn btn--blue btn--full btn--lg">
+                  <button
+                    type="submit"
+                    className="mt-3 w-full btn btn--blue px-4 py-2 text-lg font-medium hover-lift transition-transform"
+                  >
                     Notificarme
                   </button>
-                </form>
-              </>
+                </div>
+              </form>
             )}
-
           </div>
         </div>
       )}
@@ -284,9 +482,6 @@ export default function HomePage() {
         message={alertMessage}
         onClose={() => setAlertOpen(false)}
       />
-
-      <ChatBot />
-
     </div>
   );
 }
