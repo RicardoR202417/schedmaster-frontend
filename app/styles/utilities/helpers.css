@@ -1,0 +1,37 @@
+/* ==========================================
+   31. UTILIDADES
+   ========================================== */
+
+.muted { color: var(--color-text-muted); font-weight: 700; }
+
+.loader {
+  min-height: 100vh; display: flex;
+  align-items: center; justify-content: center;
+  font-family: var(--font); font-size: 14px;
+  font-weight: 700; color: var(--color-text-muted);
+  background: var(--color-bg);
+}
+
+.announcement-title { font-size: 14px; font-weight: 800; color: var(--color-text-heading); margin: 0; }
+.announcement-date  { font-size: 11px; color: var(--color-text-muted); font-weight: 600; margin-top: 2px; }
+.announcement-image { width: 100%; border-radius: 12px; margin-top: var(--s-2); object-fit: cover; }
+
+.tip-card-hour { margin-top: 6px; color: var(--color-text-muted); }
+
+.status--with-margin { margin-top: var(--s-2); }
+
+.activities-paragraph { margin-top: var(--s-2); }
+
+/* ==========================================
+   13. SUCCESS STATE
+   ========================================== */
+
+.success-icon {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; animation: scaleIn 0.5s ease-out;
+}
+.success-icon svg { width: 32px; height: 32px; color: #fff; stroke-width: 2.5; }
+.success-title { font-size: 32px; font-weight: 800; color: var(--color-text-heading); margin-bottom: var(--s-2); }
+.success-text  { font-size: 16px; color: var(--color-text-muted); margin-bottom: var(--s-3); }

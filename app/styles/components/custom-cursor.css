@@ -1,0 +1,65 @@
+/* ==========================================
+   27. CUSTOM CURSOR (mancuerna)
+   ========================================== */
+
+/* Solo se oculta la flecha nativa cuando el JS confirma un puntero fino (mouse/trackpad),
+   asi los dispositivos tactiles conservan su comportamiento normal. */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+.custom-cursor.is-hidden { opacity: 0; }
+
+.custom-cursor-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border-radius: 12px;
+  background: rgba(0, 164, 224, 0.14);
+  border: 1.5px solid rgba(0, 164, 224, 0.4);
+  color: var(--blue-500);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  transform: rotate(-25deg) scale(1);
+  transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.custom-cursor.is-hovering .custom-cursor-icon {
+  transform: rotate(0deg) scale(1.4);
+  background: rgba(235, 186, 61, 0.24);
+  border-color: var(--yellow);
+  color: #92400e;
+}
+
+.custom-cursor.is-clicking .custom-cursor-icon {
+  transform: rotate(-15deg) scale(0.78);
+}
+
+html.dark .custom-cursor-icon {
+  background: rgba(168, 196, 232, 0.16);
+  border-color: rgba(168, 196, 232, 0.45);
+  color: #a8c4e8;
+}
+html.dark .custom-cursor.is-hovering .custom-cursor-icon {
+  background: rgba(235, 186, 61, 0.28);
+  border-color: var(--yellow);
+  color: #fbbf24;
+}
+
+@media (pointer: coarse) {
+  .custom-cursor { display: none; }
+}

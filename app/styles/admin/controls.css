@@ -1,0 +1,103 @@
+/* ==========================================
+   22. CONTROLES ADMIN
+   ========================================== */
+
+.field {
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid var(--color-border-mid);
+  background: var(--color-surface);
+  border-radius: 12px; padding: 0 12px; height: 44px; min-width: 280px;
+}
+.field svg { width: 18px; height: 18px; color: var(--color-text-muted); }
+.field input {
+  border: none; outline: none; width: 100%;
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  color: var(--color-text-primary); background: transparent;
+}
+.field:focus-within { outline: 3px solid rgba(0,164,224,.22); outline-offset: 2px; }
+
+.filter-bar { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
+.filter-bar .field { flex: 1; min-width: 260px; }
+
+.select {
+  height: 44px; border-radius: 12px;
+  border: 1px solid var(--color-border-mid);
+  padding: 0 12px; font-family: var(--font);
+  font-size: 13px; font-weight: 800;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  outline: none; min-width: 180px;
+}
+.select:focus { outline: 3px solid rgba(0,164,224,.22); outline-offset: 2px; }
+
+/* ==========================================
+   23. STAT CARDS
+   ========================================== */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--s-3);
+}
+.stat-card {
+  background: var(--color-surface); border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--color-card-shadow);
+  padding: var(--s-3);
+  display: flex; flex-direction: column; gap: 8px;
+  position: relative; overflow: hidden;
+  transition: background .3s ease;
+}
+.stat-card-info { display: flex; flex-direction: column; gap: 4px; }
+.stat-card-label { font-size: 12px; font-weight: 800; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-card-value { font-size: 36px; font-weight: 900; color: var(--color-text-heading); line-height: 1; }
+
+.stat-card-circle {
+  position: absolute; width: 64px; height: 64px; border-radius: 50%;
+  opacity: .12; right: 16px; top: 50%; transform: translateY(-50%);
+}
+.stat-card-circle--blue   { background: var(--blue-500); }
+.stat-card-circle--green  { background: #22c55e; }
+.stat-card-circle--red    { background: #f87171; }
+.stat-card-circle--yellow { background: var(--yellow); }
+
+/* ==========================================
+   23b. DASHBOARD PANELS (Soporte Modo Oscuro)
+   ========================================== */
+
+.dashboard-panel {
+  background-color: var(--color-surface);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: var(--color-card-shadow);
+  border: 1px solid var(--color-border);
+  margin-bottom: 25px;
+  color: var(--color-text-primary);
+  transition: background .3s ease, border .3s ease, box-shadow .3s ease, color .3s ease;
+}
+
+.dashboard-panel h3, .dashboard-panel h4 {
+  color: var(--color-text-heading);
+  margin: 0;
+}
+
+.dashboard-panel p {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.kpi-row {
+  border-bottom: 1px solid var(--color-border-mid);
+}
+
+.kpi-row:last-child {
+  border-bottom: none;
+}
+
+.kpi-label {
+  color: var(--color-text-muted);
+}
+
+.kpi-value {
+  color: var(--color-text-heading);
+}

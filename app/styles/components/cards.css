@@ -1,0 +1,42 @@
+/* ==========================================
+   6. CARDS
+   ========================================== */
+
+.card {
+  background: var(--color-surface); border-radius: 18px;
+  box-shadow: var(--color-card-shadow);
+  border: 1px solid var(--color-border);
+  padding: var(--s-3);
+}
+
+.card--glass {
+  background: var(--color-surface);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 32px; padding: var(--s-3);
+  box-shadow: var(--color-card-shadow);
+  border: 1px solid var(--color-border);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.card--center {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  gap: var(--s-2);
+}
+
+.card-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; color: var(--color-text-heading);
+  font-size: 16px; font-weight: 800;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}

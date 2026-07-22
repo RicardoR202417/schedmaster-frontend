@@ -1,0 +1,64 @@
+/* ==========================================
+   14. STATUS BADGE
+   ========================================== */
+
+.status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border-radius: 999px;
+  background: rgba(235,186,61,.16); border: 1px solid rgba(235,186,61,.42);
+  color: var(--color-text-heading); font-size: 12px; font-weight: 800;
+}
+
+/* ==========================================
+   26. CHIPS / PILLS
+   ========================================== */
+
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 900;
+  border: 1px solid transparent;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.chip svg { width: 14px; height: 14px; }
+
+.chip--asistente  { background: rgba(0,164,224,.12);   border-color: rgba(0,164,224,.28);   color: var(--color-text-heading); }
+.chip--admin      { background: rgba(235,186,61,.20);  border-color: rgba(235,186,61,.50);  color: var(--color-text-heading); }
+.chip--docente    { background: rgba(99,102,241,.12);  border-color: rgba(99,102,241,.28);  color: #818cf8; }
+html:not(.dark) .chip--docente { color: #3730a3; }
+.chip--entrenador { background: rgba(249,115,22,.12);  border-color: rgba(249,115,22,.28);  color: #fb923c; }
+html:not(.dark) .chip--entrenador { color: #9a3412; }
+.chip--nutriologa { background: rgba(236,72,153,.12);  border-color: rgba(236,72,153,.28);  color: #f472b6; }
+html:not(.dark) .chip--nutriologa { color: #9d174d; }
+
+.chip--activo     { background: rgba(34,197,94,.12);   border-color: rgba(34,197,94,.30);   color: #4ade80; }
+html:not(.dark) .chip--activo    { color: #166534; }
+.chip--inactivo   { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.30); color: #f87171; }
+html:not(.dark) .chip--inactivo  { color: #991b1b; }
+.chip--pendiente  { background: rgba(235,186,61,.16);  border-color: rgba(235,186,61,.40);  color: var(--color-text-heading); }
+.chip--aprobado   { background: rgba(34,197,94,.12);   border-color: rgba(34,197,94,.30);   color: #4ade80; }
+html:not(.dark) .chip--aprobado  { color: #166534; }
+.chip--rechazado  { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.30); color: #f87171; }
+html:not(.dark) .chip--rechazado { color: #991b1b; }
+.chip--activada   { background: rgba(34,197,94,.12);   border-color: rgba(34,197,94,.30);   color: #4ade80; }
+html:not(.dark) .chip--activada  { color: #166534; }
+.chip--desactivada{ background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.30); color: #f87171; }
+html:not(.dark) .chip--desactivada { color: #991b1b; }
+.chip--presente   { background: rgba(34,197,94,.12);   border-color: rgba(34,197,94,.30);   color: #4ade80; }
+html:not(.dark) .chip--presente  { color: #166534; }
+.chip--ausente    { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.30); color: #f87171; }
+html:not(.dark) .chip--ausente   { color: #991b1b; }
+.chip--alta       { background: rgba(235,186,61,.16);  border-color: rgba(235,186,61,.40);  color: var(--color-text-heading); }
+.chip--baja       { background: rgba(0,164,224,.10);   border-color: rgba(0,164,224,.22);   color: var(--color-text-heading); }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 999px;
+  background: rgba(35,77,123,.08); border: 1px solid rgba(35,77,123,.12);
+  color: var(--color-text-heading); font-size: 12px; font-weight: 900; white-space: nowrap;
+}
+html.dark .pill {
+  background: rgba(168,196,232,.08);
+  border-color: rgba(168,196,232,.14);
+}
+.pill svg { width: 16px; height: 16px; }

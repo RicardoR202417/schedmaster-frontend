@@ -1,0 +1,62 @@
+/* ==========================================
+   18. MODALES
+   ========================================== */
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: var(--s-3);
+  animation: fadeInUp 0.2s ease;
+}
+
+.modal-box {
+  background: var(--color-surface); padding: 32px;
+  border-radius: 20px; width: 100%; max-width: 420px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  border: 1px solid var(--color-border);
+  animation: fadeInUp 0.25s ease;
+}
+.modal-box h2 { font-size: 22px; font-weight: 800; color: var(--color-text-heading); margin-bottom: 8px; }
+.modal-box p  { margin-bottom: 20px; color: var(--color-text-primary); font-size: 15px; line-height: 1.6; }
+
+.modal-box--wide {
+  max-width: 560px; max-height: 90vh; overflow: auto;
+  padding: 0; border-radius: 16px;
+}
+
+.modal-close {
+  position: absolute; top: 12px; right: 12px;
+  border: none; background: none; cursor: pointer; color: var(--color-text-muted);
+}
+.modal-close:hover { color: var(--color-text-heading); }
+
+.modal-form { display: flex; flex-direction: column; gap: 12px; }
+.modal-form input {
+  width: 100%; padding: 12px 16px; border-radius: 12px;
+  border: 2px solid var(--color-input-border);
+  background: var(--color-input-bg);
+  color: var(--color-text-primary);
+  font-size: 15px; font-family: var(--font);
+}
+.modal-form input:focus { outline: none; border-color: var(--blue-500); }
+
+.modal-success { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 20px 10px; }
+.modal-success h3 { font-size: 20px; font-weight: 800; color: var(--color-text-heading); }
+.modal-success p  { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; max-width: 32ch; margin: 0; }
+
+.modal-header {
+  padding: var(--s-4);
+  border-bottom: 1px solid var(--color-border);
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: var(--s-2);
+}
+.modal-header h3 { margin: 0; font-size: 20px; font-weight: 900; color: var(--color-text-heading); }
+.modal-header p  { margin: 6px 0 0; font-size: 12px; color: var(--color-text-muted); font-weight: 600; }
+
+.modal-body   { padding: var(--s-4); display: grid; gap: var(--s-3); }
+.modal-footer {
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--color-border);
+  display: flex; gap: var(--s-2); justify-content: flex-end; flex-wrap: wrap;
+}

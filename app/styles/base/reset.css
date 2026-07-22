@@ -1,0 +1,18 @@
+/* ==========================================
+   2. RESET
+   ========================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%; width: 100%;
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
+  transition: background .3s ease, color .3s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+}

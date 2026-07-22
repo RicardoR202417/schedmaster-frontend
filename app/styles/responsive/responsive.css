@@ -1,0 +1,196 @@
+/* ==========================================
+   32. RESPONSIVE — All @media queries consolidated
+   ========================================== */
+
+@media (max-width: 1200px) {
+  .app { grid-template-columns: 1fr; }
+  .menu-toggle { display: flex; }
+  .sidebar-backdrop { display: block; }
+  .sidebar {
+    position: fixed; top: 0; left: 0;
+    width: min(84vw, 320px); height: 100vh; height: 100dvh; z-index: 999;
+    transform: translateX(-100%); transition: transform .3s ease;
+  }
+  .sb-close { display: inline-flex; }
+  .sidebar.active { transform: translateX(0); }
+  .main { padding: var(--s-3); padding-top: 80px; }
+  .field, .select { min-width: 100%; }
+  .section-header { flex-direction: column; }
+  .btn--yellow, .btn--blue { width: 100%; justify-content: center; }
+
+  .app--admin-users .main { overflow: visible; }
+  .app--admin-users .section-header { align-items: stretch; }
+  .app--admin-users .filter-bar,
+  .app--admin-users .filter-bar .field { width: 100%; min-width: 0; }
+
+  .app--admin-attendance .main { overflow: visible; }
+  .app--admin-attendance .section-header { align-items: stretch; }
+  .app--admin-attendance .date-container { width: 100%; }
+  .app--admin-attendance .date-input { width: 100%; max-width: 280px; }
+  .app--admin-attendance .filter-bar .field,
+  .app--admin-attendance .filter-bar .select,
+  .app--admin-attendance .filter-bar .btn--asistencias-action { width: 100%; min-width: 0; }
+
+  .app--admin-stats .main { overflow: visible; }
+  .app--admin-stats .section-header { gap: 15px !important; }
+  .app--admin-stats .stats-header-actions { flex-direction: column !important; width: 100% !important; gap: 12px !important; justify-content: flex-start !important; }
+  .app--admin-stats .stats-header-actions > div { width: 100%; display: flex !important; flex-wrap: wrap !important; }
+  .app--admin-stats .table-area { margin-left: -var(--s-3); margin-right: -var(--s-3); padding: 0 var(--s-3); }
+  .app--admin-stats .table-scroll { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  .app--admin-stats .table-scroll::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+  .sidebar::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+
+  /* Responsive fix filter-bar */
+  .filter-bar .field { min-width: 0; width: 100%; flex: 1 1 100%; }
+  .filter-bar .select { min-width: 0; flex: 1 1 calc(50% - 8px); }
+  .btn--asistencias-action { min-width: 0; flex: 1 1 calc(50% - 8px); width: auto !important; }
+  .section-header .btn--yellow,
+  .section-header .btn--blue { width: 100%; justify-content: center; }
+  .filter-bar .btn--yellow,
+  .filter-bar .btn--blue,
+  .filter-bar .btn--outline { width: auto !important; flex: 1 1 calc(50% - 8px); justify-content: center; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .row-actions { flex-wrap: wrap; justify-content: flex-end; max-width: 120px; gap: 6px; }
+  .row-card { flex-wrap: wrap; gap: 12px; }
+  .row-info { max-width: calc(100% - 70px); }
+  .row-name { white-space: normal; overflow: visible; text-overflow: clip; font-size: 14px; }
+  .chip { font-size: 10px; padding: 4px 8px; }
+}
+
+@media (max-height: 800px) {
+  .hero-section  { padding: 24px 32px; }
+  .brand-logo    { width: 80px; height: 80px; margin: 0 auto 16px; }
+  .brand-logo img, .brand-logo svg { width: 50px; height: 50px; }
+  .hero-title    { font-size: 40px; }
+  .hero-subtitle { font-size: 16px; margin-bottom: 20px; }
+  .feature-item  { padding: 10px 16px; }
+  .login-section { padding: 24px 32px; }
+  .login-header h1 { font-size: 30px; }
+  .form-group    { margin-bottom: 14px; }
+}
+
+@media (max-width: 1024px) {
+  .login-page   { grid-template-columns: 1fr; }
+  .hero-section { display: none; }
+  .login-section { padding: 48px 24px; }
+}
+
+@media (max-width: 768px) {
+  .title         { font-size: 28px; }
+  .subtitle      { font-size: 14px; }
+  .form-row      { flex-direction: column; }
+  .home-header   { padding: 16px 20px; }
+  .home-hero h1  { font-size: 32px; }
+  .services-section, .tips-section { padding: 24px 20px; }
+  .login-header h1 { font-size: 28px; }
+  .login-section { padding: 32px 20px; }
+  .register-page .container { padding: 24px 16px; }
+  .card--glass   { padding: 32px 20px; }
+  .verify-form { padding: 16px; }
+  .otp-grid { gap: 8px; grid-template-columns: repeat(6, minmax(40px, 1fr)); }
+  .otp-input { height: 52px; font-size: 24px; }
+
+  .app--admin-users .row-card { flex-wrap: wrap; align-items: flex-start; padding: 16px; gap: 12px; }
+  .app--admin-users .row-actions { width: 100%; flex-wrap: wrap; padding-left: 64px; gap: 8px; }
+  .app--admin-users .chip { max-width: 100%; }
+
+  .app--admin-attendance .row-card { flex-wrap: wrap; align-items: flex-start; padding: 16px; gap: 12px; }
+  .app--admin-attendance .row-sub { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.35; }
+  .app--admin-attendance .row-actions { width: 100%; flex-wrap: wrap; padding-left: 64px; gap: 8px; }
+
+  .app--admin-stats .stats-header-actions { flex-direction: column !important; gap: 10px !important; }
+  .app--admin-stats .stats-header-actions > div:first-child { display: flex !important; gap: 8px !important; flex-wrap: wrap !important; align-items: stretch !important; width: 100% !important; order: 1; }
+  .app--admin-stats .stats-header-actions > div:first-child > div { flex: 1 1 calc(50% - 4px) !important; min-width: 0; }
+  .app--admin-stats .stats-header-actions > div:first-child > div.chip { display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; min-height: 44px; font-size: 12px !important; padding: 6px 10px !important; line-height: 1.2; word-wrap: break-word; overflow-wrap: break-word; }
+  .app--admin-stats .stats-header-actions > div:last-child { display: flex !important; gap: 8px !important; flex-wrap: wrap !important; width: 100% !important; order: 2; }
+  .app--admin-stats .stats-header-actions > div:last-child > button { flex: 1 1 calc(50% - 4px) !important; min-width: 0; }
+  .app--admin-stats .tab-group { flex-wrap: wrap; width: 100%; }
+  .app--admin-stats .tab-group button { flex: 0 1 calc(50% - 3px); font-size: 12px; padding: 6px 8px !important; }
+  .app--admin-stats .period-label { width: 100%; margin-bottom: 8px !important; display: block !important; }
+  .app--admin-stats .table-area { margin-top: 15px !important; }
+  .app--admin-stats table thead th,
+  .app--admin-stats table tbody td { padding: 8px 6px !important; font-size: 11px !important; }
+  .app--admin-stats table { min-width: 650px; }
+  .app--admin-stats table thead th:first-child,
+  .app--admin-stats table tbody td:first-child { min-width: 80px; }
+
+  /* Inscriptions modal responsive */
+  .app--admin-inscriptions .modal-overlay { padding: 8px !important; }
+  .app--admin-inscriptions .modal-box,
+  .app--admin-inscriptions .modal-box--wide { width: calc(100vw - 16px) !important; max-width: calc(100vw - 16px) !important; max-height: 85vh !important; padding: 0 !important; border-radius: 16px; }
+  .app--admin-inscriptions .modal-header { padding: 18px; flex-wrap: wrap; }
+  .app--admin-inscriptions .modal-header h3 { font-size: 19px; font-weight: 900; width: 100%; }
+  .app--admin-inscriptions .modal-header p { font-size: 13px; margin-top: 8px; width: 100%; }
+  .app--admin-inscriptions .btn-close { position: absolute; top: 14px; right: 14px; }
+  .app--admin-inscriptions .modal-body { padding: 18px; gap: 14px; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
+  .app--admin-inscriptions .form-group label { font-size: 14px; font-weight: 700; }
+  .app--admin-inscriptions .select { font-size: 14px; padding: 12px; height: 46px; width: 100%; }
+  .app--admin-inscriptions .dias-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 18px; }
+  .app--admin-inscriptions .dia-btn { padding: 9px 15px; font-size: 14px; flex: 0 1 auto; }
+  .app--admin-inscriptions .log-compose-actions { padding: 16px 18px; border-top: 1px solid var(--color-border); display: flex; justify-content: stretch; gap: 10px; }
+  .app--admin-inscriptions .btn--blue { flex: 1; font-size: 15px; padding: 14px; justify-content: center; }
+}
+
+@media (max-width: 520px) {
+  .app--admin-users .row-card { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 12px; row-gap: 10px; }
+  .app--admin-users .row-avatar { width: 44px; height: 44px; border-radius: 12px; font-size: 13px; }
+  .app--admin-users .row-info { align-self: center; }
+  .app--admin-users .row-actions { grid-column: 1 / -1; padding-left: 0; }
+  .app--admin-users .btn-icon { width: 34px; height: 34px; }
+  .app--admin-users .chip { padding: 5px 8px; font-size: 10px; }
+
+  .app--admin-attendance .row-card { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 12px; row-gap: 10px; }
+  .app--admin-attendance .row-avatar { width: 44px; height: 44px; border-radius: 12px; font-size: 13px; }
+  .app--admin-attendance .row-info { align-self: center; }
+  .app--admin-attendance .row-actions { grid-column: 1 / -1; padding-left: 0; }
+  .app--admin-attendance .btn-mini { width: calc(50% - 4px); justify-content: center; }
+
+  .app--admin-stats .stats-header-actions > div:first-child { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; width: 100% !important; }
+  .app--admin-stats .stats-header-actions > div:first-child > div { flex: 1 1 calc(50% - 3px) !important; min-width: 0; }
+  .app--admin-stats .stats-header-actions > div:first-child > div.chip { display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; min-height: 42px; font-size: 11px !important; padding: 6px 8px !important; line-height: 1.2; word-wrap: break-word; overflow-wrap: break-word; }
+  .app--admin-stats .stats-header-actions > div:first-child > div.chip span { margin-right: 2px !important; }
+  .app--admin-stats .stats-header-actions > div:last-child { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; width: 100% !important; }
+  .app--admin-stats .stats-header-actions > div:last-child > button { flex: 1 1 calc(50% - 3px) !important; font-size: 11px; padding: 6px 8px !important; min-width: 0; }
+  .app--admin-stats .tab-group button { flex: 0 1 calc(50% - 3px); padding: 5px 6px !important; }
+  .app--admin-stats table thead th,
+  .app--admin-stats table tbody td { padding: 6px 4px !important; font-size: 10px !important; }
+  .app--admin-stats table { min-width: 100%; }
+  .app--admin-stats table thead th:nth-child(5),
+  .app--admin-stats table tbody td:nth-child(5),
+  .app--admin-stats table thead th:nth-child(6),
+  .app--admin-stats table tbody td:nth-child(6) { min-width: 70px; }
+
+  .app--admin-inscriptions .modal-overlay { padding: 6px !important; }
+  .app--admin-inscriptions .modal-box,
+  .app--admin-inscriptions .modal-box--wide { width: calc(100vw - 12px) !important; max-width: calc(100vw - 12px) !important; max-height: 90vh !important; }
+  .app--admin-inscriptions .modal-header { padding: 16px; }
+  .app--admin-inscriptions .modal-header h3 { font-size: 18px; }
+  .app--admin-inscriptions .modal-header p { font-size: 12px; margin-top: 6px; }
+  .app--admin-inscriptions .modal-body { padding: 16px; gap: 12px; }
+  .app--admin-inscriptions .form-group label { font-size: 13px; }
+  .app--admin-inscriptions .select { font-size: 13px; padding: 11px; height: 44px; }
+  .app--admin-inscriptions .dias-container { gap: 9px; margin: 12px 0 16px; }
+  .app--admin-inscriptions .dia-btn { padding: 8px 13px; font-size: 13px; }
+  .app--admin-inscriptions .log-compose-actions { padding: 14px 16px; }
+  .app--admin-inscriptions .btn--blue { font-size: 14px; padding: 12px; }
+}
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .filter-bar .select,
+  .filter-bar .btn--asistencias-action,
+  .filter-bar .btn--yellow,
+  .filter-bar .btn--blue,
+  .filter-bar .btn--outline { flex: 1 1 100%; }
+  .modal-box--wide { max-width: 100%; margin: 0 8px; }
+  .stat-card-value { font-size: 28px; }
+  .dias-container { gap: 6px; }
+  .dia-btn { padding: 6px 10px; font-size: 12px; }
+  .table-scroll { -webkit-overflow-scrolling: touch; }
+  .section-header { gap: 12px; }
+}
+
+/* Histórico de asistencias */
+.app--admin-attendance-history .section-header > div p { margin-top: 16px; }
+.app--admin-attendance-history .controls-container { margin-top: 24px; display: grid; gap: 20px; }
+.app--admin-attendance-history .filter-bar { margin-top: 64px; }

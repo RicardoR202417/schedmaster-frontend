@@ -1,0 +1,66 @@
+/* ==========================================
+   1. VARIABLES — Light mode (default)
+   ========================================== */
+
+:root {
+  --blue-900:  #234D7B;
+  --blue-500:  #00A4E0;
+  --yellow:    #EBBA3D;
+  --gray:      #71706F;
+  --gray-700:  #334155;
+  --white:     #FFFFFF;
+  --bg:        #F7FAFC;
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --radius: 16px;
+  --shadow: 0 16px 48px rgba(0,0,0,.10);
+  --font: 'Montserrat', system-ui, Arial, sans-serif;
+
+  /* Tokens semánticos — light */
+  --color-bg:            #F7FAFC;
+  --color-surface:       #FFFFFF;
+  --color-surface-alt:   #F8FAFC;
+  --color-border:        rgba(15,23,42,.08);
+  --color-border-mid:    rgba(15,23,42,.12);
+  --color-text-primary:  #1f2937;
+  --color-text-muted:    #71706F;
+  --color-text-heading:  #234D7B;
+  --color-input-bg:      #fafafa;
+  --color-input-border:  #e8e8e8;
+  --color-table-head:    #f8fafc;
+  --color-table-hover:   #f8fafc;
+  --color-shadow:        rgba(0,0,0,.08);
+  --color-card-shadow:   0 10px 26px rgba(0,0,0,.08);
+}
+
+/* ==========================================
+   1b. VARIABLES — Dark mode
+   ========================================== */
+
+html.dark {
+  --color-bg:            #0a1628;
+  --color-surface:       #000d24;
+  --color-surface-alt:   #001337;
+  --color-border:        rgba(255,255,255,.07);
+  --color-border-mid:    rgba(255,255,255,.12);
+  --color-text-primary:  #cdd9ed;
+  --color-text-muted:    #7a92b4;
+  --color-text-heading:  #a8c4e8;
+  --color-input-bg:      #0d1c38;
+  --color-input-border:  rgba(255,255,255,.10);
+  --color-table-head:    #0d1c38;
+  --color-table-hover:   #132338;
+  --color-shadow:        rgba(0,0,0,.30);
+  --color-card-shadow:   0 10px 26px rgba(0,0,0,.30);
+
+  /* Ajustes puntuales de paleta en dark */
+  --blue-900:  #a8c4e8;
+  --gray:      #7a92b4;
+  --gray-700:  #cdd9ed;
+  --white:     #0f2040;
+  --bg:        #0a1628;
+}

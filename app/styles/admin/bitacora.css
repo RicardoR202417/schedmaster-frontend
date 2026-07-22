@@ -1,0 +1,41 @@
+/* ==========================================
+   29. BITÁCORA
+   ========================================== */
+
+.log-modal { max-width: 560px; display: flex; flex-direction: column; max-height: 90vh; }
+
+.log-filter-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px var(--s-4); border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-alt); flex-wrap: wrap;
+}
+.log-filter-label  { font-size: 12px; font-weight: 800; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.log-filter-select { height: 36px; min-width: 180px; }
+.log-count         { font-size: 12px; margin-left: auto; color: var(--color-text-muted); }
+
+.log-list { flex: 1; overflow-y: auto; padding: var(--s-3) var(--s-4); display: flex; flex-direction: column; gap: 16px; }
+
+.log-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 0; text-align: center; }
+.log-empty svg          { width: 36px; height: 36px; color: var(--color-text-muted); opacity: .4; }
+.log-empty-title        { font-size: 14px; font-weight: 700; color: var(--color-text-primary); margin: 0; }
+.log-empty-desc         { font-size: 12px; color: var(--color-text-muted); margin: 0; }
+
+.log-entry        { display: flex; gap: 12px; align-items: flex-start; }
+.log-entry-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: grid; place-items: center;
+  font-weight: 900; font-size: 13px; color: #fff; flex-shrink: 0;
+}
+.log-entry-body  { flex: 1; min-width: 0; }
+.log-entry-meta  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.log-entry-author{ font-size: 13px; font-weight: 900; color: var(--color-text-heading); }
+.log-entry-date  { font-size: 11px; color: var(--color-text-muted); }
+.log-entry-text  { font-size: 13px; font-weight: 600; color: var(--color-text-primary); line-height: 1.55; margin: 0; }
+
+.log-title-row     { display: flex; align-items: center; gap: 8px; }
+.log-title-row svg { width: 20px; height: 20px; color: var(--color-text-heading); }
+
+.log-compose { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--color-border); display: flex; flex-direction: column; gap: 10px; }
+.log-textarea          { min-height: 80px; resize: none; }
+.log-compose-actions   { display: flex; align-items: center; justify-content: space-between; }
+.log-hint              { font-size: 11px; color: var(--color-text-muted); }

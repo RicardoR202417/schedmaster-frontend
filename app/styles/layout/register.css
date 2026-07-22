@@ -1,0 +1,51 @@
+/* ==========================================
+   15. LAYOUT — REGISTRO
+   ========================================== */
+
+.register-page {
+  background: var(--color-bg);
+  position: relative; overflow-y: auto; overflow-x: hidden;
+  min-height: 100vh; width: 100vw;
+}
+.register-page::before {
+  content: ''; position: fixed;
+  top: -30%; left: -20%; width: 60%; height: 100%;
+  background: radial-gradient(circle, var(--blue-500) 0%, transparent 70%);
+  opacity: .08; z-index: 0; pointer-events: none;
+}
+.register-page::after {
+  content: ''; position: fixed;
+  bottom: -40%; right: -20%; width: 60%; height: 100%;
+  background: radial-gradient(circle, var(--yellow) 0%, transparent 70%);
+  opacity: .08; z-index: 0; pointer-events: none;
+}
+.register-page .container {
+  max-width: 900px; width: 100%; margin: 0 auto;
+  position: relative; z-index: 1;
+  padding: 40px 24px 60px;
+  display: flex; flex-direction: column;
+  align-items: center; min-height: 100vh; justify-content: center;
+}
+
+.page-header { text-align: center; margin-bottom: 32px; }
+
+.logo-badge {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--yellow) 0%, #f4c653 100%);
+  border-radius: 20px; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 12px 32px rgba(235,186,61,.4);
+}
+.logo-badge svg { width: 32px; height: 32px; color: #234D7B; }
+
+.page-header .title {
+  background: linear-gradient(135deg, #234D7B 0%, var(--blue-500) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+html.dark .page-header .title {
+  background: linear-gradient(135deg, var(--color-text-heading) 0%, var(--blue-500) 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+.page-header .title .highlight {
+  background: none; -webkit-text-fill-color: var(--blue-500);
+}
