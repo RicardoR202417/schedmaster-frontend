@@ -237,7 +237,7 @@ export default function RegisterPage() {
           </div>
         ) : (
           <div className="card--glass">
-            <button type="button" className="btn btn--back" onClick={() => router.push('/seleccion-servicio')}>
+            <button type="button" className="btn btn--back" onClick={() => router.push('/')}>
               <ArrowLeft size={18} /> Volver al inicio
             </button>
 

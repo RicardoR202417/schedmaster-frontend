@@ -1,0 +1,82 @@
+/* ==========================================
+   28. LAYOUT — EJERCICIOS
+   ========================================== */
+
+.ejercicios-hero {
+  padding: 140px 24px 40px;
+  background: var(--color-surface);
+  text-align: center;
+}
+.ejercicios-hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.ejercicios-grid-section {
+  padding: 40px 24px 100px;
+  background: var(--color-surface);
+}
+
+.ejercicios-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.ejercicio-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.ejercicio-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--blue-500);
+  box-shadow: 0 16px 32px var(--color-shadow);
+}
+.ejercicio-card-media {
+  width: 100%;
+  height: 180px;
+  background: #f3f4f6;
+}
+.ejercicio-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ejercicio-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ejercicio-card-body h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-text-heading);
+  line-height: 1.3;
+}
+.ejercicio-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 1024px) {
+  .ejercicios-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .ejercicios-hero { padding: 120px 16px 32px; }
+  .ejercicios-grid-section { padding: 24px 16px 60px; }
+  .ejercicios-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .ejercicio-card-media { height: 140px; }
+}
+@media (max-width: 480px) {
+  .ejercicios-grid { grid-template-columns: 1fr; }
+}

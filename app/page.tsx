@@ -37,6 +37,7 @@ export default function Home() {
           <nav className="home-nav">
             <Link href="/nosotros">Nosotros</Link>
             <Link href="/beneficios">Beneficios</Link>
+            <Link href="/ejercicios">Ejercicios</Link>
             <Link href="/contacto">Contacto</Link>
           </nav>
           <div className="home-header-actions">

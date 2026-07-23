@@ -617,7 +617,7 @@
 @media (max-width: 768px) {
   .home-nav { display: none; }
   .home-header-inner { padding: 12px 16px; }
-  .hero-modern { padding: 80px 16px 40px; min-height: auto; }
+  .hero-modern { padding: 120px 16px 40px; min-height: auto; }
   .hero-modern-title { font-size: 36px; letter-spacing: -1px; }
   .hero-modern-subtitle { font-size: 16px; }
   .hero-stats { flex-wrap: wrap; gap: 16px; }
