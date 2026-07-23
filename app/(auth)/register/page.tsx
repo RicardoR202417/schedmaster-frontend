@@ -91,7 +91,7 @@ export default function RegisterPage() {
     level: passwordMeterLevel
   } = getPasswordStatus(form.password);
 
-  // 1. Cargar todos los horarios (Esto ya trae los dÃ­as incluidos gracias a nuestro backend)
+  // 1. Cargar todos los horarios (Esto ya trae los días incluidos gracias a nuestro backend)
   useEffect(()=>{
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/horarios`)
       .then(r=>r.json())
@@ -102,7 +102,7 @@ export default function RegisterPage() {
       });
   },[]);
 
-  // 2.  SOLUCIÃ“N: Extraer los dÃ­as directamente de la lista que ya tenemos en memoria
+  // 2.  SOLUCIÓN: Extraer los días directamente de la lista que ya tenemos en memoria
   useEffect(() => {
     if (!form.horarioId) {
       setDiasHorario([]);
@@ -110,11 +110,11 @@ export default function RegisterPage() {
       return;
     }
 
-    // Buscamos el horario exacto que el alumno seleccionÃ³ en el dropdown
+    // Buscamos el horario exacto que el alumno seleccionó en el dropdown
     const horarioElegido = horarios.find(h => h.id_horario.toString() === form.horarioId.toString());
 
     if (horarioElegido?.dias_ids) {
-      // Separamos el texto de los dÃ­as ("Lunes, MiÃ©rcoles") en un arreglo
+      // Separamos el texto de los días ("Lunes, Miércoles") en un arreglo
       const nombresDias = horarioElegido.dias_semana.split(', ');
       
       const diasArmados = horarioElegido.dias_ids.map((id: number, index: number) => ({
@@ -123,7 +123,7 @@ export default function RegisterPage() {
       }));
       
       setDiasHorario(diasArmados);
-      // Limpiamos los dÃ­as seleccionados por si el alumno cambiÃ³ de horario a mitad del registro
+      // Limpiamos los días seleccionados por si el alumno cambió de horario a mitad del registro
       setForm(prev => ({ ...prev, diasSeleccionados: [] })); 
     } else {
       setDiasHorario([]);
@@ -137,7 +137,7 @@ export default function RegisterPage() {
       .catch(() => setDivisiones([]));
   }, []);
 
-  // Cargar carreras segÃºn divisiÃ³n
+  // Cargar carreras según división
   useEffect(()=>{
     if(!form.division){
       setCarreras([]);
@@ -164,7 +164,7 @@ export default function RegisterPage() {
     }));
   };
 
-  // Toggle selecciÃ³n de dÃ­as
+  // Toggle selección de días
   const toggleDia=(id:number)=>{
     setForm(prev=>({
       ...prev,
@@ -232,8 +232,8 @@ export default function RegisterPage() {
         {success ? (
           <div className="card--glass card--center">
             <div className="success-icon"><CircleCheck size={40}/></div>
-            <h2 className="success-title">Â¡Cuenta creada!</h2>
-            <p className="success-text">Redirigiendo al inicio de sesiÃ³nâ€¦</p>
+            <h2 className="success-title">¡Cuenta creada!</h2>
+            <p className="success-text">Redirigiendo al inicio de sesión…</p>
           </div>
         ) : (
           <div className="card--glass">
@@ -243,8 +243,8 @@ export default function RegisterPage() {
 
             <div className="page-header">
               <div className="logo-badge"><CircleCheck size={32}/></div>
-              <h1 className="title">Ãšnete a <span className="highlight">SchedMaster</span></h1>
-              <p className="subtitle">Completa tu informaciÃ³n para crear tu cuenta</p>
+              <h1 className="title">Únete a <span className="highlight">SchedMaster</span></h1>
+              <p className="subtitle">Completa tu información para crear tu cuenta</p>
             </div>
 
             <div className="progress-bar">
@@ -289,13 +289,13 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              {/* DivisiÃ³n y carrera */}
+              {/* División y carrera */}
               {form.tipo==="estudiante" && (
                 <>
                   <div className="form-group">
-                    <label htmlFor="division">DivisiÃ³n</label>
-                    <select id="division" title="DivisiÃ³n" name="division" value={form.division} className="auth-select" onChange={handleChange}>
-                      <option value="">Selecciona divisiÃ³n</option>
+                    <label htmlFor="division">División</label>
+                    <select id="division" title="División" name="division" value={form.division} className="auth-select" onChange={handleChange}>
+                      <option value="">Selecciona división</option>
                       {divisiones.map(d=>(<option key={d.id_division} value={d.id_division}>{d.nombre_division}</option>))}
                     </select>
                   </div>
@@ -318,7 +318,7 @@ export default function RegisterPage() {
                 </select>
               </div>
 
-              {/* DÃ­as */}
+              {/* Días */}
               {form.horarioId && (
                 <div className="dias-container">
                   {diasHorario.map(d => (
@@ -335,8 +335,8 @@ export default function RegisterPage() {
               )}
 
               <div className="form-group">
-                <label className="input-label" htmlFor="password"><Lock size={16}/> ContraseÃ±a</label>
-                <input id="password" title="ContraseÃ±a" name="password" type="password" className="auth-input" placeholder="Crea una contraseÃ±a segura" onChange={handleChange}/>
+                <label className="input-label" htmlFor="password"><Lock size={16}/> Contraseña</label>
+                <input id="password" title="Contraseña" name="password" type="password" className="auth-input" placeholder="Crea una contraseña segura" onChange={handleChange}/>
 
                 <div className="password-validator" aria-live="polite">
                   <div className="password-validator-bars" aria-hidden="true">
@@ -349,15 +349,15 @@ export default function RegisterPage() {
                   <ul className="password-validator-list">
                     <li className={`password-validator-item ${hasMinLength ? 'is-met' : ''}`}>
                       <span className="password-validator-dot" aria-hidden="true" />
-                      <span>MÃ­nimo 8 caracteres</span>
+                      <span>Mínimo 8 caracteres</span>
                     </li>
                     <li className={`password-validator-item ${hasUppercase ? 'is-met' : ''}`}>
                       <span className="password-validator-dot" aria-hidden="true" />
-                      <span>Una letra mayÃºscula</span>
+                      <span>Una letra mayúscula</span>
                     </li>
                     <li className={`password-validator-item ${hasNumberOrSymbol ? 'is-met' : ''}`}>
                       <span className="password-validator-dot" aria-hidden="true" />
-                      <span>Un nÃºmero o sÃ­mbolo</span>
+                      <span>Un número o símbolo</span>
                     </li>
                   </ul>
                 </div>
@@ -366,14 +366,14 @@ export default function RegisterPage() {
               </div>
 
               <div className="form-group">
-                <label className="input-label" htmlFor="confirmPassword"><Lock size={16}/> Confirmar contraseÃ±a</label>
-                <input id="confirmPassword" title="Confirmar contraseÃ±a" name="confirmPassword" type="password" className="auth-input" placeholder="Confirma tu contraseÃ±a" onChange={handleChange}/>
+                <label className="input-label" htmlFor="confirmPassword"><Lock size={16}/> Confirmar contraseña</label>
+                <input id="confirmPassword" title="Confirmar contraseña" name="confirmPassword" type="password" className="auth-input" placeholder="Confirma tu contraseña" onChange={handleChange}/>
                 {!!form.confirmPassword && errors.confirmPassword && <small className="error-text">{errors.confirmPassword}</small>}
               </div>
 
               <div className="checkbox-wrapper">
                 <input id="terms" type="checkbox" name="terms" checked={form.terms} onChange={handleChange}/>
-                <label htmlFor="terms">Acepto los <span>tÃ©rminos y condiciones</span></label>
+                <label htmlFor="terms">Acepto los <span>términos y condiciones</span></label>
               </div>
 
               <button type="submit" disabled={!formValid} className="btn btn--blue btn--full btn--lg">

@@ -36,7 +36,7 @@ function getAttendanceStyle(asistencia: string) {
 
 function getExportButtonContent(exportDone: boolean, exporting: boolean) {
   if (exportDone) {
-    return <><Check size={16} /> Â¡Descargado!</>;
+    return <><Check size={16} /> ¡Descargado!</>;
   }
 
   if (exporting) {
@@ -81,7 +81,7 @@ export default function AdminEstadisticasPage() {
     { value: 'primavera', label: 'Primavera 2025' },
   ];
 
-  //LÃ³gica de Filtrado DinÃ¡mico
+  //Lógica de Filtrado Dinámico
   const datosFiltrados = periodoFiltro === 'todos' 
     ? datosTabla 
     : datosTabla.filter(d => d.periodo.toLowerCase().includes(periodoFiltro.toLowerCase()));
@@ -92,7 +92,7 @@ export default function AdminEstadisticasPage() {
   const handleExport = () => {
     setExporting(true);
     
-    // Elegimos quÃ© datos exportar segÃºn lo que pidiÃ³ el usuario
+    // Elegimos qué datos exportar según lo que pidió el usuario
     const datosExportar = exportScope === 'completo' ? datosTabla : datosFiltrados;
 
     setTimeout(() => {
@@ -100,11 +100,11 @@ export default function AdminEstadisticasPage() {
       
       if (exportFormat === 'csv') {
         const rows = [
-          ['MatrÃ­cula','Nombre','Carrera','Servicio','Periodo','Asistencia %','Estado'],
+          ['Matrícula','Nombre','Carrera','Servicio','Periodo','Asistencia %','Estado'],
           ...datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.periodo, r.asistencia, r.estado]),
         ];
         
-        //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ã‘
+        //Le agregamos '\uFEFF' al inicio para que reconozca acentos y la Ñ
         const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
@@ -119,7 +119,7 @@ export default function AdminEstadisticasPage() {
         
         autoTable(doc, {
           startY: 20,
-          head: [['MatrÃ­cula', 'Nombre', 'Carrera', 'Servicio', 'Asistencia', 'Estado']],
+          head: [['Matrícula', 'Nombre', 'Carrera', 'Servicio', 'Asistencia', 'Estado']],
           body: datosExportar.map(r => [r.matricula, r.nombre, r.carrera, r.servicio, r.asistencia, r.estado]),
           headStyles: { fillColor: [0, 164, 224] },
         });
@@ -188,7 +188,7 @@ export default function AdminEstadisticasPage() {
                 <table>
                   <thead>
                     <tr>
-                      <th style={{ padding: '15px' }}>MatrÃ­cula</th>
+                      <th style={{ padding: '15px' }}>Matrícula</th>
                       <th style={{ padding: '15px' }}>Nombre del alumno</th>
                       <th style={{ padding: '15px' }}>Carrera</th>
                       <th style={{ padding: '15px' }}>Servicio</th>
@@ -251,11 +251,11 @@ export default function AdminEstadisticasPage() {
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <span className="input-label">Formato de exportaciÃ³n</span>
+                <span className="input-label">Formato de exportación</span>
                 <div className="export-options">
-                  {/*LE DIMOS CUELLO AL JSON COMO PIDIÃ“ ARLET */}
+                  {/*LE DIMOS CUELLO AL JSON COMO PIDIÓ ARLET */}
                   {[
-                    { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cÃ¡lculo' },
+                    { value:'csv',  cls:'csv',  icon:<FileText size={20} />, label:'Excel (CSV)', desc:'Compatible con Excel y hojas de cálculo' },
                     { value:'pdf',  cls:'pdf',  icon:<FileText size={20} />, label:'PDF',         desc:'Reporte visual listo para presentar' },
                   ].map(opt => (
                     <button key={opt.value} type="button" className={`export-option ${exportFormat === opt.value ? 'selected' : ''}`} onClick={() => setExportFormat(opt.value)}>

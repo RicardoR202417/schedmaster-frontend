@@ -181,8 +181,8 @@ export default function VerifyTwoFactorPage() {
     if (!pending || loading) return;
 
     if (!/^\d{6}$/.test(code.trim())) {
-      setModalTitle('CÃ³digo invÃ¡lido');
-      setModalMessage('Ingresa un cÃ³digo de 6 dÃ­gitos.');
+      setModalTitle('Código inválido');
+      setModalMessage('Ingresa un código de 6 dígitos.');
       setModalOpen(true);
       return;
     }
@@ -206,7 +206,7 @@ export default function VerifyTwoFactorPage() {
         }
 
         setModalTitle('No se pudo verificar');
-        setModalMessage(data.message || 'Error verificando el cÃ³digo.');
+        setModalMessage(data.message || 'Error verificando el código.');
         setModalOpen(true);
         return;
       }
@@ -214,7 +214,7 @@ export default function VerifyTwoFactorPage() {
       redirectAfterLogin(data);
     } catch (error) {
       console.error('Error verificando 2FA:', error);
-      setModalTitle('Error de conexiÃ³n');
+      setModalTitle('Error de conexión');
       setModalMessage('No fue posible conectar con el servidor.');
       setModalOpen(true);
     } finally {
@@ -241,7 +241,7 @@ export default function VerifyTwoFactorPage() {
         }
 
         setModalTitle('No se pudo reenviar');
-        setModalMessage(data.message || 'No fue posible reenviar el cÃ³digo.');
+        setModalMessage(data.message || 'No fue posible reenviar el código.');
         setModalOpen(true);
         return;
       }
@@ -256,12 +256,12 @@ export default function VerifyTwoFactorPage() {
       setSecondsLeft(Math.max(Math.floor((nextExpiresAt - Date.now()) / 1000), 0));
       sessionStorage.setItem('twoFactorLogin', JSON.stringify(nextPending));
 
-      setModalTitle('CÃ³digo reenviado');
-      setModalMessage('Te enviamos un nuevo cÃ³digo a tu correo.');
+      setModalTitle('Código reenviado');
+      setModalMessage('Te enviamos un nuevo código a tu correo.');
       setModalOpen(true);
     } catch (error) {
       console.error('Error reenviando 2FA:', error);
-      setModalTitle('Error de conexiÃ³n');
+      setModalTitle('Error de conexión');
       setModalMessage('No fue posible conectar con el servidor.');
       setModalOpen(true);
     } finally {
@@ -276,12 +276,12 @@ export default function VerifyTwoFactorPage() {
           <div className="brand-logo">
             <img src="/logo.png" alt="Logo" width="60" height="60" />
           </div>
-          <h1 className="hero-title">VerificaciÃ³n 2FA</h1>
-          <p className="hero-subtitle">Protegemos tu acceso con un segundo factor de autenticaciÃ³n.</p>
+          <h1 className="hero-title">Verificación 2FA</h1>
+          <p className="hero-subtitle">Protegemos tu acceso con un segundo factor de autenticación.</p>
           <div className="feature-list verify-feature-list">
             <div className="feature-item">
               <div className="feature-icon"><ShieldCheck size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">CÃ³digo temporal de un solo uso</span>
+              <span className="feature-text">Código temporal de un solo uso</span>
             </div>
             <div className="feature-item">
               <div className="feature-icon"><Mail size={20} strokeWidth={2.5} /></div>
@@ -296,16 +296,16 @@ export default function VerifyTwoFactorPage() {
         <div className="decorative-shape shape-2" />
         <div className="login-container">
           <header className="login-header">
-            <h1>Ingresa tu <span className="highlight">cÃ³digo</span></h1>
-            <p>Revisa tu correo y escribe el cÃ³digo de 6 dÃ­gitos para continuar.</p>
+            <h1>Ingresa tu <span className="highlight">código</span></h1>
+            <p>Revisa tu correo y escribe el código de 6 dígitos para continuar.</p>
             <p className="verify-status-pill">
-              {secondsLeft > 0 ? `Expira en ${secondsLeft}s` : 'El cÃ³digo puede haber expirado. Solicita uno nuevo.'}
+              {secondsLeft > 0 ? `Expira en ${secondsLeft}s` : 'El código puede haber expirado. Solicita uno nuevo.'}
             </p>
           </header>
 
           <form onSubmit={handleVerify} className="verify-form">
             <div className="form-group verify-code-group">
-              <span className="input-label">CÃ³digo de verificaciÃ³n</span>
+              <span className="input-label">Código de verificación</span>
               <div className="otp-grid">
                 {OTP_FIELD_IDS.map((fieldId, index) => (
                   <input
@@ -323,12 +323,12 @@ export default function VerifyTwoFactorPage() {
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
                     onPaste={handleOtpPaste}
                     autoFocus={index === 0}
-                    aria-label={`DÃ­gito ${index + 1}`}
+                    aria-label={`Dígito ${index + 1}`}
                     required
                   />
                 ))}
               </div>
-              <p className="verify-code-hint">Puedes escribir o pegar los 6 dÃ­gitos.</p>
+              <p className="verify-code-hint">Puedes escribir o pegar los 6 dígitos.</p>
             </div>
 
             <button
@@ -336,7 +336,7 @@ export default function VerifyTwoFactorPage() {
               className="btn btn--blue btn--full btn--lg"
               disabled={loading || !pending || code.length !== OTP_LENGTH}
             >
-              {loading ? 'Verificando...' : 'Verificar cÃ³digo'}
+              {loading ? 'Verificando...' : 'Verificar código'}
             </button>
           </form>
 
@@ -347,11 +347,11 @@ export default function VerifyTwoFactorPage() {
               onClick={handleResend}
               disabled={resendLoading || !pending}
             >
-              <RotateCw size={16} /> {resendLoading ? 'Reenviando...' : 'Reenviar cÃ³digo'}
+              <RotateCw size={16} /> {resendLoading ? 'Reenviando...' : 'Reenviar código'}
             </button>
 
             <Link href="/login" className="verify-login-link">
-              Volver al inicio de sesiÃ³n
+              Volver al inicio de sesión
             </Link>
           </div>
         </div>
