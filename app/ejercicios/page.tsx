@@ -1,35 +1,29 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import Link from 'next/link';
 import { Dumbbell, ArrowLeft, Sparkles } from 'lucide-react';
-import type { ExerciseEntry } from '../lib/exerciseSearch';
 
 export const metadata = {
   title: 'Ejercicios | SchedMaster',
   description: 'Explora ejercicios con animaciones, guiados por nuestro entrenador virtual.',
 };
 
-// IDs curados del dataset (todos con GIF ya descargado en public/exercises-dataset).
-const FEATURED_IDS = ['0662', '0652', '1160', '0630', '0274', '1685', '3582', '2612'];
-
-function loadFeaturedExercises(): ExerciseEntry[] {
-  try {
-    const indexPath = path.join(process.cwd(), 'public', 'exercises-dataset', 'index.json');
-    const raw = fs.readFileSync(indexPath, 'utf-8');
-    const all: ExerciseEntry[] = JSON.parse(raw);
-    const byId = new Map(all.map((e) => [e.id, e]));
-    return FEATURED_IDS.map((id) => byId.get(id)).filter((e): e is ExerciseEntry => Boolean(e));
-  } catch {
-    return [];
-  }
-}
-
-function capitalize(text: string) {
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
+// Adelanto curado del dataset de ejercicios. Estos 8 archivos (imagen + gif, ~0.8MB
+// en total) se versionan directo en public/ejercicios-preview para que esta pagina
+// funcione en cualquier entorno sin depender de "npm run fetch:exercises" (que
+// descarga el dataset completo de 1,300+ ejercicios a public/exercises-dataset,
+// gitignored por su peso, y solo es necesario para la busqueda del ChatBot).
+const FEATURED_EXERCISES = [
+  { name: 'Push-up', bodyPart: 'Chest', equipment: 'Body weight', gif: '/ejercicios-preview/0662-I4hDWkc.gif' },
+  { name: 'Pull-up', bodyPart: 'Back', equipment: 'Body weight', gif: '/ejercicios-preview/0652-lBDjFxJ.gif' },
+  { name: 'Burpee', bodyPart: 'Cardio', equipment: 'Body weight', gif: '/ejercicios-preview/1160-dK9394r.gif' },
+  { name: 'Mountain climber', bodyPart: 'Cardio', equipment: 'Body weight', gif: '/ejercicios-preview/0630-RJgzwny.gif' },
+  { name: 'Crunch floor', bodyPart: 'Waist', equipment: 'Body weight', gif: '/ejercicios-preview/0274-TFqbd8t.gif' },
+  { name: 'Squat to overhead reach', bodyPart: 'Upper legs', equipment: 'Body weight', gif: '/ejercicios-preview/1685-QChZi3x.gif' },
+  { name: 'Lunge with jump', bodyPart: 'Upper legs', equipment: 'Body weight', gif: '/ejercicios-preview/3582-PM1PZjg.gif' },
+  { name: 'Jump rope', bodyPart: 'Cardio', equipment: 'Rope', gif: '/ejercicios-preview/2612-e1e76I2.gif' },
+];
 
 export default function EjerciciosPage() {
-  const exercises = loadFeaturedExercises();
+  const exercises = FEATURED_EXERCISES;
 
   return (
     <div className="home-page">
@@ -77,15 +71,15 @@ export default function EjerciciosPage() {
       <section className="ejercicios-grid-section">
         <div className="ejercicios-grid">
           {exercises.map((exercise) => (
-            <div key={exercise.id} className="ejercicio-card">
+            <div key={exercise.name} className="ejercicio-card">
               <div className="ejercicio-card-media">
                 <img src={exercise.gif} alt={exercise.name} loading="lazy" />
               </div>
               <div className="ejercicio-card-body">
-                <h3>{capitalize(exercise.name)}</h3>
+                <h3>{exercise.name}</h3>
                 <div className="ejercicio-card-tags">
-                  <span className="chip chip--asistente">{capitalize(exercise.bodyPart)}</span>
-                  <span className="chip chip--asistente">{capitalize(exercise.equipment)}</span>
+                  <span className="chip chip--asistente">{exercise.bodyPart}</span>
+                  <span className="chip chip--asistente">{exercise.equipment}</span>
                 </div>
               </div>
             </div>
