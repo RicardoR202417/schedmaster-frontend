@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import AlertModal from './AlertModal';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
 const HorarioForm = () => {
   const [formData, setFormData] = useState({
     id_periodo: '',
@@ -31,7 +33,7 @@ const HorarioForm = () => {
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/horarios/crear', {
+      const response = await fetch(`${API_URL}/horarios/crear`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
