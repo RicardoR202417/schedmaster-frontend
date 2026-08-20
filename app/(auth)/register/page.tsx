@@ -1,10 +1,11 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CircleCheck, Lock } from 'lucide-react';
 import TerminosModal from "@/app/components/TerminosModal";
 import AlertModal from '../../components/AlertModal';
+import { gxFontClass } from '../../styles/fonts';
 
 function getRoleId(tipo: string) {
   if (tipo === 'estudiante') return 1;
@@ -144,15 +145,15 @@ export default function RegisterPage() {
     if (horarioElegido?.dias_ids) {
       // Separamos el texto de los días ("Lunes, Miércoles") en un arreglo
       const nombresDias = horarioElegido.dias_semana.split(', ');
-      
+
       const diasArmados = horarioElegido.dias_ids.map((id: number, index: number) => ({
         id_dia: id,
         nombre: nombresDias[index]
       }));
-      
+
       setDiasHorario(diasArmados);
       // Limpiamos los días seleccionados por si el alumno cambió de horario a mitad del registro
-      setForm(prev => ({ ...prev, diasSeleccionados: [] })); 
+      setForm(prev => ({ ...prev, diasSeleccionados: [] }));
     } else {
       setDiasHorario([]);
     }
@@ -255,89 +256,95 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="register-page">
-      <div className="register-page container">
+    <div className={`gx-scope gx-reg-page ${gxFontClass}`}>
+      <div className="gx-reg-page-bg">
+        <div className="gx-hero-orb gx-hero-orb--1 gx-float-a" />
+        <div className="gx-hero-orb gx-hero-orb--2 gx-float-b" />
+      </div>
+
+      <div className="gx-reg-container">
         {success ? (
-          <div className="card--glass card--center">
-            <div className="success-icon"><CircleCheck size={40}/></div>
-            <h2 className="success-title">¡Cuenta creada!</h2>
-            <p className="success-text">Redirigiendo al inicio de sesión…</p>
+          <div className="gx-card gx-reg-success">
+            <div className="gx-reg-success-icon"><CircleCheck size={36}/></div>
+            <h2>¡Cuenta creada!</h2>
+            <p>Redirigiendo al inicio de sesión…</p>
           </div>
         ) : (
-          <div className="card--glass">
-            <button type="button" className="btn btn--back" onClick={() => router.push('/')}>
-              <ArrowLeft size={18} /> Volver al inicio
+          <div className="gx-card gx-reg-card">
+            <button type="button" className="gx-btn gx-btn--outline gx-btn--sm gx-reg-back" onClick={() => router.push('/')}>
+              <ArrowLeft size={16} /> Volver al inicio
             </button>
 
-            <div className="page-header">
-              <div className="logo-badge"><CircleCheck size={32}/></div>
-              <h1 className="title">Únete a <span className="highlight">SchedMaster</span></h1>
-              <p className="subtitle">Completa tu información para crear tu cuenta</p>
+            <div className="gx-reg-head">
+              <div className="gx-reg-badge"><CircleCheck size={28}/></div>
+              <h1>Únete a <span className="gx-grad-text">SchedMaster</span></h1>
+              <p>Completa tu información para crear tu cuenta</p>
             </div>
 
-            <div className="progress-bar">
-              <div ref={progressFillRef} className="progress-fill" style={{ width: `${progress}%` }} />
+            <div className="gx-reg-progress">
+              <span ref={progressFillRef} style={{ width: `${progress}%` }} />
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
+              <div className="gx-field">
                 <label htmlFor="tipo">Tipo de usuario</label>
-                <select id="tipo" title="Tipo de usuario" name="tipo" value={form.tipo} className="auth-select" onChange={handleChange}>
+                <select id="tipo" title="Tipo de usuario" name="tipo" value={form.tipo} className="gx-select" onChange={handleChange}>
                   <option value="estudiante">Estudiante</option>
                   <option value="docente">Docente</option>
                 </select>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
+              <div className="gx-reg-row">
+                <div className="gx-field">
                   <label>Nombre</label>
-                  <input name="nombre" value={form.nombre} className="auth-input" onChange={handleChange} />
+                  <input name="nombre" value={form.nombre} className="gx-input" onChange={handleChange} />
                 </div>
-                <div className="form-group">
+                <div className="gx-field">
                   <label>Apellido paterno</label>
-                  <input name="apellido_paterno" value={form.apellido_paterno} className="auth-input" onChange={handleChange} />
+                  <input name="apellido_paterno" value={form.apellido_paterno} className="gx-input" onChange={handleChange} />
                 </div>
-                <div className="form-group">
+                <div className="gx-field">
                   <label>Apellido materno</label>
-                  <input name="apellido_materno" value={form.apellido_materno} className="auth-input" onChange={handleChange} />
+                  <input name="apellido_materno" value={form.apellido_materno} className="gx-input" onChange={handleChange} />
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="gx-field">
                 <label>Correo institucional</label>
                 <input
                   name="email"
                   type="email"
                   value={form.email}
-                  className={`auth-input ${errors.email ? "input-error" : ""}`}
+                  className={`gx-input ${errors.email ? "is-invalid" : ""}`}
                   onChange={handleChange}
                 />
                 {errors.email && (
-                  <p className="error-text">{errors.email}</p>
+                  <p className="gx-error-text">{errors.email}</p>
                 )}
               </div>
 
               {/* División y carrera */}
               {form.tipo==="estudiante" && (
-                <>
-                  <div className="form-group">
+                <div className="gx-reg-row" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                  <div className="gx-field">
                     <label htmlFor="division">División</label>
-                    <select id="division" title="División" name="division" value={form.division} className="auth-select" onChange={handleChange}>
+                    <select id="division" title="División" name="division" value={form.division} className="gx-select" onChange={handleChange}>
                       <option value="">Selecciona división</option>
                       {divisiones.map(d=>(<option key={d.id_division} value={d.id_division}>{d.nombre_division}</option>))}
                     </select>
                   </div>
 
-                  <div className="form-group">
+                  <div className="gx-field">
                     <label htmlFor="carrera">Carrera</label>
-                    <select id="carrera" title="Carrera" name="carrera" value={form.carrera} className="auth-select" onChange={handleChange}>
+                    <select id="carrera" title="Carrera" name="carrera" value={form.carrera} className="gx-select" onChange={handleChange}>
                       <option value="">Selecciona carrera</option>
                       {carreras.map(c => (<option key={c.id_carrera} value={c.id_carrera}>{c.nombre_carrera}</option>))}
                     </select>
                   </div>
-                </>
+                </div>
               )}
 
+<<<<<<< HEAD
               <div className="form-group">
                 <label>Convocatoria activa</label>
                 <div className="auth-input" style={{ display: 'flex', alignItems: 'center', minHeight: 48 }}>
@@ -365,18 +372,24 @@ export default function RegisterPage() {
                         ? 'No hay horarios para esta convocatoria'
                         : 'Selecciona horario'}
                   </option>
+=======
+              <div className="gx-field">
+                <label htmlFor="horarioId">Horario</label>
+                <select id="horarioId" title="Horario" name="horarioId" value={form.horarioId} className="gx-select" onChange={handleChange}>
+                  <option value="">Selecciona horario</option>
+>>>>>>> 4b4a7b420896697ca861eb3196535359c836f64c
                   {horarios.map(h => (<option key={h.id_horario} value={h.id_horario}>{h.hora_inicio} - {h.hora_fin}</option>))}
                 </select>
               </div>
 
               {/* Días */}
               {form.horarioId && (
-                <div className="dias-container">
+                <div className="gx-day-grid">
                   {diasHorario.map(d => (
                     <button
                       key={d.id_dia}
                       type="button"
-                      className={`dia-btn ${form.diasSeleccionados.includes(d.id_dia) ? 'active' : ''}`}
+                      className={`gx-day-pill ${form.diasSeleccionados.includes(d.id_dia) ? 'is-active' : ''}`}
                       onClick={() => toggleDia(d.id_dia)}
                     >
                       {d.nombre}
@@ -385,49 +398,51 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              <div className="form-group">
-                <label className="input-label" htmlFor="password"><Lock size={16}/> Contraseña</label>
-                <input id="password" title="Contraseña" name="password" type="password" className="auth-input" placeholder="Crea una contraseña segura" onChange={handleChange}/>
+              <div className="gx-field">
+                <label htmlFor="password"><Lock size={14}/> Contraseña</label>
+                <input id="password" title="Contraseña" name="password" type="password" className="gx-input" placeholder="Crea una contraseña segura" onChange={handleChange}/>
 
-                <div className="password-validator" aria-live="polite">
-                  <div className="password-validator-bars" aria-hidden="true">
-                    <span className={`password-validator-bar ${passwordMeterLevel >= 1 ? 'is-active' : ''}`} />
-                    <span className={`password-validator-bar ${passwordMeterLevel >= 2 ? 'is-active' : ''}`} />
-                    <span className={`password-validator-bar ${passwordMeterLevel >= 3 ? 'is-active' : ''}`} />
-                    <span className={`password-validator-bar ${passwordMeterLevel >= 4 ? 'is-active' : ''}`} />
+                <div className="gx-pw-meter" aria-live="polite">
+                  <div className="gx-pw-bars" aria-hidden="true">
+                    <span className={`gx-pw-bar ${passwordMeterLevel >= 1 ? 'is-active' : ''}`} />
+                    <span className={`gx-pw-bar ${passwordMeterLevel >= 2 ? 'is-active' : ''}`} />
+                    <span className={`gx-pw-bar ${passwordMeterLevel >= 3 ? 'is-active' : ''}`} />
+                    <span className={`gx-pw-bar ${passwordMeterLevel >= 4 ? 'is-active' : ''}`} />
                   </div>
 
-                  <ul className="password-validator-list">
-                    <li className={`password-validator-item ${hasMinLength ? 'is-met' : ''}`}>
-                      <span className="password-validator-dot" aria-hidden="true" />
+                  <ul className="gx-pw-list">
+                    <li className={`gx-pw-item ${hasMinLength ? 'is-met' : ''}`}>
+                      <span className="gx-pw-dot" aria-hidden="true" />
                       <span>Mínimo 8 caracteres</span>
                     </li>
-                    <li className={`password-validator-item ${hasUppercase ? 'is-met' : ''}`}>
-                      <span className="password-validator-dot" aria-hidden="true" />
+                    <li className={`gx-pw-item ${hasUppercase ? 'is-met' : ''}`}>
+                      <span className="gx-pw-dot" aria-hidden="true" />
                       <span>Una letra mayúscula</span>
                     </li>
-                    <li className={`password-validator-item ${hasNumberOrSymbol ? 'is-met' : ''}`}>
-                      <span className="password-validator-dot" aria-hidden="true" />
+                    <li className={`gx-pw-item ${hasNumberOrSymbol ? 'is-met' : ''}`}>
+                      <span className="gx-pw-dot" aria-hidden="true" />
                       <span>Un número o símbolo</span>
                     </li>
                   </ul>
                 </div>
 
-                {!!form.password && errors.password && <small className="error-text">{errors.password}</small>}
+                {!!form.password && errors.password && <small className="gx-error-text">{errors.password}</small>}
               </div>
 
-              <div className="form-group">
-                <label className="input-label" htmlFor="confirmPassword"><Lock size={16}/> Confirmar contraseña</label>
-                <input id="confirmPassword" title="Confirmar contraseña" name="confirmPassword" type="password" className="auth-input" placeholder="Confirma tu contraseña" onChange={handleChange}/>
-                {!!form.confirmPassword && errors.confirmPassword && <small className="error-text">{errors.confirmPassword}</small>}
+              <div className="gx-field">
+                <label htmlFor="confirmPassword"><Lock size={14}/> Confirmar contraseña</label>
+                <input id="confirmPassword" title="Confirmar contraseña" name="confirmPassword" type="password" className="gx-input" placeholder="Confirma tu contraseña" onChange={handleChange}/>
+                {!!form.confirmPassword && errors.confirmPassword && <small className="gx-error-text">{errors.confirmPassword}</small>}
               </div>
 
-              <div className="checkbox-wrapper">
+              <div className="gx-checkbox-row" style={{ marginBottom: 20 }}>
                 <input id="terms" type="checkbox" name="terms" checked={form.terms} onChange={handleChange}/>
-                <label htmlFor="terms">Acepto los <span>términos y condiciones</span></label>
+                <label htmlFor="terms">
+                  Acepto los <button type="button" onClick={() => setShowTerminos(true)}>términos y condiciones</button>
+                </label>
               </div>
 
-              <button type="submit" disabled={!formValid} className="btn btn--blue btn--full btn--lg">
+              <button type="submit" disabled={!formValid} className="gx-btn gx-btn--primary gx-btn--full gx-btn--lg">
                 Crear mi cuenta
               </button>
             </form>
@@ -438,7 +453,6 @@ export default function RegisterPage() {
           open={showTerminos}
           onClose={() => setShowTerminos(false)}
         />
-
       </div>
 
       <AlertModal

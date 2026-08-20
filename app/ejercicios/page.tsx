@@ -1,5 +1,8 @@
 import Link from 'next/link';
-import { Dumbbell, ArrowLeft, Sparkles } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
+import SiteHeader from '../components/SiteHeader';
+import Reveal from '../components/Reveal';
+import { gxFontClass } from '../styles/fonts';
 
 export const metadata = {
   title: 'Ejercicios | SchedMaster',
@@ -26,40 +29,18 @@ export default function EjerciciosPage() {
   const exercises = FEATURED_EXERCISES;
 
   return (
-    <div className="home-page">
-      {/* ── Header ─────────────────────────────── */}
-      <header className="home-header home-header--scrolled">
-        <div className="home-header-inner">
-          <Link href="/" className="logo-section" style={{ textDecoration: 'none' }}>
-            <div className="logo-icon">
-              <Dumbbell size={24} />
-            </div>
-            <span className="logo-text">SchedMaster</span>
-          </Link>
-          <nav className="home-nav">
-            <Link href="/nosotros">Nosotros</Link>
-            <Link href="/beneficios">Beneficios</Link>
-            <Link href="/ejercicios">Ejercicios</Link>
-            <Link href="/contacto">Contacto</Link>
-          </nav>
-          <div className="home-header-actions">
-            <Link href="/" className="btn btn--back">
-              <ArrowLeft size={16} /> Inicio
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className={`gx-scope gx-home ${gxFontClass}`}>
+      <SiteHeader />
 
-      {/* ── Intro ──────────────────────────────── */}
-      <section className="ejercicios-hero">
-        <div className="ejercicios-hero-inner">
-          <div className="section-label">
-            <span><Sparkles size={12} style={{ marginRight: 4, verticalAlign: '-2px' }} />Nuevo · en avance</span>
-          </div>
-          <h1 className="section-title">
-            Ejercicios con <span className="highlight">animación guiada</span>
-          </h1>
-          <p className="section-desc">
+      <section className="gx-ex-hero">
+        <div className="gx-ex-hero-bg">
+          <div className="gx-hero-orb gx-hero-orb--1 gx-float-a" />
+          <div className="gx-hero-orb gx-hero-orb--2 gx-float-b" />
+        </div>
+        <div className="gx-ex-hero-inner">
+          <span className="gx-eyebrow gx-eyebrow--on-dark"><Sparkles size={13} /> Nuevo · en avance</span>
+          <h1>Ejercicios con <span style={{ background: 'linear-gradient(135deg,var(--gx-blue-400),var(--gx-violet-400))', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>animación guiada</span></h1>
+          <p>
             Estamos integrando un dataset de más de 1,300 ejercicios con animaciones paso a paso.
             Nuestro entrenador virtual ya puede mostrarte la técnica correcta en el chat — aquí tienes
             un adelanto de lo que viene.
@@ -67,43 +48,44 @@ export default function EjerciciosPage() {
         </div>
       </section>
 
-      {/* ── Grid ───────────────────────────────── */}
-      <section className="ejercicios-grid-section">
-        <div className="ejercicios-grid">
-          {exercises.map((exercise) => (
-            <div key={exercise.name} className="ejercicio-card">
-              <div className="ejercicio-card-media">
-                <img src={exercise.gif} alt={exercise.name} loading="lazy" />
-              </div>
-              <div className="ejercicio-card-body">
-                <h3>{exercise.name}</h3>
-                <div className="ejercicio-card-tags">
-                  <span className="chip chip--asistente">{exercise.bodyPart}</span>
-                  <span className="chip chip--asistente">{exercise.equipment}</span>
+      <section className="gx-ex-grid-section">
+        <div className="gx-container">
+          <div className="gx-ex-grid">
+            {exercises.map((exercise, i) => (
+              <Reveal as="div" key={exercise.name} delay={(i % 4) * 60} className="gx-ex-card">
+                <div className="gx-ex-card-media">
+                  <img src={exercise.gif} alt={exercise.name} loading="lazy" />
                 </div>
-              </div>
-            </div>
-          ))}
+                <div className="gx-ex-card-body">
+                  <h3>{exercise.name}</h3>
+                  <div className="gx-ex-card-tags">
+                    <span className="gx-chip">{exercise.bodyPart}</span>
+                    <span className="gx-chip">{exercise.equipment}</span>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
 
-          {exercises.length === 0 && (
-            <div className="empty-state">
-              <p>El dataset de ejercicios aún no está descargado en este entorno.</p>
-              <small>Corre <code>npm run fetch:exercises</code> para generarlo.</small>
-            </div>
-          )}
+            {exercises.length === 0 && (
+              <div className="gx-ex-empty">
+                <p>El dataset de ejercicios aún no está descargado en este entorno.</p>
+                <small>Corre <code>npm run fetch:exercises</code> para generarlo.</small>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* ── CTA ────────────────────────────────── */}
-      <section className="cta-section">
-        <div className="cta-bg-pattern" />
-        <div className="cta-container">
-          <div className="cta-content">
-            <h2>¿Quieres una rutina hecha a tu medida?</h2>
-            <p>Habla con nuestro entrenador virtual y te recomendará ejercicios como estos según tu objetivo.</p>
-            <Link href="/seleccion-servicio" className="btn btn--yellow btn--lg cta-btn">
-              Ir al gimnasio
-            </Link>
+      <section className="gx-cta-wrap">
+        <div className="gx-container">
+          <div className="gx-cta-card">
+            <div className="gx-cta-inner">
+              <h2>¿Quieres una rutina hecha a tu medida?</h2>
+              <p>Habla con nuestro entrenador virtual y te recomendará ejercicios como estos según tu objetivo.</p>
+              <Link href="/seleccion-servicio" className="gx-btn gx-btn--energy gx-btn--lg">
+                Ir al gimnasio <ArrowRight size={18} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

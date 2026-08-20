@@ -1,0 +1,128 @@
+/* ==========================================
+   GX — ÁREA DE ALUMNOS (perfil, anuncios, selección de servicio)
+   ========================================== */
+
+.gx-app { min-height: 100vh; background: var(--gx-bg); }
+
+/* ── Topbar ───────────────────────────────── */
+.gx-app-topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--gx-bg) 85%, transparent);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--gx-line);
+}
+.gx-app-topbar-inner {
+  max-width: var(--gx-container); margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.gx-app-topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+/* ── Hero de sección ──────────────────────── */
+.gx-app-hero {
+  padding: 52px 24px 36px;
+  text-align: center;
+  max-width: var(--gx-container); margin: 0 auto;
+}
+.gx-app-hero h1 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px; color: var(--gx-text); }
+.gx-app-hero p { font-size: 15.5px; color: var(--gx-text-dim); margin: 0; font-weight: 500; }
+
+.gx-app-section { max-width: var(--gx-container); margin: 0 auto; padding: 8px 24px 60px; }
+.gx-app-section + .gx-app-section { padding-top: 0; }
+.gx-app-section-label {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  margin: 36px 0 18px;
+}
+.gx-app-section-label span { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gx-blue-500); }
+.gx-app-section-label h2 { font-size: 21px; font-weight: 700; margin: 4px 0 0; color: var(--gx-text); }
+
+/* ── Grid de servicios ────────────────────── */
+.gx-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.gx-service-card {
+  appearance: none; border: none; text-align: left; cursor: pointer;
+  font-family: inherit;
+  padding: 28px;
+  display: flex; flex-direction: column; gap: 12px;
+  color: var(--gx-text);
+}
+.gx-service-card h3 { margin: 0; font-size: 17px; font-weight: 700; }
+.gx-service-card p { margin: 0; font-size: 13.5px; color: var(--gx-text-dim); font-weight: 500; line-height: 1.5; }
+.gx-service-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: grid; place-items: center; color: #fff;
+  background: var(--gx-grad-brand);
+}
+.gx-service-card.is-disabled { opacity: .55; cursor: not-allowed; }
+.gx-service-card.is-disabled .gx-service-icon { background: var(--gx-surface-2); color: var(--gx-text-faint); }
+
+/* ── Tips ─────────────────────────────────── */
+.gx-tip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.gx-tip-card {
+  padding: 18px 20px;
+  font-size: 13.5px; font-weight: 600; line-height: 1.55; color: var(--gx-text-dim);
+}
+
+/* ── Anuncios ─────────────────────────────── */
+.gx-announcement-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.gx-announcement-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.gx-announcement-head { display: flex; align-items: center; gap: 12px; }
+.gx-announcement-avatar {
+  width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+  display: grid; place-items: center; font-size: 11.5px; font-weight: 800; color: #fff;
+  background: var(--gx-grad-brand);
+}
+.gx-announcement-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--gx-text); }
+.gx-announcement-date { font-size: 11.5px; color: var(--gx-text-faint); font-weight: 600; }
+.gx-announcement-card p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--gx-text-dim); font-weight: 500; }
+.gx-announcement-image { width: 100%; border-radius: 12px; object-fit: cover; max-height: 180px; }
+.gx-announcement-empty { grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gx-text-faint); font-weight: 600; }
+
+/* ── Perfil ───────────────────────────────── */
+.gx-profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.gx-profile-card { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.gx-profile-card-head { display: flex; align-items: center; gap: 10px; color: var(--gx-text); font-size: 14.5px; font-weight: 700; }
+.gx-profile-card-head svg { color: var(--gx-blue-500); }
+.gx-profile-field { display: flex; flex-direction: column; gap: 4px; }
+.gx-profile-field span { font-size: 11.5px; font-weight: 700; color: var(--gx-text-faint); text-transform: uppercase; letter-spacing: .04em; }
+.gx-profile-field p { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--gx-text); }
+.gx-profile-actions { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 44px; padding-bottom: 60px; flex-wrap: wrap; }
+
+/* ── Modal de lista de espera (seleccion-servicio) ─ */
+.gx-waitlist-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(5, 10, 20, .6);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 20px;
+  animation: gx-fade-up .25s var(--gx-ease);
+}
+.gx-waitlist-box {
+  width: 100%; max-width: 420px; padding: 32px;
+  position: relative;
+}
+.gx-waitlist-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 34px; height: 34px; border-radius: 10px;
+  border: none; background: var(--gx-surface-2); color: var(--gx-text-dim);
+  display: grid; place-items: center; cursor: pointer;
+}
+.gx-waitlist-box h2 { font-size: 20px; font-weight: 700; margin: 0 0 8px; color: var(--gx-text); }
+.gx-waitlist-box p { font-size: 14px; color: var(--gx-text-dim); margin: 0 0 18px; line-height: 1.55; }
+.gx-waitlist-success { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 10px 0; }
+.gx-waitlist-success-icon {
+  width: 54px; height: 54px; border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e, #4ade80); color: #fff;
+  display: grid; place-items: center;
+}
+
+@media (max-width: 980px) {
+  .gx-service-grid, .gx-tip-grid, .gx-announcement-grid, .gx-profile-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .gx-service-grid, .gx-tip-grid, .gx-announcement-grid, .gx-profile-grid { grid-template-columns: 1fr; }
+  .gx-app-hero { padding: 40px 20px 28px; }
+  .gx-app-section { padding: 8px 16px 48px; }
+}

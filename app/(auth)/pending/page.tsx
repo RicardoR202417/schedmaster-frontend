@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
 import ConfirmModal from '../../components/ConfirmModal';
+import { gxFontClass } from '../../styles/fonts';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -134,103 +135,94 @@ export default function PendingAccountPage() {
   };
 
   return (
-    <div className="page">
-      <div className="wrap">
-        <div className="top">
-          <div className="brand">SCHEDMASTER</div>
+    <div className={`gx-scope gx-status-page ${gxFontClass}`}>
+      <div className="gx-status-bg">
+        <div className="gx-hero-orb gx-hero-orb--1 gx-float-a" />
+        <div className="gx-hero-orb gx-hero-orb--2 gx-float-b" />
+      </div>
+
+      <div className="gx-status-wrap">
+        <div className="gx-status-top">
+          <span className="gx-status-brand">SchedMaster</span>
         </div>
 
-        <section className="card">
+        <section className="gx-card gx-status-card">
           {!loading && propuesta && (
             <>
-              <div className="hero">
-                <div className="state"><Info /></div>
+              <div className="gx-status-hero">
+                <div className="gx-status-icon"><Info size={22} /></div>
                 <div>
-                  <h1 className="title">Nueva propuesta de horario</h1>
-                  <p className="message">
+                  <h1>Nueva propuesta de horario</h1>
+                  <p className="gx-status-message">
                     El administrador ha propuesto un horario alternativo para tu inscripción.
                     Revísalo y decide si lo aceptas o lo rechazas.
                   </p>
                 </div>
               </div>
 
-              <div className="proposal-box">
-                <div className="proposal-data">
-                  <div>
-                    <strong>Horario:</strong>{' '}
-                    {formatHora(propuesta.horario?.hora_inicio)} –{' '}
-                    {formatHora(propuesta.horario?.hora_fin)}
-                  </div>
-                  <div>
-                    <strong>Días:</strong>{' '}
-                    {nombresDias(propuesta.dias)}
-                  </div>
+              <div className="gx-proposal-box">
+                <div>
+                  <strong>Horario:</strong>{' '}
+                  {formatHora(propuesta.horario?.hora_inicio)} –{' '}
+                  {formatHora(propuesta.horario?.hora_fin)}
+                </div>
+                <div>
+                  <strong>Días:</strong>{' '}
+                  {nombresDias(propuesta.dias)}
                 </div>
               </div>
             </>
           )}
 
           {!loading && !propuesta && (
-            <div className="hero">
-              <div className="state"><Info /></div>
+            <div className="gx-status-hero">
+              <div className="gx-status-icon"><Info size={22} /></div>
               <div>
-                <h1 className="title">Cuenta pendiente de aprobación</h1>
-                <p className="message">
+                <h1>Cuenta pendiente de aprobación</h1>
+                <p className="gx-status-message">
                   Tu cuenta fue registrada correctamente. En cuanto el administrador
                   la apruebe, podrás acceder al sistema.
                 </p>
-                <div className="status">
-                  <Clock /> Estado: Pendiente
+                <div className="gx-status-badge">
+                  <Clock size={14} /> Estado: Pendiente
                 </div>
               </div>
             </div>
           )}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+          <div className="gx-status-actions">
             {propuesta && (
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  className="btn btn--green btn--full btn--lg"
-                  style={{ flex: 1 }}
-                  onClick={aceptarPropuesta}
-                >
-                  <Check /> Aceptar
+              <div className="gx-status-actions-row">
+                <button className="gx-btn gx-btn--primary gx-btn--lg" onClick={aceptarPropuesta}>
+                  <Check size={17} /> Aceptar
                 </button>
 
-                <button
-                  className="btn btn--red btn--full btn--lg"
-                  style={{ flex: 1 }}
-                  onClick={() => setConfirmRechazarOpen(true)}
-                >
-                  <X /> Rechazar
+                <button className="gx-btn gx-btn--outline gx-btn--lg" onClick={() => setConfirmRechazarOpen(true)}>
+                  <X size={17} /> Rechazar
                 </button>
               </div>
             )}
 
-            <button
-              className="btn btn--blue btn--full btn--lg"
-              onClick={handleLogout}
-            >
-              <LogOut /> Cerrar sesión
+            <button className="gx-btn gx-btn--outline gx-btn--full gx-btn--lg" onClick={handleLogout}>
+              <LogOut size={17} /> Cerrar sesión
             </button>
           </div>
 
-          <div className="foot">
+          <div className="gx-status-foot">
             Si tu cuenta ya fue aprobada y sigues viendo esta pantalla,
             cierra sesión e inicia nuevamente.
           </div>
 
-          <div className="support">
+          <div className="gx-support">
             <details>
               <summary>
-                <span className="sum-left"><LifeBuoy /> Soporte</span>
-                <ChevronDown className="chev" />
+                <span className="gx-support-sum-left"><LifeBuoy size={16} /> Soporte</span>
+                <ChevronDown className="gx-support-chev" size={16} />
               </summary>
-              <div className="support-body">
-                <div className="support-item">
-                  <Mail />
+              <div className="gx-support-body">
+                <div className="gx-support-item">
+                  <Mail size={16} />
                   <div>
-
                     Correo:{' '}
                     <a href="mailto:soporte@schedmaster.uteq.mx">
                       soporte@schedmaster.uteq.mx
@@ -239,19 +231,14 @@ export default function PendingAccountPage() {
                   </div>
                 </div>
 
-                <div className="support-item">
-                  <Phone />
+                <div className="gx-support-item">
+                  <Phone size={16} />
                   <div>
-
                     Teléfono:{' '}
                     <a href="tel:+524421234567">
                       +52 442 123 4567
                     </a>
-
-                    <small>
-                      Horario: Lunes a Viernes.
-                    </small>
-
+                    <small>Horario: Lunes a Viernes.</small>
                   </div>
                 </div>
               </div>
