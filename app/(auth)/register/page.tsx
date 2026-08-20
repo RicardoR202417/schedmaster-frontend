@@ -344,7 +344,6 @@ export default function RegisterPage() {
                 </div>
               )}
 
-<<<<<<< HEAD
               <div className="form-group">
                 <label>Convocatoria activa</label>
                 <div className="auth-input" style={{ display: 'flex', alignItems: 'center', minHeight: 48 }}>
@@ -372,12 +371,6 @@ export default function RegisterPage() {
                         ? 'No hay horarios para esta convocatoria'
                         : 'Selecciona horario'}
                   </option>
-=======
-              <div className="gx-field">
-                <label htmlFor="horarioId">Horario</label>
-                <select id="horarioId" title="Horario" name="horarioId" value={form.horarioId} className="gx-select" onChange={handleChange}>
-                  <option value="">Selecciona horario</option>
->>>>>>> 4b4a7b420896697ca861eb3196535359c836f64c
                   {horarios.map(h => (<option key={h.id_horario} value={h.id_horario}>{h.hora_inicio} - {h.hora_fin}</option>))}
                 </select>
               </div>
