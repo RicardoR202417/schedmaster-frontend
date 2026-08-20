@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CircleCheck, ListOrdered, Bell, Sun, Moon } from 'lucide-react';
+import { CircleCheck, ListOrdered, Bell } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
-import { useDarkMode } from '../../hooks/useDarkMode';
+import ThemeToggle from '../../components/ThemeToggle';
+import { gxFontClass } from '../../styles/fonts';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 export default function LoginPage() {
-  const { darkMode, toggle } = useDarkMode();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
 
   const [correo,   setCorreo]   = useState('');
   const [password, setPassword] = useState('');
@@ -19,10 +18,6 @@ export default function LoginPage() {
 
   const [modalOpen,    setModalOpen]    = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -145,56 +140,52 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-page">
+    <div className={`gx-scope gx-auth-page ${gxFontClass}`}>
+      <div className="gx-auth-fab-theme"><ThemeToggle /></div>
 
-      {/* Botón flotante dark mode */}
-      <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
-        {mounted ? (
-          darkMode ? <Moon size={18} /> : <Sun size={18} />
-        ) : null}
-      </button>
-
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="brand-logo">
-            <img src="/logo.png" alt="Logo" width="60" height="60" />
+      <section className="gx-auth-brand">
+        <div className="gx-auth-brand-bg">
+          <div className="gx-hero-orb gx-hero-orb--1 gx-float-a" />
+          <div className="gx-hero-orb gx-hero-orb--2 gx-float-b" />
+        </div>
+        <div className="gx-auth-brand-inner">
+          <div className="gx-auth-logo">
+            <img src="/logo.png" alt="Logo" width="48" height="48" />
           </div>
-          <h1 className="hero-title">SchedMaster</h1>
-          <p className="hero-subtitle">Gestión inteligente de horarios UTEQ.</p>
-          <div className="feature-list">
-            <div className="feature-item">
-              <div className="feature-icon"><CircleCheck size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">Reserva tu horario favorito</span>
+          <h1>SchedMaster</h1>
+          <p>Gestión inteligente de horarios UTEQ.</p>
+
+          <div className="gx-auth-feature-list">
+            <div className="gx-auth-feature">
+              <span className="gx-auth-feature-icon"><CircleCheck size={18} strokeWidth={2.5} /></span>
+              <span>Reserva tu horario favorito</span>
             </div>
-            <div className="feature-item">
-              <div className="feature-icon"><ListOrdered size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">Fila virtual inteligente</span>
+            <div className="gx-auth-feature">
+              <span className="gx-auth-feature-icon"><ListOrdered size={18} strokeWidth={2.5} /></span>
+              <span>Fila virtual inteligente</span>
             </div>
-            <div className="feature-item">
-              <div className="feature-icon"><Bell size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">Notificaciones en tiempo real</span>
+            <div className="gx-auth-feature">
+              <span className="gx-auth-feature-icon"><Bell size={18} strokeWidth={2.5} /></span>
+              <span>Notificaciones en tiempo real</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="login-section">
-        <div className="decorative-shape shape-1" />
-        <div className="decorative-shape shape-2" />
-        <div className="login-container">
-
-          <header className="login-header">
-            <h1>Bienvenido de <span className="highlight">nuevo</span></h1>
+      <section className="gx-auth-form-side">
+        <div className="gx-auth-form-wrap">
+          <header className="gx-auth-form-head">
+            <h1>Bienvenido de <span className="gx-grad-text">nuevo</span></h1>
             <p>Ingresa tus credenciales para continuar</p>
           </header>
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
+            <div className="gx-field">
               <label htmlFor="login-correo">Correo institucional</label>
               <input
                 type="email"
                 id="login-correo"
-                className="auth-input"
+                className="gx-input"
                 placeholder="usuario@uteq.edu.mx"
                 value={correo}
                 onChange={e => setCorreo(e.target.value)}
@@ -202,36 +193,27 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="form-group">
+            <div className="gx-field">
               <label htmlFor="login-password">Contraseña</label>
               <input
                 type="password"
                 id="login-password"
-                className="auth-input"
+                className="gx-input"
                 placeholder="Contraseña"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
               />
-              {/* <div className="forgot-password">
-                <button type="button" className="link-button">¿Olvidaste tu contraseña?</button>
-              </div> */}
             </div>
 
             <button
               type="submit"
-              className="btn btn--blue btn--full btn--lg"
+              className="gx-btn gx-btn--primary gx-btn--full gx-btn--lg"
               disabled={loading}
             >
               {loading ? 'Iniciando...' : 'Iniciar sesión'}
             </button>
           </form>
-
-          {/* <div className="divider"><span>¿Primera vez?</span></div>
-          <div className="auth-link">
-            <Link href="/register">Crea tu cuenta aquí</Link>
-          </div> */}
-
         </div>
       </section>
 
@@ -241,7 +223,6 @@ export default function LoginPage() {
         message={modalMessage}
         onClose={() => setModalOpen(false)}
       />
-
     </div>
   );
 }

@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User as UserIcon, Calendar, Clock, Home, LogOut, Sun, Moon } from 'lucide-react';
+import { User as UserIcon, Calendar, Clock, Home, LogOut, Dumbbell } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useDarkMode } from '../../hooks/useDarkMode';
-import AvisoPrivacidadModal from "@/app/components/AvisoPrivacidadModal"; 
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+import ThemeToggle from '../../components/ThemeToggle';
+import AvisoPrivacidadModal from "@/app/components/AvisoPrivacidadModal";
+import { gxFontClass } from '../../styles/fonts';
 
 interface User {
   id_usuario?: number;
@@ -44,20 +43,15 @@ interface User {
 
 export default function PerfilPage() {
   const router = useRouter();
-  const { darkMode, toggle } = useDarkMode();
 
   const [user, setUser] = useState<User | null>(null);
   const [showAviso, setShowAviso] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const storedUser = localStorage.getItem('user');
 
     if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
-
-      // Render inicial inmediato para no bloquear vista por red.
       setUser(parsedUser);
     } else {
       router.push('/login');
@@ -70,7 +64,7 @@ export default function PerfilPage() {
   };
 
   if (!user) {
-    return <p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando perfil...</p>;
+    return <div className={`gx-scope ${gxFontClass}`}><p className="loader">Cargando perfil...</p></div>;
   }
 
   const inscripcion = user.ultimaInscripcion;
@@ -81,124 +75,87 @@ export default function PerfilPage() {
     .join(', ');
 
   return (
-    <div className="home-page">
-      <header className="home-header">
-        <div className="logo-section">
-          <img src="/logo.png" alt="logo" />
-          <span>SchedMaster</span>
+    <div className={`gx-scope gx-app ${gxFontClass}`}>
+      <header className="gx-app-topbar">
+        <div className="gx-app-topbar-inner">
+          <Link href="/anuncios" className="gx-brand">
+            <span className="gx-brand-mark"><Dumbbell size={18} strokeWidth={2.4} /></span>
+            <span className="gx-brand-name">SchedMaster</span>
+          </Link>
+          <div className="gx-app-topbar-actions">
+            <ThemeToggle />
+            <Link href="/anuncios" className="gx-btn gx-btn--outline gx-btn--sm">
+              <Home size={16} /> Inicio
+            </Link>
+          </div>
         </div>
-        <Link href="/anuncios" className="btn-login">
-          <Home size={18} /> Inicio
-        </Link>
       </header>
 
-      <section className="home-hero">
-        <h1>Mi perfil</h1>
+      <section className="gx-app-hero">
+        <h1>Mi <span className="gx-grad-text">perfil</span></h1>
         <p>Consulta tu información y tu inscripción actual</p>
       </section>
 
-      <section className="services-section">
-        <div className="services-grid">
+      <section className="gx-app-section">
+        <div className="gx-profile-grid">
+          <div className="gx-card gx-profile-card">
+            <div className="gx-profile-card-head"><UserIcon size={18} /> Información personal</div>
 
-          <div className="card">
-            <div className="card-header">
-              <UserIcon size={20} />
-              <span>Información personal</span>
+            <div className="gx-profile-field">
+              <span>Nombre</span>
+              <p>{`${user.nombre} ${user.apellido_paterno} ${user.apellido_materno}`}</p>
             </div>
-
-            <div className="form-grid">
-              <div className="form-group">
-                <span className="input-label">Nombre</span>
-                <p>{`${user.nombre} ${user.apellido_paterno} ${user.apellido_materno}`}</p>
-              </div>
-
-              <div className="form-group">
-                <span className="input-label">Correo</span>
-                <p>{user.correo}</p>
-              </div>
-
-              <div className="form-group">
-                <span className="input-label">Carrera</span>
-                <p>{user.carrera?.nombre_carrera || 'No asignada'}</p>
-              </div>
-
-              <div className="form-group">
-                <span className="input-label">División</span>
-                <p>{user.division?.nombre_division || 'No asignada'}</p>
-              </div>
+            <div className="gx-profile-field">
+              <span>Correo</span>
+              <p>{user.correo}</p>
+            </div>
+            <div className="gx-profile-field">
+              <span>Carrera</span>
+              <p>{user.carrera?.nombre_carrera || 'No asignada'}</p>
+            </div>
+            <div className="gx-profile-field">
+              <span>División</span>
+              <p>{user.division?.nombre_division || 'No asignada'}</p>
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <Calendar size={20} />
-              <span>Periodo inscrito</span>
-            </div>
-
-            <p className="message">
+          <div className="gx-card gx-profile-card">
+            <div className="gx-profile-card-head"><Calendar size={18} /> Periodo inscrito</div>
+            <p style={{ margin: 0, fontSize: 14.5, fontWeight: 600, color: 'var(--gx-text-dim)' }}>
               {horario?.periodo?.nombre_periodo || 'Sin periodo'}
             </p>
-
-            <div className="status">
+            <span className="gx-status-badge" style={{ width: 'fit-content' }}>
               {user.estadoInscripcion === 'aprobado' ? 'Activo' : 'Pendiente'}
-            </div>
+            </span>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <Clock size={20} />
-              <span>Horario asignado</span>
+          <div className="gx-card gx-profile-card">
+            <div className="gx-profile-card-head"><Clock size={18} /> Horario asignado</div>
+            <div className="gx-profile-field">
+              <span>Día</span>
+              <p>{dias || 'No disponible'}</p>
             </div>
-
-            <div className="tip-card">
-              <p><strong>Día:</strong> {dias || 'No disponible'}</p>
-              <p className="tip-card-hour">
-                <strong>Hora:</strong>{' '}
-                {horario
-                  ? `${horario.hora_inicio} - ${horario.hora_fin}`
-                  : 'No disponible'}
-              </p>
+            <div className="gx-profile-field">
+              <span>Hora</span>
+              <p>{horario ? `${horario.hora_inicio} - ${horario.hora_fin}` : 'No disponible'}</p>
             </div>
           </div>
-
         </div>
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '12px',
-          marginTop: '40px',
-          paddingBottom: '60px',
-        }}>
-
-          <button className="dark-toggle" onClick={toggle} aria-label="Cambiar tema">
-            {mounted ? (
-              darkMode ? <Moon size={18} /> : <Sun size={18} />
-            ) : (
-              <span style={{ width: 18, height: 18, display: 'inline-block' }} />
-            )}
-          </button>
-
-          <button 
-            className="btn btn--outline"
-            onClick={() => setShowAviso(true)}
-          >
+        <div className="gx-profile-actions">
+          <button className="gx-btn gx-btn--outline" onClick={() => setShowAviso(true)}>
             Aviso de privacidad
           </button>
-
-          <button className="btn btn--outline" onClick={handleLogout}>
+          <button className="gx-btn gx-btn--outline" onClick={handleLogout}>
             <LogOut size={16} /> Cerrar sesión
           </button>
         </div>
-
       </section>
 
-      <AvisoPrivacidadModal 
-        open={showAviso} 
-        onClose={() => setShowAviso(false)} 
+      <AvisoPrivacidadModal
+        open={showAviso}
+        onClose={() => setShowAviso(false)}
       />
-
     </div>
   );
 }

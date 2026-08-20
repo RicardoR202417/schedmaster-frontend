@@ -51,3 +51,11 @@
 
 /* ── Responsive ──────────────────────────── */
 @import "./responsive/responsive.css";
+
+/* ── GX — rediseño público / alumnos ────────
+   Namespace propio (gx-*), no reemplaza nada de lo anterior.
+   ========================================== */
+@import "./public/tokens.css";
+@import "./public/primitives.css";
+@import "./public/motion.css";
+@import "./public/student.css";
