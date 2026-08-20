@@ -34,3 +34,232 @@
 }
 .table-area .empty-state { padding: 48px 24px; border: none; box-shadow: none; border-radius: 0; }
 .table-area .empty-state svg { color: var(--color-text-muted); margin-bottom: 12px; opacity: .4; }
+
+.capacity-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--color-card-shadow);
+  margin: 10px 0 18px;
+  overflow: hidden;
+}
+
+.capacity-panel--summary {
+  padding: 16px;
+}
+
+.capacity-summary {
+  display: grid;
+  gap: 12px;
+}
+
+.capacity-line-chart {
+  display: grid;
+  gap: 12px;
+}
+
+.capacity-summary__header,
+.capacity-line-chart__header,
+.capacity-summary__stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.capacity-summary__header div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.capacity-line-chart__header div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.capacity-summary__label,
+.capacity-summary__scope {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.capacity-summary__header strong {
+  color: var(--color-text-heading);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.capacity-line-chart__header strong {
+  color: var(--color-text-heading);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.capacity-line-chart__canvas {
+  width: 100%;
+  min-height: 220px;
+}
+
+.capacity-line-chart__canvas svg {
+  display: block;
+  width: 100%;
+  height: 240px;
+}
+
+.capacity-line-chart__grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.capacity-line-chart__path {
+  fill: none;
+  stroke: var(--blue-500);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.capacity-line-chart__point {
+  fill: var(--yellow);
+  stroke: var(--color-surface);
+  stroke-width: 3;
+}
+
+.capacity-line-chart__value {
+  fill: var(--color-text-heading);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.capacity-line-chart__hour {
+  fill: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.capacity-summary__track {
+  width: 100%;
+  height: 14px;
+  background: var(--color-input-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.capacity-summary__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-500), var(--yellow));
+  border-radius: inherit;
+}
+
+.capacity-summary__stats span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.capacity-summary__stats strong {
+  color: var(--color-text-heading);
+  font-size: 15px;
+}
+
+.capacity-table {
+  display: grid;
+}
+
+.capacity-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 120px) minmax(180px, 1fr) minmax(64px, 80px) minmax(92px, auto);
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.capacity-row:last-child {
+  border-bottom: 0;
+}
+
+.capacity-row__time {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.capacity-row__time span {
+  color: var(--color-text-heading);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.capacity-row__time small {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.capacity-row__meter {
+  min-width: 0;
+}
+
+.capacity-row__track {
+  width: 100%;
+  height: 8px;
+  background: var(--color-input-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.capacity-row__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-500), var(--yellow));
+  border-radius: inherit;
+}
+
+.capacity-row__fill--full {
+  background: var(--red);
+}
+
+.capacity-row__numbers {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.capacity-row__numbers strong {
+  color: var(--color-text-heading);
+  font-size: 15px;
+}
+
+.capacity-row--empty {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px 16px;
+}
+
+.app--admin-inscriptions .grid.grid-cols-4.gap-3 {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .capacity-row {
+    grid-template-columns: 78px 1fr 64px;
+  }
+
+  .capacity-row .chip {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

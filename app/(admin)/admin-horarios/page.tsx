@@ -7,7 +7,15 @@ import ConfirmModal from '../../components/ConfirmModal';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
-const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const DIAS_SEMANA = [
+  { id: 1, nombre: "Lunes" },
+  { id: 2, nombre: "Martes" },
+  { id: 3, nombre: "Miercoles" },
+  { id: 4, nombre: "Jueves" },
+  { id: 5, nombre: "Viernes" },
+  { id: 6, nombre: "Sabado" },
+  { id: 7, nombre: "Domingo" }
+];
 
 export default function AdminHorariosPage() {
   const [horarios, setHorarios] = useState<any[]>([]);
@@ -25,7 +33,7 @@ export default function AdminHorariosPage() {
     hora_fin: "",
     capacidad_maxima: ""
   });
-  const [diasSeleccionados, setDiasSeleccionados] = useState<string[]>([]);
+  const [diasSeleccionados, setDiasSeleccionados] = useState<number[]>([]);
 
   useEffect(() => {
     fetchHorarios();
@@ -52,11 +60,11 @@ export default function AdminHorariosPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const toggleDia = (dia: string) => {
-    if (diasSeleccionados.includes(dia)) {
-      setDiasSeleccionados(diasSeleccionados.filter(d => d !== dia));
+  const toggleDia = (idDia: number) => {
+    if (diasSeleccionados.includes(idDia)) {
+      setDiasSeleccionados(diasSeleccionados.filter(d => d !== idDia));
     } else {
-      setDiasSeleccionados([...diasSeleccionados, dia]);
+      setDiasSeleccionados([...diasSeleccionados, idDia]);
     }
   };
 
@@ -123,9 +131,8 @@ export default function AdminHorariosPage() {
       capacidad_maxima: String(horario.capacidad_maxima ?? "")
     });
 
-    if (horario.dias_semana) {
-      const diasArray = horario.dias_semana.split(',').map((d: string) => d.trim());
-      setDiasSeleccionados(diasArray);
+    if (Array.isArray(horario.dias_ids)) {
+      setDiasSeleccionados(horario.dias_ids.map((id: number | string) => Number(id)).filter(Boolean));
     } else {
       setDiasSeleccionados([]);
     }
@@ -134,19 +141,12 @@ export default function AdminHorariosPage() {
   };
 
   const handleSubmit = async () => {
-    const mapaDias: Record<string, number> = {
-      "Lunes": 1, "Martes": 2, "Miércoles": 3, 
-      "Jueves": 4, "Viernes": 5, "Sábado": 6, "Domingo": 7
-    };
-
-    const diasIds = diasSeleccionados.map(dia => mapaDias[dia]);
-
     const payload = {
       id_periodo: formData.id_periodo,
       hora_inicio: formData.hora_inicio ? formData.hora_inicio + ":00" : "", 
       hora_fin: formData.hora_fin ? formData.hora_fin + ":00" : "",
       capacidad_maxima: Number.parseInt(formData.capacidad_maxima) || 0, 
-      dias: diasIds 
+      dias: diasSeleccionados 
     };
 
     try {
@@ -169,7 +169,7 @@ export default function AdminHorariosPage() {
       } else {
         const errorDetail = await res.json().catch(() => null);
         console.error("El backend rechazó los datos:", errorDetail);
-        setAlertMessage('Error al guardar el horario. Revisa los datos e intenta de nuevo.');
+        setAlertMessage(errorDetail?.message || 'Error al guardar el horario. Revisa los datos e intenta de nuevo.');
         setAlertOpen(true);
       }
     } catch (error) {
@@ -311,12 +311,12 @@ export default function AdminHorariosPage() {
                     <div className="dias-container">
                       {DIAS_SEMANA.map(dia => (
                         <button 
-                          key={dia} 
+                          key={dia.id} 
                           type="button"
-                          className={`dia-btn ${diasSeleccionados.includes(dia) ? 'active' : ''}`}
-                          onClick={() => toggleDia(dia)}
+                          className={`dia-btn ${diasSeleccionados.includes(dia.id) ? 'active' : ''}`}
+                          onClick={() => toggleDia(dia.id)}
                         >
-                          {dia}
+                          {dia.nombre}
                         </button>
                       ))}
                     </div>

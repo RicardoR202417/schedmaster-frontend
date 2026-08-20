@@ -213,6 +213,18 @@ export default function AdminConvocatoriasPage() {
       setForm({ ...form, [key]: e.target.value }),
   });
 
+  const getUsuarioActualId = () => {
+    try {
+      const rawUser = localStorage.getItem('user');
+      if (!rawUser) return undefined;
+
+      const user = JSON.parse(rawUser);
+      return Number.isInteger(user?.id_usuario) ? user.id_usuario : undefined;
+    } catch {
+      return undefined;
+    }
+  };
+
   const guardarConvocatoria = async () => {
     try {
 
@@ -231,11 +243,14 @@ export default function AdminConvocatoriasPage() {
           fecha_inicio_actividades: form.fechaIngreso,
           fecha_fin_periodo: form.fechaFinPeriodo,
           estado: form.estado === 'activada' ? 'activo' : 'inactivo',
-          id_entrenador: 1
+          id_entrenador: getUsuarioActualId()
         })
       });
 
-      if (!res.ok) throw new Error("Error al guardar");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Error al guardar");
+      }
 
       closeCrear();
       closeEditar();
@@ -243,7 +258,7 @@ export default function AdminConvocatoriasPage() {
 
     } catch (error) {
       console.error(error);
-      setAlertMessage('Error al guardar convocatoria');
+      setAlertMessage(error instanceof Error ? error.message : 'Error al guardar convocatoria');
       setAlertOpen(true);
     }
   };

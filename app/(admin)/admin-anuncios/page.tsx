@@ -10,7 +10,7 @@ interface Anuncio {
   titulo: string;
   descripcion?: string;
   prioridad: 'Alta' | 'Media' | 'Baja';
-  fotografia: string;
+  fotografia?: string | null;
   fecha_publicacion: string;
   activo: boolean;
 }
@@ -18,11 +18,31 @@ interface Anuncio {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 const BASE_URL = API_URL.replace('/api', '');
 
+const getAnnouncementImageUrl = (fotografia?: string | null) => {
+  if (!fotografia) return null;
+  if (/^https?:\/\//i.test(fotografia) || fotografia.startsWith('/')) return fotografia;
+  return `${BASE_URL}/imagenes/${fotografia}`;
+};
+
+const isAnuncioArray = (value: unknown): value is Anuncio[] => Array.isArray(value);
+
+const getApiErrorMessage = (payload: unknown) => {
+  if (!payload || typeof payload !== 'object') return null;
+
+  const response = payload as { message?: unknown; details?: unknown };
+
+  if (typeof response.details === 'string') return response.details;
+  if (typeof response.message === 'string') return response.message;
+  return null;
+};
+
 export default function AdminAnunciosPage() {
   const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Anuncio | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   // ── CONFIRM MODAL ──────────────────────────────────────────
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -39,11 +59,15 @@ export default function AdminAnunciosPage() {
   const [preview, setPreview] = useState<string | null>(null);
 
   const normalizeAnuncios = (payload: unknown): Anuncio[] => {
-    if (Array.isArray(payload)) return payload as Anuncio[];
-    if (payload && typeof payload === 'object' && 'data' in payload && Array.isArray((payload as any).data))
-      return (payload as any).data;
-    if (payload && typeof payload === 'object' && 'anuncios' in payload && Array.isArray((payload as any).anuncios))
-      return (payload as any).anuncios;
+    if (isAnuncioArray(payload)) return payload;
+
+    if (payload && typeof payload === 'object') {
+      const shapedPayload = payload as { data?: unknown; anuncios?: unknown };
+
+      if (isAnuncioArray(shapedPayload.data)) return shapedPayload.data;
+      if (isAnuncioArray(shapedPayload.anuncios)) return shapedPayload.anuncios;
+    }
+
     return [];
   };
 
@@ -62,13 +86,15 @@ export default function AdminAnunciosPage() {
     setEditing(null);
     setForm({ titulo: '', descripcion: '', prioridad: 'Alta', fotografia: null });
     setPreview(null);
+    setSaveError('');
     setModalOpen(true);
   };
 
   const openEdit = (a: Anuncio) => {
     setEditing(a);
     setForm({ titulo: a.titulo || '', descripcion: a.descripcion || '', prioridad: a.prioridad || 'Alta', fotografia: null });
-    setPreview(a.fotografia ? `${BASE_URL}/imagenes/${a.fotografia}` : null);
+    setPreview(getAnnouncementImageUrl(a.fotografia));
+    setSaveError('');
     setModalOpen(true);
   };
 
@@ -95,7 +121,12 @@ export default function AdminAnunciosPage() {
   };
 
   const handleSave = async () => {
+    if (saving) return;
+
     try {
+      setSaving(true);
+      setSaveError('');
+
       const formData = new FormData();
       formData.append('titulo', form.titulo);
       formData.append('descripcion', form.descripcion);
@@ -108,6 +139,10 @@ export default function AdminAnunciosPage() {
       const res = await fetch(url, { method, body: formData });
       const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(getApiErrorMessage(data) || 'No se pudo guardar el anuncio');
+      }
+
       if (editing) {
         setAnuncios(prev => prev.map(a => (a.id === editing.id ? data : a)));
       } else {
@@ -119,6 +154,9 @@ export default function AdminAnunciosPage() {
       setPreview(null);
     } catch (error) {
       console.error(error);
+      setSaveError(error instanceof Error ? error.message : 'No se pudo guardar el anuncio');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -180,34 +218,39 @@ export default function AdminAnunciosPage() {
                       </td>
                     </tr>
                   ) : (
-                    anunciosFiltrados.map(a => (
-                      <tr key={a.id}>
-                        <td>{a.titulo}</td>
-                        <td><span className={prioridadChip(a.prioridad)}>{a.prioridad}</span></td>
-                        <td className="muted">{new Date(a.fecha_publicacion).toLocaleDateString()}</td>
-                        <td><span className={`chip ${a.activo ? 'chip--activo' : 'chip--inactivo'}`}>{a.activo ? 'Activo' : 'Oculto'}</span></td>
-                        <td>
-                          {a.fotografia && (
-                            <img
-                              src={`${BASE_URL}/imagenes/${a.fotografia}`}
-                              className="announcement-image announcement-image--table"
-                              alt={`Imagen del anuncio: ${a.titulo}`}
-                            />
-                          )}
-                        </td>
-                        <td>
-                          <div className="row-actions">
-                            <button className="btn-icon btn-icon--cyan" title="Editar anuncio" onClick={() => openEdit(a)}>
-                              <Pencil size={14} />
-                            </button>
-                            {/* Ahora abre ConfirmModal en lugar de eliminar directo */}
-                            <button className="btn-icon btn-icon--red" title="Eliminar anuncio" onClick={() => handleDeleteClick(a)}>
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                    anunciosFiltrados.map(a => {
+                      const imageUrl = getAnnouncementImageUrl(a.fotografia);
+
+                      return (
+                        <tr key={a.id}>
+                          <td>{a.titulo}</td>
+                          <td><span className={prioridadChip(a.prioridad)}>{a.prioridad}</span></td>
+                          <td className="muted">{new Date(a.fecha_publicacion).toLocaleDateString()}</td>
+                          <td><span className={`chip ${a.activo ? 'chip--activo' : 'chip--inactivo'}`}>{a.activo ? 'Activo' : 'Oculto'}</span></td>
+                          <td>
+                            {imageUrl && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={imageUrl}
+                                className="announcement-image announcement-image--table"
+                                alt={`Imagen del anuncio: ${a.titulo}`}
+                              />
+                            )}
+                          </td>
+                          <td>
+                            <div className="row-actions">
+                              <button className="btn-icon btn-icon--cyan" title="Editar anuncio" onClick={() => openEdit(a)}>
+                                <Pencil size={14} />
+                              </button>
+                              {/* Ahora abre ConfirmModal en lugar de eliminar directo */}
+                              <button className="btn-icon btn-icon--red" title="Eliminar anuncio" onClick={() => handleDeleteClick(a)}>
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -283,18 +326,25 @@ export default function AdminAnunciosPage() {
                   }}
                 />
                 {preview && (
-                  <img
-                    src={preview}
-                    className="announcement-image announcement-image--preview"
-                    alt="Vista previa de la imagen del anuncio"
-                  />
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={preview}
+                      className="announcement-image announcement-image--preview"
+                      alt="Vista previa de la imagen del anuncio"
+                    />
+                  </>
                 )}
               </div>
             </div>
 
+            {saveError && <span className="error-text">{saveError}</span>}
+
             <div className="modal-footer">
               <button className="btn btn--outline" onClick={() => setModalOpen(false)}>Cancelar</button>
-              <button className="btn btn--yellow" onClick={handleSave}>Guardar</button>
+              <button className="btn btn--yellow" onClick={handleSave} disabled={saving}>
+                {saving ? 'Guardando...' : 'Guardar'}
+              </button>
             </div>
           </div>
         </div>

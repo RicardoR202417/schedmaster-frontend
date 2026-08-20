@@ -1,11 +1,18 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Dumbbell, Apple, Sparkles, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 const BASE_URL = API_URL.replace('/api', '');
+
+const getAnnouncementImageUrl = (fotografia?: string | null) => {
+  if (!fotografia) return null;
+  if (/^https?:\/\//i.test(fotografia) || fotografia.startsWith('/')) return fotografia;
+  return `${BASE_URL}/imagenes/${fotografia}`;
+};
 
 interface Anuncio {
   id: number;
@@ -30,7 +37,7 @@ export default function HomeUserPage() {
     <div className="home-page">
       <header className="home-header">
         <div className="logo-section">
-          <img src="/logo.png" alt="logo" />
+          <Image src="/logo.png" alt="logo" width={40} height={40} />
           <span>SchedMaster</span>
         </div>
         <Link href="/perfil" className="btn-login" style={{ padding: '10px 14px' }}>
@@ -82,33 +89,38 @@ export default function HomeUserPage() {
           {anuncios.length === 0 ? (
             <p style={{ opacity: 0.6 }}>No hay anuncios disponibles</p>
           ) : (
-            anuncios.map((a) => (
-              <div className="card" key={a.id}>
-                <div className="support-item">
-                  <div className="state">SM</div>
-                  <div>
-                    <p className="announcement-title">
-                      {a.titulo}
-                    </p>
-                    <small className="announcement-date">
-                      {new Date(a.fecha_publicacion).toLocaleDateString()}
-                    </small>
+            anuncios.map((a) => {
+              const imageUrl = getAnnouncementImageUrl(a.fotografia);
+
+              return (
+                <div className="card" key={a.id}>
+                  <div className="support-item">
+                    <div className="state">SM</div>
+                    <div>
+                      <p className="announcement-title">
+                        {a.titulo}
+                      </p>
+                      <small className="announcement-date">
+                        {new Date(a.fecha_publicacion).toLocaleDateString()}
+                      </small>
+                    </div>
                   </div>
+
+                  <p className="message">
+                    {a.descripcion}
+                  </p>
+
+                  {imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageUrl}
+                      alt="anuncio"
+                      className="announcement-image"
+                    />
+                  )}
                 </div>
-
-                <p className="message">
-                  {a.descripcion}
-                </p>
-
-                {a.fotografia && (
-                  <img
-                    src={`${BASE_URL}/imagenes/${a.fotografia}`}
-                    alt="anuncio"
-                    className="announcement-image"
-                  />
-                )}
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </section>

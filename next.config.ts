@@ -1,7 +1,48 @@
 import type { NextConfig } from "next";
 
+const apiImageOrigin = (() => {
+  try {
+    const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api");
+
+    return {
+      protocol: apiUrl.protocol.replace(":", "") as "http" | "https",
+      hostname: apiUrl.hostname,
+      port: apiUrl.port,
+      pathname: "/imagenes/**",
+    };
+  } catch {
+    return null;
+  }
+})();
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3001",
+        pathname: "/imagenes/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "3001",
+        pathname: "/imagenes/**",
+      },
+      {
+        protocol: "https",
+        hostname: "schedmaster-backend.onrender.com",
+        pathname: "/imagenes/**",
+      },
+      ...(apiImageOrigin ? [apiImageOrigin] : []),
+    ],
+  },
   async headers() {
     return [
       {
@@ -14,7 +55,7 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob:",
+              "img-src 'self' data: blob: http://localhost:3001 http://127.0.0.1:3001 https://schedmaster-backend.onrender.com https://res.cloudinary.com",
               "connect-src 'self' http://localhost:3001 https://schedmaster-backend.onrender.com",
               "object-src 'none'",
               "base-uri 'self'",

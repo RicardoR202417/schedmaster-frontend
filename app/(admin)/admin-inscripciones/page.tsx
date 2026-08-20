@@ -62,6 +62,7 @@ interface ResultadoNeurona {
 const CORREO_VIP = '2024171010';
 
 export default function AdminInscripcionesPage() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
   const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
   const [grafica, setGrafica] = useState<GraficaItem[]>([]);
@@ -80,10 +81,6 @@ export default function AdminInscripcionesPage() {
   const [neuronaMap, setNeuronaMap] = useState<Record<number, ResultadoNeurona>>({});
   const [neuronaOk, setNeuronaOk] = useState(false);
 
-  useEffect(() => {
-    console.log("GRAFICA STATE:", grafica);
-  }, [grafica]);
-
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertTitle, setAlertTitle] = useState('Mensaje');
@@ -94,14 +91,11 @@ export default function AdminInscripcionesPage() {
 
     try {
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/inscripciones/pendientes`
-      );
+      const res = await fetch(`${API_URL}/inscripciones/pendientes`);
 
       if (res.ok) {
 
         const data = await res.json();
-        console.log("GRAFICA:", data.grafica);
         setInscripciones(data.inscripciones || []);
         setGrafica(data.grafica || []);
 
@@ -130,9 +124,7 @@ export default function AdminInscripcionesPage() {
 
   const ejecutarNeurona = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/neurona/entrenar`, { method: 'POST' });
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/neurona/evaluar-todos`);
+      const res = await fetch(`${API_URL}/neurona/evaluar-todos`);
       if (!res.ok) return;
 
       const data: ResultadoNeurona[] = await res.json();
@@ -163,7 +155,7 @@ export default function AdminInscripcionesPage() {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/inscripciones/aceptar`,
+          `${API_URL}/inscripciones/aceptar`,
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -212,7 +204,7 @@ export default function AdminInscripcionesPage() {
     try {
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
+        `${API_URL}${endpoint}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -262,6 +254,56 @@ export default function AdminInscripcionesPage() {
     if (!diaSeleccionado) return true;
     return h.dia?.toLowerCase() === diaSeleccionado.toLowerCase();
   });
+
+  const cuposResumen = graficaFiltrada.reduce(
+    (acc, h) => ({
+      ocupados: acc.ocupados + Number(h.ocupados || 0),
+      capacidad: acc.capacidad + Number(h.capacidad || 0),
+      disponibles: acc.disponibles + Number(h.disponibles || 0),
+    }),
+    { ocupados: 0, capacidad: 0, disponibles: 0 }
+  );
+
+  const porcentajeCupos = cuposResumen.capacidad > 0
+    ? Math.min((cuposResumen.ocupados / cuposResumen.capacidad) * 100, 100)
+    : 0;
+
+  const cuposPorHora = Object.values(
+    graficaFiltrada.reduce<Record<string, GraficaItem>>((acc, item) => {
+      const hora = item.hora ? item.hora.substring(0, 5) : '--:--';
+      const existente = acc[hora];
+
+      acc[hora] = existente
+        ? {
+            ...existente,
+            ocupados: existente.ocupados + Number(item.ocupados || 0),
+            capacidad: existente.capacidad + Number(item.capacidad || 0),
+            disponibles: existente.disponibles + Number(item.disponibles || 0),
+          }
+        : {
+            ...item,
+            hora,
+            ocupados: Number(item.ocupados || 0),
+            capacidad: Number(item.capacidad || 0),
+            disponibles: Number(item.disponibles || 0),
+          };
+
+      return acc;
+    }, {})
+  ).sort((a, b) => a.hora.localeCompare(b.hora));
+
+  const chartWidth = 760;
+  const chartHeight = 220;
+  const chartPadding = 34;
+  const maxCupo = Math.max(...cuposPorHora.map(item => item.ocupados), 1);
+  const chartInnerWidth = chartWidth - chartPadding * 2;
+  const chartInnerHeight = chartHeight - chartPadding * 2;
+  const chartPoints = cuposPorHora.map((item, index) => {
+    const x = chartPadding + (cuposPorHora.length > 1 ? (index / (cuposPorHora.length - 1)) * chartInnerWidth : chartInnerWidth / 2);
+    const y = chartPadding + chartInnerHeight - (item.ocupados / maxCupo) * chartInnerHeight;
+    return { ...item, x, y };
+  });
+  const chartPath = chartPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
 
   const formatDias = (dias: any[] | undefined) =>
     dias?.length
@@ -327,11 +369,69 @@ export default function AdminInscripcionesPage() {
               <option value="">Todos los días</option>
               <option value="Lunes">Lunes</option>
               <option value="Martes">Martes</option>
-              <option value="Miércoles">Miércoles</option>
+              <option value="Miercoles">Miércoles</option>
               <option value="Jueves">Jueves</option>
               <option value="Viernes">Viernes</option>
+              <option value="Sabado">Sabado</option>
+              <option value="Domingo">Domingo</option>
             </select>
           </div>
+
+          <section className="capacity-panel capacity-panel--summary">
+            <div className="capacity-line-chart">
+              <div className="capacity-line-chart__header">
+                <div>
+                  <span className="capacity-summary__label">Cupos ocupados por hora</span>
+                  <strong>{cuposResumen.ocupados}</strong>
+                </div>
+                <span className="capacity-summary__scope">
+                  {diaSeleccionado || 'Todos los dias'} · {graficaFiltrada.length} horarios
+                </span>
+              </div>
+
+              {chartPoints.length > 0 ? (
+                <div className="capacity-line-chart__canvas">
+                  <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} role="img" aria-label="Grafico lineal de cupos ocupados por hora">
+                    {[0, 0.5, 1].map((ratio) => (
+                      <line
+                        key={ratio}
+                        x1={chartPadding}
+                        x2={chartWidth - chartPadding}
+                        y1={chartPadding + chartInnerHeight * ratio}
+                        y2={chartPadding + chartInnerHeight * ratio}
+                        className="capacity-line-chart__grid"
+                      />
+                    ))}
+
+                    <path d={chartPath} className="capacity-line-chart__path" />
+
+                    {chartPoints.map(point => (
+                      <g key={`${point.hora}-${point.ocupados}`}>
+                        <circle cx={point.x} cy={point.y} r="5" className="capacity-line-chart__point" />
+                        <text x={point.x} y={point.y - 12} textAnchor="middle" className="capacity-line-chart__value">
+                          {point.ocupados}
+                        </text>
+                        <text x={point.x} y={chartHeight - 8} textAnchor="middle" className="capacity-line-chart__hour">
+                          {point.hora}
+                        </text>
+                      </g>
+                    ))}
+                  </svg>
+                </div>
+              ) : (
+                <div className="capacity-row capacity-row--empty">
+                  No hay cupos para mostrar con el filtro actual.
+                </div>
+              )}
+
+              <div className="capacity-summary__stats">
+                <span><strong>{Math.round(porcentajeCupos)}%</strong> ocupado</span>
+                <span><strong>{cuposResumen.ocupados}</strong> ocupados</span>
+                <span><strong>{cuposResumen.disponibles}</strong> libres</span>
+                <span><strong>{cuposResumen.capacidad}</strong> totales</span>
+              </div>
+            </div>
+          </section>
 
           <div className="grid grid-cols-4 gap-3">
             {graficaFiltrada?.map((h) => {
