@@ -69,18 +69,20 @@ export default function HomeUserPage() {
           {anuncios.length === 0 ? (
             <p className="gx-announcement-empty">No hay anuncios disponibles</p>
           ) : (
-            anuncios.map((a, i) => {
+            anuncios.map((a) => {
               const imageUrl = getAnnouncementImageUrl(a.fotografia);
 
               return (
-                <Reveal as="div" key={a.id} delay={(i % 3) * 60} className="gx-card gx-card--hover gx-announcement-card">
-                  <div className="gx-announcement-head">
-                    <span className="gx-announcement-avatar"><Megaphone size={16} /></span>
+                <div className="card" key={a.id}>
+                  <div className="support-item">
+                    <div className="state">SM</div>
                     <div>
-                      <p className="gx-announcement-title">{a.titulo}</p>
-                      <span className="gx-announcement-date">
+                      <p className="announcement-title">
+                        {a.titulo}
+                      </p>
+                      <small className="announcement-date">
                         {new Date(a.fecha_publicacion).toLocaleDateString()}
-                      </span>
+                      </small>
                     </div>
                   </div>
 
@@ -94,7 +96,7 @@ export default function HomeUserPage() {
                       className="gx-announcement-image"
                     />
                   )}
-                </Reveal>
+                </div>
               );
             })
           )}

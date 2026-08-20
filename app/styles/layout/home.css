@@ -28,6 +28,7 @@
     linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
   background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 100%);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 100%);
 }
 .gx-hero-orb {
@@ -205,11 +206,14 @@
   content: ''; position: absolute; inset: 0; z-index: -1; opacity: .5;
   background-image: radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px);
   background-size: 16px 16px;
+  -webkit-mask-image: linear-gradient(to top, black, transparent 70%);
   mask-image: linear-gradient(to top, black, transparent 70%);
 }
 .gx-showcase-icon {
   width: 44px; height: 44px; border-radius: 12px;
-  background: rgba(255,255,255,.14); backdrop-filter: blur(6px);
+  background: rgba(255,255,255,.14);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   display: grid; place-items: center; margin-bottom: auto;
 }
 .gx-showcase-tile h3 { margin: 0; font-size: 18px; font-weight: 700; }
