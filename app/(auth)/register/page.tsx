@@ -77,13 +77,15 @@ export default function RegisterPage() {
   const [diasHorario, setDiasHorario] = useState<any[]>([]);
   const [divisiones, setDivisiones] = useState<any[]>([]);
   const [carreras, setCarreras] = useState<any[]>([]);
+  const [convocatoriaActiva, setConvocatoriaActiva] = useState<any>(null);
   const [progress, setProgress] = useState(0);
   const [success, setSuccess] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [convocatoriaCargada, setConvocatoriaCargada] = useState(false);
 
   // Base API url (from env)
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
   const {
     hasMinLength,
@@ -92,16 +94,42 @@ export default function RegisterPage() {
     level: passwordMeterLevel
   } = getPasswordStatus(form.password);
 
-  // 1. Cargar todos los horarios (Esto ya trae los días incluidos gracias a nuestro backend)
+  useEffect(() => {
+    fetch(`${API_URL}/lista-espera/convocatoria-activa`)
+      .then(r => r.json())
+      .then(data => {
+        setConvocatoriaActiva(data?.activa ? data.periodo : null);
+      })
+      .catch((error) => {
+        console.error('Error cargando convocatoria activa:', error);
+        setConvocatoriaActiva(null);
+      })
+      .finally(() => {
+        setConvocatoriaCargada(true);
+      });
+  }, [API_URL]);
+
+  // 1. Cargar horarios del periodo activo
   useEffect(()=>{
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/horarios`)
+    if (!convocatoriaCargada) return;
+
+    if (!convocatoriaActiva?.id_periodo) {
+      setHorarios([]);
+      return;
+    }
+
+    const periodoQuery = convocatoriaActiva?.id_periodo
+      ? `?id_periodo=${convocatoriaActiva.id_periodo}`
+      : '';
+
+    fetch(`${API_URL}/horarios${periodoQuery}`)
       .then(r=>r.json())
       .then(d=>setHorarios(Array.isArray(d)?d:d?.data||[]))
       .catch((error)=>{
         console.error('Error cargando horarios:', error);
         setHorarios([]);
       });
-  },[]);
+  },[API_URL, convocatoriaActiva?.id_periodo, convocatoriaCargada]);
 
   // 2.  SOLUCIÓN: Extraer los días directamente de la lista que ya tenemos en memoria
   useEffect(() => {
@@ -316,10 +344,40 @@ export default function RegisterPage() {
                 </div>
               )}
 
+<<<<<<< HEAD
+              <div className="form-group">
+                <label>Convocatoria activa</label>
+                <div className="auth-input" style={{ display: 'flex', alignItems: 'center', minHeight: 48 }}>
+                  {convocatoriaActiva
+                    ? convocatoriaActiva.nombre_periodo
+                    : 'No hay convocatoria activa'}
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="horarioId">Horario</label>
+                <select
+                  id="horarioId"
+                  title="Horario"
+                  name="horarioId"
+                  value={form.horarioId}
+                  className="auth-select"
+                  onChange={handleChange}
+                  disabled={!convocatoriaActiva || horarios.length === 0}
+                >
+                  <option value="">
+                    {!convocatoriaActiva
+                      ? 'No hay convocatoria activa'
+                      : horarios.length === 0
+                        ? 'No hay horarios para esta convocatoria'
+                        : 'Selecciona horario'}
+                  </option>
+=======
               <div className="gx-field">
                 <label htmlFor="horarioId">Horario</label>
                 <select id="horarioId" title="Horario" name="horarioId" value={form.horarioId} className="gx-select" onChange={handleChange}>
                   <option value="">Selecciona horario</option>
+>>>>>>> 4b4a7b420896697ca861eb3196535359c836f64c
                   {horarios.map(h => (<option key={h.id_horario} value={h.id_horario}>{h.hora_inicio} - {h.hora_fin}</option>))}
                 </select>
               </div>

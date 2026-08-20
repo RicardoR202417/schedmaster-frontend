@@ -8,6 +8,8 @@ import {
   Eye, Mail, UserPlus, CalendarCheck, Activity, Award, AlertTriangle, Flame
 } from 'lucide-react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
 const obtenerNombresMeses = () => {
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const mesActual = new Date().getMonth();
@@ -79,7 +81,7 @@ export default function DashboardPage() {
 
     const cargarStats = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/asistencias/dashboard-stats`);
+        const res = await fetch(`${API_URL}/asistencias/dashboard-stats`);
         if (res.ok) {
           const data = await res.json();
           if (data && data.basicos) {
