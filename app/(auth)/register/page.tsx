@@ -325,7 +325,7 @@ export default function RegisterPage() {
 
               {/* División y carrera */}
               {form.tipo==="estudiante" && (
-                <div className="gx-reg-row" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                <div className="gx-reg-row gx-reg-row--2">
                   <div className="gx-field">
                     <label htmlFor="division">División</label>
                     <select id="division" title="División" name="division" value={form.division} className="gx-select" onChange={handleChange}>
@@ -344,23 +344,23 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              <div className="form-group">
+              <div className="gx-field">
                 <label>Convocatoria activa</label>
-                <div className="auth-input" style={{ display: 'flex', alignItems: 'center', minHeight: 48 }}>
+                <div className="gx-input" style={{ display: 'flex', alignItems: 'center' }}>
                   {convocatoriaActiva
                     ? convocatoriaActiva.nombre_periodo
                     : 'No hay convocatoria activa'}
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="gx-field">
                 <label htmlFor="horarioId">Horario</label>
                 <select
                   id="horarioId"
                   title="Horario"
                   name="horarioId"
                   value={form.horarioId}
-                  className="auth-select"
+                  className="gx-select"
                   onChange={handleChange}
                   disabled={!convocatoriaActiva || horarios.length === 0}
                 >

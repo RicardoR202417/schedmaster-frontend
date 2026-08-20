@@ -206,6 +206,8 @@
   box-shadow: 0 0 0 4px rgba(0, 164, 224, .16);
 }
 .gx-input.is-invalid { border-color: #f87171; }
+.gx-input:disabled,
+.gx-select:disabled { opacity: .6; cursor: not-allowed; }
 .gx-error-text { font-size: 12px; font-weight: 600; color: #ef4444; margin: -2px 0 0; }
 .gx-hint-text { font-size: 12px; font-weight: 600; color: var(--gx-text-faint); margin: -2px 0 0; }
 
@@ -322,9 +324,15 @@
 
 .gx-mobile-menu {
   max-height: 0; overflow: hidden;
-  transition: max-height var(--gx-dur-slow) var(--gx-ease);
+  background: var(--gx-surface);
+  border-bottom: 1px solid transparent;
+  transition: max-height var(--gx-dur-slow) var(--gx-ease), border-color var(--gx-dur) var(--gx-ease);
 }
-.gx-mobile-menu.is-open { max-height: 420px; }
+.gx-mobile-menu.is-open {
+  max-height: 520px;
+  border-bottom-color: var(--gx-line);
+  box-shadow: var(--gx-shadow-lg);
+}
 .gx-mobile-nav {
   display: flex; flex-direction: column; gap: 4px;
   padding: 18px 24px 6px; max-width: var(--gx-container); margin: 0 auto;

@@ -39,6 +39,7 @@
 .gx-reg-progress > span { display: block; height: 100%; border-radius: 999px; background: var(--gx-grad-brand); transition: width .4s var(--gx-ease); }
 
 .gx-reg-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.gx-reg-row--2 { grid-template-columns: 1fr 1fr; }
 
 .gx-day-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 18px; }
 
@@ -68,6 +69,8 @@
 .gx-reg-success p { font-size: 15px; color: var(--gx-text-dim); margin: 0; }
 
 @media (max-width: 640px) {
-  .gx-reg-card { padding: 26px 20px; }
+  .gx-reg-page { padding: 24px 12px 40px; }
+  .gx-reg-card { padding: 24px 18px; }
   .gx-reg-row { grid-template-columns: 1fr; }
+  .gx-reg-head h1 { font-size: 24px; }
 }
