@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { X, Send } from "lucide-react";
 import { loadExerciseIndex, findExercisesInText, type ExerciseEntry } from "../lib/exerciseSearch";
 import ExerciseCard from "./ExerciseCard";
+import ChatMascot from "./ChatMascot";
 
 type ChatMessage = {
   sender: "user" | "bot";
@@ -15,6 +17,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   // Generamos un ID temporal único al iniciar el componente.
   const [sessionId] = useState(() => "session_" + Date.now().toString(36) + Math.random().toString(36).substring(2));
@@ -29,6 +32,10 @@ export default function ChatBot() {
       });
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, isLoading]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -65,52 +72,46 @@ export default function ChatBot() {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 99999, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      
-      {/* Ventana del Chat */}
+    <div className="gx-chat-root">
       {isOpen && (
-        <div style={{
-          width: '320px', height: '420px', backgroundColor: '#ffffff', borderRadius: '16px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column',
-          marginBottom: '16px', border: '1px solid #eaeaea', overflow: 'hidden'
-        }}>
-          
-          {/* Cabecera */}
-          <div style={{ backgroundColor: '#005c8a', color: '#ffffff', padding: '16px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>🤖 Asistente SchedMaster</span>
-            <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', fontSize: '18px', padding: 0 }}>
-              ✕
+        <div className="gx-chat-window" role="dialog" aria-label="Asistente SchedMaster">
+          <div className="gx-chat-header">
+            <ChatMascot size={38} />
+            <div className="gx-chat-header-text">
+              <strong>Asistente SchedMaster</strong>
+              <span className="gx-chat-header-status">En línea</span>
+            </div>
+            <button
+              type="button"
+              className="gx-chat-close"
+              onClick={() => setIsOpen(false)}
+              aria-label="Cerrar chat"
+              title="Cerrar"
+            >
+              <X size={16} />
             </button>
           </div>
-          
-          {/* Área de Mensajes */}
-          <div style={{ flex: 1, padding: '16px', overflowY: 'auto', backgroundColor: '#f9fafb', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+          <div className="gx-chat-body" ref={bodyRef}>
             {messages.length === 0 && (
-              <div style={{ textAlign: 'center', color: '#6b7280', fontSize: '14px', marginTop: '20px' }}>
-                <span style={{ fontSize: '40px', display: 'block', marginBottom: '8px' }}>🏋️‍♂️</span>
+              <div className="gx-chat-empty">
+                <ChatMascot size={56} />
                 <p>¡Hola! ¿Tienes dudas sobre el gimnasio, aforos o reservas?</p>
               </div>
             )}
-            
+
             {messages.map((msg, index) => (
-              <div key={index} style={{
-                maxWidth: '85%', display: 'flex', flexDirection: 'column', gap: '8px',
-                alignSelf: msg.sender === "user" ? 'flex-end' : 'flex-start',
-              }}>
-                <div style={{
-                  padding: '10px 14px', borderRadius: '12px', fontSize: '14px',
-                  backgroundColor: msg.sender === "user" ? '#009ce3' : '#ffffff',
-                  color: msg.sender === "user" ? '#ffffff' : '#1f2937',
-                  border: msg.sender === "user" ? 'none' : '1px solid #e5e7eb',
-                  borderBottomRightRadius: msg.sender === "user" ? '0' : '12px',
-                  borderBottomLeftRadius: msg.sender === "bot" ? '0' : '12px',
-                }}>
-                  {msg.text}
+              <div key={index}>
+                <div className={`gx-chat-msg ${msg.sender === "user" ? "gx-chat-msg--user" : "gx-chat-msg--bot"}`}>
+                  {msg.sender === "bot" && (
+                    <span className="gx-chat-msg-avatar"><ChatMascot size={24} /></span>
+                  )}
+                  <div className="gx-chat-bubble">{msg.text}</div>
                 </div>
 
                 {/* Tarjetas ricas: animaciones de ejercicios detectadas en la respuesta de la IA */}
                 {msg.exercises && msg.exercises.length > 0 && (
-                  <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+                  <div className="gx-chat-exercises">
                     {msg.exercises.map((exercise) => (
                       <ExerciseCard key={exercise.id} exercise={exercise} />
                     ))}
@@ -118,44 +119,44 @@ export default function ChatBot() {
                 )}
               </div>
             ))}
-            
+
             {isLoading && (
-              <div style={{ backgroundColor: '#e5e7eb', color: '#4b5563', alignSelf: 'flex-start', padding: '10px 14px', borderRadius: '12px', borderBottomLeftRadius: '0', fontSize: '12px', fontStyle: 'italic' }}>
-                Escribiendo...
+              <div className="gx-chat-typing" aria-label="Escribiendo">
+                <span /><span /><span />
               </div>
             )}
           </div>
 
-          {/* Caja de Texto y Envío */}
-          <div style={{ padding: '12px', borderTop: '1px solid #f3f4f6', backgroundColor: '#ffffff', display: 'flex', gap: '8px' }}>
+          <div className="gx-chat-input-row">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Escribe tu duda..."
-              style={{ flex: 1, padding: '8px 16px', borderRadius: '999px', border: '1px solid #d1d5db', outline: 'none', fontSize: '14px', color: '#000000' }}
+              className="gx-chat-input"
             />
-            <button 
-              onClick={sendMessage} 
-              style={{ backgroundColor: '#005c8a', color: '#ffffff', border: 'none', borderRadius: '50%', width: '38px', height: '38px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            <button
+              type="button"
+              onClick={sendMessage}
+              className="gx-chat-send"
+              disabled={!input.trim() || isLoading}
+              aria-label="Enviar mensaje"
             >
-              ➤
+              <Send size={16} />
             </button>
           </div>
         </div>
       )}
 
-      {/* Botón Flotante */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          backgroundColor: '#005c8a', color: '#ffffff', width: '60px', height: '60px', borderRadius: '50%',
-          border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', cursor: 'pointer', fontSize: '24px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', float: 'right'
-        }}
+        type="button"
+        className="gx-chat-fab"
+        onClick={() => setIsOpen((v) => !v)}
+        aria-label={isOpen ? "Cerrar asistente" : "Abrir asistente"}
+        title="Asistente SchedMaster"
       >
-        {isOpen ? '✕' : '💬'}
+        {isOpen ? <X size={26} className="gx-chat-close-icon" /> : <ChatMascot size={42} />}
       </button>
     </div>
   );
