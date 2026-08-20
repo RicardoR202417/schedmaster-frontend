@@ -7,14 +7,16 @@ interface RevealProps {
   as?: keyof React.JSX.IntrinsicElements;
   className?: string;
   delay?: number;
+  [key: string]: unknown;
 }
 
 /**
  * Revela su contenido con una transición suave cuando entra en el viewport.
  * Usa IntersectionObserver puro (sin librerías de animación) para mantener
  * el bundle ligero. Si el usuario prefiere menos movimiento, se muestra directo.
+ * Cualquier prop extra (onClick, aria-*, etc.) se reenvía al elemento renderizado.
  */
-export default function Reveal({ children, as = 'div', className = '', delay = 0 }: Readonly<RevealProps>) {
+export default function Reveal({ children, as = 'div', className = '', delay = 0, ...rest }: Readonly<RevealProps>) {
   const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -65,6 +67,7 @@ export default function Reveal({ children, as = 'div', className = '', delay = 0
       ref={ref}
       className={`gx-reveal ${visible ? 'is-visible' : ''} ${className}`.trim()}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      {...rest}
     >
       {children}
     </Tag>

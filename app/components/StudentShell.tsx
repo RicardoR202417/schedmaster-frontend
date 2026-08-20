@@ -7,6 +7,7 @@ import ThemeToggle from './ThemeToggle';
 
 const TABS = [
   { href: '/anuncios', label: 'Anuncios' },
+  { href: '/biblioteca-ejercicios', label: 'Ejercicios' },
   { href: '/rutinas', label: 'Rutinas' },
   { href: '/mis-rutinas', label: 'Mis rutinas' },
 ];
