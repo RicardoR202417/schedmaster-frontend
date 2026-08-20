@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-// @ts-expect-error - CSS imports are handled by Next.js at build time in this app setup.
 import "./styles/globals.css";
-// @ts-expect-error - CSS imports are handled by Next.js at build time in this app setup.
 import "./styles/carrusel.css";
 
 // 1. Asegúrate de tener esta línea para importar el bot
