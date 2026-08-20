@@ -1,9 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { Dumbbell, User, Megaphone } from 'lucide-react';
+import { Megaphone } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import ThemeToggle from '../../components/ThemeToggle';
+import StudentShell from '../../components/StudentShell';
 import Reveal from '../../components/Reveal';
 import { gxFontClass } from '../../styles/fonts';
 
@@ -37,20 +36,7 @@ export default function HomeUserPage() {
 
   return (
     <div className={`gx-scope gx-app ${gxFontClass}`}>
-      <header className="gx-app-topbar">
-        <div className="gx-app-topbar-inner">
-          <span className="gx-brand">
-            <span className="gx-brand-mark"><Dumbbell size={18} strokeWidth={2.4} /></span>
-            <span className="gx-brand-name">SchedMaster</span>
-          </span>
-          <div className="gx-app-topbar-actions">
-            <ThemeToggle />
-            <Link href="/perfil" className="gx-btn gx-btn--icon gx-btn--outline" aria-label="Mi perfil">
-              <User size={18} />
-            </Link>
-          </div>
-        </div>
-      </header>
+      <StudentShell />
 
       <section className="gx-app-hero">
         <h1>Tablón del <span className="gx-grad-text">gimnasio</span></h1>

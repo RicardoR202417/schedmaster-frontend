@@ -152,6 +152,8 @@
   width: 46px; height: 46px; padding: 0; border-radius: var(--gx-radius-full);
 }
 
+.gx-btn--danger:hover { border-color: #ef4444; color: #ef4444; }
+
 /* ── Tarjetas ─────────────────────────────── */
 .gx-card {
   background: var(--gx-surface);

@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User as UserIcon, Calendar, Clock, Home, LogOut, Dumbbell } from 'lucide-react';
-import Link from 'next/link';
+import { User as UserIcon, Calendar, Clock, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import ThemeToggle from '../../components/ThemeToggle';
+import StudentShell from '../../components/StudentShell';
 import AvisoPrivacidadModal from "@/app/components/AvisoPrivacidadModal";
 import { gxFontClass } from '../../styles/fonts';
 
@@ -76,20 +75,7 @@ export default function PerfilPage() {
 
   return (
     <div className={`gx-scope gx-app ${gxFontClass}`}>
-      <header className="gx-app-topbar">
-        <div className="gx-app-topbar-inner">
-          <Link href="/anuncios" className="gx-brand">
-            <span className="gx-brand-mark"><Dumbbell size={18} strokeWidth={2.4} /></span>
-            <span className="gx-brand-name">SchedMaster</span>
-          </Link>
-          <div className="gx-app-topbar-actions">
-            <ThemeToggle />
-            <Link href="/anuncios" className="gx-btn gx-btn--outline gx-btn--sm">
-              <Home size={16} /> Inicio
-            </Link>
-          </div>
-        </div>
-      </header>
+      <StudentShell />
 
       <section className="gx-app-hero">
         <h1>Mi <span className="gx-grad-text">perfil</span></h1>

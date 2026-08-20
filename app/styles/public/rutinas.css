@@ -1,0 +1,262 @@
+/* ==========================================
+   GX RUTINAS — tabs de alumno, feed comunidad,
+   CRUD "mis rutinas", modales y toast
+   ========================================== */
+
+/* ── Tabs del topbar de alumno ────────────── */
+.gx-app-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 0 24px 12px;
+  max-width: var(--gx-container);
+  margin: 0 auto;
+  scrollbar-width: none;
+}
+.gx-app-tabs::-webkit-scrollbar { display: none; }
+.gx-app-tab {
+  flex-shrink: 0;
+  padding: 8px 15px;
+  border-radius: var(--gx-radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gx-text-dim);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--gx-dur-fast) var(--gx-ease), color var(--gx-dur-fast) var(--gx-ease);
+}
+.gx-app-tab:hover { background: var(--gx-surface-2); color: var(--gx-text); }
+.gx-app-tab.is-active { background: var(--gx-grad-brand); color: #fff; }
+
+/* ── Encabezado de sección con acción ─────── */
+.gx-app-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+/* ── Estado vacío genérico ────────────────── */
+.gx-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 56px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.gx-empty-state-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  background: var(--gx-surface-2);
+  color: var(--gx-text-faint);
+  display: grid; place-items: center;
+}
+.gx-empty-state h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--gx-text); }
+.gx-empty-state p { margin: 0; font-size: 13.5px; color: var(--gx-text-dim); max-width: 32ch; }
+
+/* ── Grid de rutinas ───────────────────────── */
+.gx-routine-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.gx-routine-card {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gx-routine-card-head { display: flex; align-items: flex-start; gap: 12px; }
+.gx-routine-card-head h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--gx-text); line-height: 1.3; }
+.gx-routine-card-desc {
+  margin: 0; font-size: 13px; color: var(--gx-text-dim); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.gx-routine-card-meta {
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  font-size: 12px; color: var(--gx-text-faint); font-weight: 600;
+}
+.gx-routine-card-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.gx-routine-card-footer {
+  margin-top: auto; padding-top: 12px;
+  border-top: 1px solid var(--gx-line);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.gx-routine-card-actions { display: flex; gap: 6px; }
+.gx-routine-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: var(--gx-radius-full);
+  font-size: 11px; font-weight: 700;
+  background: rgba(111, 102, 246, .12); color: var(--gx-violet-500);
+  width: fit-content;
+}
+
+/* ── Overlay de modales gx ─────────────────── */
+.gx-modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(5, 10, 20, .6);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 20px;
+  animation: gx-fade-up .2s var(--gx-ease);
+  overflow-y: auto;
+}
+.gx-modal-close {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 10px;
+  border: none; background: var(--gx-surface-2); color: var(--gx-text-dim);
+  display: grid; place-items: center; cursor: pointer;
+  transition: background var(--gx-dur-fast) var(--gx-ease);
+}
+.gx-modal-close:hover { background: var(--gx-line-strong); }
+
+/* ── Detalle de rutina ─────────────────────── */
+.gx-routine-detail {
+  width: 100%; max-width: 560px;
+  max-height: 88vh; overflow-y: auto;
+  padding: 30px;
+  position: relative;
+}
+.gx-routine-detail-head { display: flex; align-items: flex-start; gap: 14px; padding-right: 30px; }
+.gx-routine-detail-head h2 { margin: 0 0 6px; font-size: 20px; font-weight: 700; color: var(--gx-text); }
+.gx-routine-detail-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.gx-routine-detail-meta span {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12.5px; color: var(--gx-text-dim); font-weight: 600;
+}
+.gx-routine-detail-desc {
+  margin: 16px 0 0; padding: 12px 14px; border-radius: 12px;
+  background: var(--gx-surface-2); font-size: 13.5px; color: var(--gx-text-dim); line-height: 1.6;
+}
+
+.gx-routine-exercise-table { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+.gx-routine-exercise-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; border-radius: 14px;
+  background: var(--gx-surface-2); border: 1px solid var(--gx-line);
+}
+.gx-routine-exercise-info { flex: 1; min-width: 0; }
+.gx-routine-exercise-info strong { display: block; font-size: 14px; font-weight: 700; color: var(--gx-text); }
+.gx-routine-exercise-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+.gx-routine-exercise-notes {
+  display: flex; align-items: flex-start; gap: 6px;
+  margin: 8px 0 0; font-size: 12px; color: var(--gx-text-faint); font-style: italic; line-height: 1.5;
+}
+
+.gx-routine-detail-footer { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+.gx-routine-detail-footer .gx-btn { flex: 1; min-width: 140px; }
+
+/* ── Formulario crear/editar ───────────────── */
+.gx-routine-form {
+  width: 100%; max-width: 620px;
+  max-height: 90vh; display: flex; flex-direction: column;
+  overflow: hidden; padding: 0;
+}
+.gx-routine-form-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 26px; border-bottom: 1px solid var(--gx-line); flex-shrink: 0;
+}
+.gx-routine-form-head h2 { margin: 0; font-size: 18px; font-weight: 700; color: var(--gx-text); }
+.gx-routine-form-head .gx-modal-close { position: static; }
+
+.gx-routine-form-body { padding: 22px 26px; overflow-y: auto; flex: 1; }
+.gx-textarea { height: auto; padding: 12px 16px; resize: vertical; font-family: inherit; }
+
+.gx-routine-form-exercises-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 6px 0 12px;
+}
+
+.gx-exercise-list { display: flex; flex-direction: column; gap: 14px; }
+.gx-exercise-row {
+  padding: 14px; border-radius: 14px;
+  background: var(--gx-surface-2); border: 1px solid var(--gx-line);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.gx-exercise-row-top { display: flex; align-items: center; gap: 10px; }
+.gx-exercise-index {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gx-grad-brand); color: #fff;
+  display: grid; place-items: center; font-size: 11.5px; font-weight: 800;
+}
+.gx-exercise-row-top .gx-exercise-autocomplete { flex: 1; }
+.gx-exercise-remove {
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 10px;
+  border: 1px solid var(--gx-line-strong); background: var(--gx-surface);
+  color: #ef4444; display: grid; place-items: center; cursor: pointer;
+  transition: background var(--gx-dur-fast) var(--gx-ease);
+}
+.gx-exercise-remove:hover { background: rgba(239, 68, 68, .1); }
+.gx-exercise-remove:disabled { opacity: .35; cursor: not-allowed; }
+
+.gx-exercise-row-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+.gx-exercise-autocomplete { position: relative; }
+.gx-exercise-suggestions {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 20;
+  list-style: none; margin: 0; padding: 6px;
+  background: var(--gx-surface); border: 1px solid var(--gx-line);
+  border-radius: 12px; box-shadow: var(--gx-shadow-lg);
+  max-height: 220px; overflow-y: auto;
+}
+.gx-exercise-suggestions li button {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px; border: none; background: none;
+  cursor: pointer; text-align: left; font-family: inherit;
+  color: var(--gx-text); font-size: 13px; font-weight: 600;
+}
+.gx-exercise-suggestions li button:hover { background: var(--gx-surface-2); }
+.gx-exercise-suggestions li button svg { color: var(--gx-blue-500); flex-shrink: 0; }
+.gx-exercise-suggestions li button small { margin-left: auto; color: var(--gx-text-faint); font-weight: 600; flex-shrink: 0; }
+
+.gx-routine-form-footer {
+  flex-shrink: 0; display: flex; justify-content: flex-end; gap: 10px;
+  padding: 18px 26px; border-top: 1px solid var(--gx-line);
+}
+
+/* ── Toast ─────────────────────────────────── */
+.gx-toast {
+  position: fixed;
+  top: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 1300;
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px; border-radius: var(--gx-radius-lg);
+  background: var(--gx-surface); border: 1px solid var(--gx-line);
+  box-shadow: var(--gx-shadow-lg);
+  max-width: min(420px, calc(100vw - 32px));
+  animation: gx-toast-in .35s var(--gx-ease);
+}
+@keyframes gx-toast-in {
+  from { opacity: 0; transform: translate(-50%, -16px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.gx-toast-icon { flex-shrink: 0; display: grid; place-items: center; }
+.gx-toast--success .gx-toast-icon { color: #22c55e; }
+.gx-toast--error .gx-toast-icon { color: #ef4444; }
+.gx-toast-text { font-size: 13.5px; font-weight: 600; color: var(--gx-text); flex: 1; }
+.gx-toast-action {
+  flex-shrink: 0; border: none; background: none; cursor: pointer;
+  font-size: 13px; font-weight: 800; color: var(--gx-blue-500);
+  padding: 4px 6px;
+}
+.gx-toast-close {
+  flex-shrink: 0; border: none; background: none; cursor: pointer;
+  color: var(--gx-text-faint); display: grid; place-items: center;
+  width: 22px; height: 22px; border-radius: 6px;
+}
+.gx-toast-close:hover { background: var(--gx-surface-2); }
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 980px) {
+  .gx-routine-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .gx-routine-grid { grid-template-columns: 1fr; }
+  .gx-exercise-row-grid { grid-template-columns: 1fr 1fr; }
+  .gx-routine-form-body, .gx-routine-form-head, .gx-routine-form-footer { padding-left: 18px; padding-right: 18px; }
+  .gx-routine-detail { padding: 22px 18px; max-height: 92vh; }
+  .gx-toast { top: 12px; padding: 12px 14px; }
+}
