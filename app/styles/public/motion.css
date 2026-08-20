@@ -1,0 +1,45 @@
+/* ==========================================
+   GX MOTION — keyframes y utilidades de animación
+   propias del rediseño (no tocan las de utilities/animations.css)
+   ========================================== */
+
+@keyframes gx-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(2%, -4%, 0) scale(1.05); }
+}
+@keyframes gx-drift-rev {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(-3%, 3%, 0) scale(1.04); }
+}
+@keyframes gx-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 164, 224, .35); }
+  100% { box-shadow: 0 0 0 14px rgba(0, 164, 224, 0); }
+}
+@keyframes gx-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes gx-fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gx-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .7s var(--gx-ease), transform .7s var(--gx-ease);
+  will-change: opacity, transform;
+}
+.gx-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gx-float-a { animation: gx-drift 9s ease-in-out infinite; }
+.gx-float-b { animation: gx-drift-rev 11s ease-in-out infinite; }
+.gx-pulse-dot { animation: gx-pulse-ring 2.4s ease-out infinite; }
+.gx-spin { animation: gx-spin 1s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gx-reveal { opacity: 1; transform: none; transition: none; }
+  .gx-float-a, .gx-float-b, .gx-pulse-dot { animation: none; }
+}

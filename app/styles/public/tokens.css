@@ -1,0 +1,117 @@
+/* ==========================================
+   GX DESIGN TOKENS — Rediseño público / alumnos
+   Namespace exclusivo (--gx-*) para no interferir con las
+   variables que usa la sección de administración.
+   ========================================== */
+
+:root {
+  /* Marca — se conserva el azul/amarillo institucional, sumando un acento violeta */
+  --gx-blue-600: #0576c9;
+  --gx-blue-500: #00a4e0;
+  --gx-blue-400: #38bdf8;
+  --gx-violet-500: #6f66f6;
+  --gx-violet-400: #8b83ff;
+  --gx-amber-500: #ebba3d;
+  --gx-amber-400: #f7cb5c;
+
+  --gx-grad-brand: linear-gradient(135deg, var(--gx-blue-500) 0%, var(--gx-violet-500) 100%);
+  --gx-grad-energy: linear-gradient(135deg, var(--gx-amber-400) 0%, #f98a3c 100%);
+  --gx-grad-mesh: radial-gradient(circle at 15% 20%, rgba(0, 164, 224, .35), transparent 45%),
+                  radial-gradient(circle at 85% 15%, rgba(111, 102, 246, .30), transparent 45%),
+                  radial-gradient(circle at 50% 90%, rgba(235, 186, 61, .18), transparent 50%);
+
+  /* Neutrales — light (default) */
+  --gx-cloud-50: #f5f8fc;
+  --gx-cloud-100: #eef2f9;
+  --gx-slate-900: #0e1626;
+  --gx-slate-600: #52607a;
+  --gx-slate-400: #8894ac;
+
+  --gx-bg: var(--gx-cloud-50);
+  --gx-surface: #ffffff;
+  --gx-surface-2: var(--gx-cloud-100);
+  --gx-text: var(--gx-slate-900);
+  --gx-text-dim: var(--gx-slate-600);
+  --gx-text-faint: var(--gx-slate-400);
+  --gx-line: rgba(14, 22, 38, .09);
+  --gx-line-strong: rgba(14, 22, 38, .16);
+  --gx-shadow-color: 220deg 45% 20%;
+
+  /* Superficie "ink" — usada para hero/CTA/footer aunque estemos en modo claro */
+  --gx-ink-950: #050a14;
+  --gx-ink-900: #0a1220;
+  --gx-ink-800: #101c30;
+  --gx-ink-700: #1a2a46;
+  --gx-ink-line: rgba(255, 255, 255, .10);
+  --gx-ink-text: #eaf0fb;
+  --gx-ink-text-dim: #93a3c4;
+
+  --gx-radius-sm: 12px;
+  --gx-radius-md: 18px;
+  --gx-radius-lg: 26px;
+  --gx-radius-xl: 34px;
+  --gx-radius-full: 999px;
+
+  --gx-ease: cubic-bezier(.16, 1, .3, 1);
+  --gx-ease-soft: cubic-bezier(.4, 0, .2, 1);
+  --gx-dur-fast: .18s;
+  --gx-dur: .35s;
+  --gx-dur-slow: .7s;
+
+  --gx-shadow-sm: 0 2px 10px hsl(var(--gx-shadow-color) / .06);
+  --gx-shadow-md: 0 12px 32px hsl(var(--gx-shadow-color) / .10);
+  --gx-shadow-lg: 0 24px 60px hsl(var(--gx-shadow-color) / .14);
+  --gx-shadow-glow-blue: 0 16px 40px rgba(0, 164, 224, .28);
+  --gx-shadow-glow-amber: 0 16px 40px rgba(235, 186, 61, .30);
+
+  --gx-container: 1220px;
+  --gx-font-display: 'Space Grotesk', var(--font);
+  --gx-font-sans: 'Plus Jakarta Sans', var(--font);
+}
+
+/* Neutrales — dark (sigue el toggle html.dark ya existente en la app) */
+html.dark {
+  --gx-bg: var(--gx-ink-950);
+  --gx-surface: var(--gx-ink-900);
+  --gx-surface-2: var(--gx-ink-800);
+  --gx-text: var(--gx-ink-text);
+  --gx-text-dim: var(--gx-ink-text-dim);
+  --gx-text-faint: #5c6c8c;
+  --gx-line: var(--gx-ink-line);
+  --gx-line-strong: rgba(255, 255, 255, .16);
+  --gx-shadow-color: 220deg 70% 3%;
+}
+
+/* reset.css fija html/body a height:100% + overflow-x:hidden (compartido con admin,
+   no se toca). Ese par fuerza overflow-y a "auto" por spec y atrapa el scroll a un
+   viewport de alto. Se corrige solo cuando hay contenido del rediseño en el árbol. */
+html:has(.gx-scope),
+body:has(.gx-scope) {
+  height: auto;
+  min-height: 100%;
+}
+
+.gx-scope {
+  font-family: var(--gx-font-sans), system-ui, sans-serif;
+  color: var(--gx-text);
+  background: var(--gx-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.gx-scope h1,
+.gx-scope h2,
+.gx-scope h3,
+.gx-scope .gx-display {
+  font-family: var(--gx-font-display), var(--gx-font-sans), system-ui, sans-serif;
+}
+
+.gx-scope ::selection {
+  background: rgba(0, 164, 224, .28);
+  color: var(--gx-slate-900);
+}
+
+html.gx-lock-scroll,
+html.gx-lock-scroll body {
+  overflow: hidden;
+}

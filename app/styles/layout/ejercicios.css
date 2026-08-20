@@ -1,82 +1,71 @@
 /* ==========================================
-   28. LAYOUT — EJERCICIOS
+   GX — EJERCICIOS (rediseño total)
    ========================================== */
 
-.ejercicios-hero {
-  padding: 140px 24px 40px;
-  background: var(--color-surface);
+.gx-ex-hero {
+  position: relative;
+  padding: 150px 24px 70px;
   text-align: center;
+  background: var(--gx-ink-950);
+  color: #fff;
+  overflow: hidden;
 }
-.ejercicios-hero-inner {
-  max-width: 720px;
-  margin: 0 auto;
-}
+.gx-ex-hero-bg { position: absolute; inset: 0; pointer-events: none; }
+.gx-ex-hero-bg .gx-hero-orb--1 { top: -160px; left: 10%; }
+.gx-ex-hero-bg .gx-hero-orb--2 { bottom: -160px; right: 10%; }
+.gx-ex-hero-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.gx-ex-hero-inner h1 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; letter-spacing: -0.02em; margin: 0; color: #fff; }
+.gx-ex-hero-inner p { font-size: 16px; line-height: 1.7; color: var(--gx-ink-text-dim); margin: 0; max-width: 560px; }
 
-.ejercicios-grid-section {
-  padding: 40px 24px 100px;
-  background: var(--color-surface);
-}
+.gx-ex-grid-section { padding: 64px 0 100px; }
 
-.ejercicios-grid {
-  max-width: 1200px;
-  margin: 0 auto;
+.gx-ex-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 22px;
 }
-
-.ejercicio-card {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
+.gx-ex-card {
+  border-radius: var(--gx-radius-lg);
   overflow: hidden;
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  background: var(--gx-surface);
+  border: 1px solid var(--gx-line);
+  box-shadow: var(--gx-shadow-sm);
+  transition: transform var(--gx-dur) var(--gx-ease), box-shadow var(--gx-dur) var(--gx-ease), border-color var(--gx-dur) var(--gx-ease);
 }
-.ejercicio-card:hover {
+.gx-ex-card:hover {
   transform: translateY(-6px);
-  border-color: var(--blue-500);
-  box-shadow: 0 16px 32px var(--color-shadow);
+  box-shadow: var(--gx-shadow-lg);
+  border-color: rgba(0, 164, 224, .30);
 }
-.ejercicio-card-media {
-  width: 100%;
-  height: 180px;
-  background: #f3f4f6;
+.gx-ex-card-media { width: 100%; height: 180px; background: var(--gx-surface-2); overflow: hidden; }
+.gx-ex-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s var(--gx-ease); }
+.gx-ex-card:hover .gx-ex-card-media img { transform: scale(1.06); }
+.gx-ex-card-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.gx-ex-card-body h3 { margin: 0; font-size: 15px; font-weight: 700; color: var(--gx-text); }
+.gx-ex-card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.gx-ex-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gx-text-dim);
+  font-weight: 600;
 }
-.ejercicio-card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.ejercicio-card-body {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.ejercicio-card-body h3 {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--color-text-heading);
-  line-height: 1.3;
-}
-.ejercicio-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.gx-ex-empty code {
+  background: var(--gx-surface-2);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 13px;
 }
 
-/* ── Responsive ──────────────────────────── */
 @media (max-width: 1024px) {
-  .ejercicios-grid { grid-template-columns: repeat(3, 1fr); }
+  .gx-ex-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 768px) {
-  .ejercicios-hero { padding: 120px 16px 32px; }
-  .ejercicios-grid-section { padding: 24px 16px 60px; }
-  .ejercicios-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .ejercicio-card-media { height: 140px; }
+  .gx-ex-hero { padding: 120px 16px 48px; }
+  .gx-ex-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .gx-ex-card-media { height: 150px; }
 }
 @media (max-width: 480px) {
-  .ejercicios-grid { grid-template-columns: 1fr; }
+  .gx-ex-grid { grid-template-columns: 1fr; }
 }

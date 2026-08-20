@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShieldCheck, Mail, RotateCw } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
+import ThemeToggle from '../../components/ThemeToggle';
+import { gxFontClass } from '../../styles/fonts';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -270,43 +272,48 @@ export default function VerifyTwoFactorPage() {
   };
 
   return (
-    <div className="login-page verify-2fa-page">
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="brand-logo">
-            <img src="/logo.png" alt="Logo" width="60" height="60" />
+    <div className={`gx-scope gx-auth-page ${gxFontClass}`}>
+      <div className="gx-auth-fab-theme"><ThemeToggle /></div>
+
+      <section className="gx-auth-brand">
+        <div className="gx-auth-brand-bg">
+          <div className="gx-hero-orb gx-hero-orb--1 gx-float-a" />
+          <div className="gx-hero-orb gx-hero-orb--2 gx-float-b" />
+        </div>
+        <div className="gx-auth-brand-inner">
+          <div className="gx-auth-logo">
+            <img src="/logo.png" alt="Logo" width="48" height="48" />
           </div>
-          <h1 className="hero-title">Verificación 2FA</h1>
-          <p className="hero-subtitle">Protegemos tu acceso con un segundo factor de autenticación.</p>
-          <div className="feature-list verify-feature-list">
-            <div className="feature-item">
-              <div className="feature-icon"><ShieldCheck size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">Código temporal de un solo uso</span>
+          <h1>Verificación 2FA</h1>
+          <p>Protegemos tu acceso con un segundo factor de autenticación.</p>
+
+          <div className="gx-auth-feature-list">
+            <div className="gx-auth-feature">
+              <span className="gx-auth-feature-icon"><ShieldCheck size={18} strokeWidth={2.5} /></span>
+              <span>Código temporal de un solo uso</span>
             </div>
-            <div className="feature-item">
-              <div className="feature-icon"><Mail size={20} strokeWidth={2.5} /></div>
-              <span className="feature-text">Enviado a {maskedEmail}</span>
+            <div className="gx-auth-feature">
+              <span className="gx-auth-feature-icon"><Mail size={18} strokeWidth={2.5} /></span>
+              <span>Enviado a {maskedEmail}</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="login-section">
-        <div className="decorative-shape shape-1" />
-        <div className="decorative-shape shape-2" />
-        <div className="login-container">
-          <header className="login-header">
-            <h1>Ingresa tu <span className="highlight">código</span></h1>
+      <section className="gx-auth-form-side">
+        <div className="gx-auth-form-wrap">
+          <header className="gx-auth-form-head">
+            <h1>Ingresa tu <span className="gx-grad-text">código</span></h1>
             <p>Revisa tu correo y escribe el código de 6 dígitos para continuar.</p>
-            <p className="verify-status-pill">
+            <p className="gx-auth-status-pill">
               {secondsLeft > 0 ? `Expira en ${secondsLeft}s` : 'El código puede haber expirado. Solicita uno nuevo.'}
             </p>
           </header>
 
-          <form onSubmit={handleVerify} className="verify-form">
-            <div className="form-group verify-code-group">
-              <span className="input-label">Código de verificación</span>
-              <div className="otp-grid">
+          <form onSubmit={handleVerify}>
+            <div className="gx-field">
+              <span className="gx-field-label">Código de verificación</span>
+              <div className="gx-otp-grid">
                 {OTP_FIELD_IDS.map((fieldId, index) => (
                   <input
                     key={fieldId}
@@ -317,7 +324,7 @@ export default function VerifyTwoFactorPage() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={1}
-                    className="otp-input"
+                    className="gx-otp-input"
                     value={otp[index] ?? ''}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
@@ -328,31 +335,29 @@ export default function VerifyTwoFactorPage() {
                   />
                 ))}
               </div>
-              <p className="verify-code-hint">Puedes escribir o pegar los 6 dígitos.</p>
+              <p className="gx-hint-text">Puedes escribir o pegar los 6 dígitos.</p>
             </div>
 
             <button
               type="submit"
-              className="btn btn--blue btn--full btn--lg"
+              className="gx-btn gx-btn--primary gx-btn--full gx-btn--lg"
               disabled={loading || !pending || code.length !== OTP_LENGTH}
             >
               {loading ? 'Verificando...' : 'Verificar código'}
             </button>
           </form>
 
-          <div className="verify-actions">
+          <div className="gx-auth-links">
             <button
               type="button"
-              className="btn btn--full btn--lg verify-resend-btn"
+              className="gx-btn gx-btn--outline gx-btn--full gx-btn--lg"
               onClick={handleResend}
               disabled={resendLoading || !pending}
             >
               <RotateCw size={16} /> {resendLoading ? 'Reenviando...' : 'Reenviar código'}
             </button>
 
-            <Link href="/login" className="verify-login-link">
-              Volver al inicio de sesión
-            </Link>
+            <Link href="/login">Volver al inicio de sesión</Link>
           </div>
         </div>
       </section>
