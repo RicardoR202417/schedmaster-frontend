@@ -35,11 +35,27 @@ export default function Reveal({ children, as = 'div', className = '', delay = 0
           observer.disconnect();
         }
       },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.01, rootMargin: '0px 0px 80px 0px' }
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+
+    // Red de seguridad: en scrolls muy rápidos (flick/momentum en móvil) o
+    // pestañas en segundo plano, el navegador puede retrasar la entrega del
+    // callback. Si el elemento ya quedó dentro del viewport, no lo dejamos
+    // invisible para siempre.
+    const failsafe = window.setTimeout(() => {
+      const rect = node.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setVisible(true);
+        observer.disconnect();
+      }
+    }, 1200);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(failsafe);
+    };
   }, []);
 
   const Tag = as as any;

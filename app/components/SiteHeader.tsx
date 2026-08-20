@@ -45,7 +45,7 @@ export default function SiteHeader() {
         <div className="gx-site-header-actions">
           <ThemeToggle className="gx-hide-mobile" />
           <Link href="/login" className="gx-btn gx-btn--ghost gx-btn--sm gx-hide-mobile">Iniciar sesión</Link>
-          <Link href="/seleccion-servicio" className="gx-btn gx-btn--primary gx-btn--sm">
+          <Link href="/seleccion-servicio" className="gx-btn gx-btn--primary gx-btn--sm gx-hide-mobile">
             Quiero entrenar
           </Link>
           <button
@@ -70,6 +70,11 @@ export default function SiteHeader() {
           <ThemeToggle />
           <Link href="/login" className="gx-btn gx-btn--outline gx-btn--full" onClick={() => setMenuOpen(false)}>
             Iniciar sesión
+          </Link>
+        </div>
+        <div className="gx-mobile-menu-actions" style={{ paddingTop: 0 }}>
+          <Link href="/seleccion-servicio" className="gx-btn gx-btn--primary gx-btn--full" onClick={() => setMenuOpen(false)}>
+            Quiero entrenar
           </Link>
         </div>
       </div>

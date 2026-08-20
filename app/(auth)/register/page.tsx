@@ -297,7 +297,7 @@ export default function RegisterPage() {
 
               {/* División y carrera */}
               {form.tipo==="estudiante" && (
-                <div className="gx-reg-row" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                <div className="gx-reg-row gx-reg-row--2">
                   <div className="gx-field">
                     <label htmlFor="division">División</label>
                     <select id="division" title="División" name="division" value={form.division} className="gx-select" onChange={handleChange}>

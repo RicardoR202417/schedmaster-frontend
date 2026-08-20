@@ -322,9 +322,15 @@
 
 .gx-mobile-menu {
   max-height: 0; overflow: hidden;
-  transition: max-height var(--gx-dur-slow) var(--gx-ease);
+  background: var(--gx-surface);
+  border-bottom: 1px solid transparent;
+  transition: max-height var(--gx-dur-slow) var(--gx-ease), border-color var(--gx-dur) var(--gx-ease);
 }
-.gx-mobile-menu.is-open { max-height: 420px; }
+.gx-mobile-menu.is-open {
+  max-height: 520px;
+  border-bottom-color: var(--gx-line);
+  box-shadow: var(--gx-shadow-lg);
+}
 .gx-mobile-nav {
   display: flex; flex-direction: column; gap: 4px;
   padding: 18px 24px 6px; max-width: var(--gx-container); margin: 0 auto;
