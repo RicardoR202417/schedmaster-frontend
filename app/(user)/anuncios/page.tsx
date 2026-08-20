@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { Dumbbell, User, Megaphone } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -37,13 +36,6 @@ export default function HomeUserPage() {
   }, []);
 
   return (
-<<<<<<< HEAD
-    <div className="home-page">
-      <header className="home-header">
-        <div className="logo-section">
-          <Image src="/logo.png" alt="logo" width={40} height={40} />
-          <span>SchedMaster</span>
-=======
     <div className={`gx-scope gx-app ${gxFontClass}`}>
       <header className="gx-app-topbar">
         <div className="gx-app-topbar-inner">
@@ -57,7 +49,6 @@ export default function HomeUserPage() {
               <User size={18} />
             </Link>
           </div>
->>>>>>> 4b4a7b420896697ca861eb3196535359c836f64c
         </div>
       </header>
 
@@ -78,65 +69,34 @@ export default function HomeUserPage() {
           {anuncios.length === 0 ? (
             <p className="gx-announcement-empty">No hay anuncios disponibles</p>
           ) : (
-<<<<<<< HEAD
-            anuncios.map((a) => {
+            anuncios.map((a, i) => {
               const imageUrl = getAnnouncementImageUrl(a.fotografia);
 
               return (
-                <div className="card" key={a.id}>
-                  <div className="support-item">
-                    <div className="state">SM</div>
+                <Reveal as="div" key={a.id} delay={(i % 3) * 60} className="gx-card gx-card--hover gx-announcement-card">
+                  <div className="gx-announcement-head">
+                    <span className="gx-announcement-avatar"><Megaphone size={16} /></span>
                     <div>
-                      <p className="announcement-title">
-                        {a.titulo}
-                      </p>
-                      <small className="announcement-date">
+                      <p className="gx-announcement-title">{a.titulo}</p>
+                      <span className="gx-announcement-date">
                         {new Date(a.fecha_publicacion).toLocaleDateString()}
-                      </small>
+                      </span>
                     </div>
-=======
-            anuncios.map((a, i) => (
-              <Reveal as="div" key={a.id} delay={(i % 3) * 60} className="gx-card gx-card--hover gx-announcement-card">
-                <div className="gx-announcement-head">
-                  <span className="gx-announcement-avatar"><Megaphone size={16} /></span>
-                  <div>
-                    <p className="gx-announcement-title">{a.titulo}</p>
-                    <span className="gx-announcement-date">
-                      {new Date(a.fecha_publicacion).toLocaleDateString()}
-                    </span>
->>>>>>> 4b4a7b420896697ca861eb3196535359c836f64c
                   </div>
 
-                  <p className="message">
-                    {a.descripcion}
-                  </p>
+                  <p>{a.descripcion}</p>
 
                   {imageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={imageUrl}
                       alt="anuncio"
-                      className="announcement-image"
+                      className="gx-announcement-image"
                     />
                   )}
-                </div>
-<<<<<<< HEAD
+                </Reveal>
               );
             })
-=======
-
-                <p>{a.descripcion}</p>
-
-                {a.fotografia && (
-                  <img
-                    src={`${BASE_URL}/imagenes/${a.fotografia}`}
-                    alt="anuncio"
-                    className="gx-announcement-image"
-                  />
-                )}
-              </Reveal>
-            ))
->>>>>>> 4b4a7b420896697ca861eb3196535359c836f64c
           )}
         </div>
       </section>

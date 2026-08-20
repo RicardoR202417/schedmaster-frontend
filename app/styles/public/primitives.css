@@ -206,6 +206,8 @@
   box-shadow: 0 0 0 4px rgba(0, 164, 224, .16);
 }
 .gx-input.is-invalid { border-color: #f87171; }
+.gx-input:disabled,
+.gx-select:disabled { opacity: .6; cursor: not-allowed; }
 .gx-error-text { font-size: 12px; font-weight: 600; color: #ef4444; margin: -2px 0 0; }
 .gx-hint-text { font-size: 12px; font-weight: 600; color: var(--gx-text-faint); margin: -2px 0 0; }
 
