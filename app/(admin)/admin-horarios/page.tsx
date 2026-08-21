@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Filter, Calendar } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Plus, Edit, Trash2, Filter, Calendar, X } from "lucide-react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AlertModal from '../../components/AlertModal';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -17,9 +17,29 @@ const DIAS_SEMANA = [
   { id: 7, nombre: "Domingo" }
 ];
 
+interface Periodo {
+  id_periodo: number;
+  nombre_periodo: string;
+  fecha_inicio_actividades?: string;
+}
+
+interface Horario {
+  id_horario: number;
+  id_periodo: number;
+  hora_inicio: string;
+  hora_fin: string;
+  capacidad_maxima: number;
+  periodo_nombre?: string;
+  anio?: number | string;
+  dias_semana?: string;
+  dias_ids?: Array<number | string>;
+}
+
 export default function AdminHorariosPage() {
-  const [horarios, setHorarios] = useState<any[]>([]);
-  const [periodos, setPeriodos] = useState<any[]>([]);
+  const [horarios, setHorarios] = useState<Horario[]>([]);
+  const [periodos, setPeriodos] = useState<Periodo[]>([]);
+  const [filtroAnio, setFiltroAnio] = useState("");
+  const [filtroPeriodo, setFiltroPeriodo] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [horarioAEditar, setHorarioAEditar] = useState<number | null>(null);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -48,6 +68,44 @@ export default function AdminHorariosPage() {
       })
       .catch(err => console.error("Error cargando convocatorias:", err));
   }, []);
+
+  const aniosDisponibles = useMemo(() => {
+    const anios = new Set<number>();
+
+    horarios.forEach(horario => {
+      const anio = Number(horario.anio);
+      if (Number.isInteger(anio)) anios.add(anio);
+    });
+
+    periodos.forEach(periodo => {
+      if (!periodo.fecha_inicio_actividades) return;
+      const anio = new Date(periodo.fecha_inicio_actividades).getFullYear();
+      if (Number.isInteger(anio)) anios.add(anio);
+    });
+
+    return [...anios].sort((a, b) => b - a);
+  }, [horarios, periodos]);
+
+  const periodosDisponibles = useMemo(() => {
+    if (!filtroAnio) return periodos;
+
+    return periodos.filter(periodo => {
+      const anio = periodo.fecha_inicio_actividades
+        ? new Date(periodo.fecha_inicio_actividades).getFullYear()
+        : null;
+      return String(anio) === filtroAnio;
+    });
+  }, [filtroAnio, periodos]);
+
+  const horariosFiltrados = useMemo(() => {
+    return horarios.filter(horario => {
+      const cumpleAnio = !filtroAnio || String(horario.anio) === filtroAnio;
+      const cumplePeriodo = !filtroPeriodo || String(horario.id_periodo) === filtroPeriodo;
+      return cumpleAnio && cumplePeriodo;
+    });
+  }, [filtroAnio, filtroPeriodo, horarios]);
+
+  const hayFiltrosActivos = Boolean(filtroAnio || filtroPeriodo);
 
   const fetchHorarios = () => {
     fetch(`${API_URL}/horarios`)
@@ -121,7 +179,7 @@ export default function AdminHorariosPage() {
     return horaStr;
   };
 
-  const handleEditar = (horario: any) => {
+  const handleEditar = (horario: Horario) => {
     setHorarioAEditar(horario.id_horario);
     
     setFormData({
@@ -180,7 +238,7 @@ export default function AdminHorariosPage() {
   };
 
   return (
-    <div className="app">
+    <div className="app app--admin-schedules">
       <AdminSidebar /> 
 
       <main className="main min-w-0">
@@ -199,22 +257,49 @@ export default function AdminHorariosPage() {
           <div className="filter-bar">
             <div className="field">
               <Calendar />
-              <select className="w-full bg-transparent border-none outline-none font-bold text-gray-700 text-[13px] cursor-pointer">
-                <option>Todos los años</option>
-                <option>2026</option>
+              <select
+                className="field-select"
+                value={filtroAnio}
+                onChange={(e) => {
+                  setFiltroAnio(e.target.value);
+                  setFiltroPeriodo("");
+                }}
+                aria-label="Filtrar por año"
+              >
+                <option value="">Todos los años</option>
+                {aniosDisponibles.map(anio => (
+                  <option key={anio} value={anio}>{anio}</option>
+                ))}
               </select>
             </div>
             <div className="field">
               <Filter />
-              <select className="w-full bg-transparent border-none outline-none font-bold text-gray-700 text-[13px] cursor-pointer">
-                <option>Todos los periodos</option>
-                {periodos.map((p: any) => (
+              <select
+                className="field-select"
+                value={filtroPeriodo}
+                onChange={(e) => setFiltroPeriodo(e.target.value)}
+                aria-label="Filtrar por periodo"
+              >
+                <option value="">Todos los periodos</option>
+                {periodosDisponibles.map((p) => (
                   <option key={p.id_periodo} value={p.id_periodo}>
                     {p.nombre_periodo}
                   </option>
                 ))}
               </select>
             </div>
+            {hayFiltrosActivos && (
+              <button
+                type="button"
+                className="btn-mini btn-mini--gray schedule-filter-clear"
+                onClick={() => {
+                  setFiltroAnio("");
+                  setFiltroPeriodo("");
+                }}
+              >
+                <X size={14} /> Limpiar
+              </button>
+            )}
           </div>
 
           <div className="table-area">
@@ -230,7 +315,7 @@ export default function AdminHorariosPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {horarios.map((h: any) => (
+                  {horariosFiltrados.length > 0 ? horariosFiltrados.map((h) => (
                     <tr key={h.id_horario}>
                       <td>{h.periodo_nombre === 'Sin periodo' ? 'N/A' : h.periodo_nombre} {h.anio === 'N/A' ? '' : `(${h.anio})`}</td>
                       {/* Aquí usamos la misma función de limpiar para que se vea bonito en la tabla */}
@@ -261,7 +346,13 @@ export default function AdminHorariosPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan={5} className="empty-state">
+                        No hay horarios con los filtros seleccionados
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -280,7 +371,7 @@ export default function AdminHorariosPage() {
                     <label htmlFor="id_periodo">Periodo</label>
                 <select id="id_periodo" className="auth-select" name="id_periodo" value={formData.id_periodo} onChange={handleChange}>
                       <option value="">Selecciona un periodo...</option>
-                      {periodos.map((p: any) => (
+                      {periodos.map((p) => (
                         <option key={p.id_periodo} value={p.id_periodo}>
                           {p.nombre_periodo}
                         </option>

@@ -14,10 +14,35 @@
   font-family: var(--font); font-size: 13px; font-weight: 700;
   color: var(--color-text-primary); background: transparent;
 }
+.field-select {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 800;
+}
 .field:focus-within { outline: 3px solid rgba(0,164,224,.22); outline-offset: 2px; }
 
 .filter-bar { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
 .filter-bar .field { flex: 1; min-width: 260px; }
+
+.schedule-filter-clear {
+  height: 44px;
+  padding: 0 14px;
+  border-color: var(--color-border-mid);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+
+.schedule-filter-clear:hover {
+  background: var(--color-surface-alt);
+  color: var(--color-text-heading);
+}
 
 .select {
   height: 44px; border-radius: 12px;

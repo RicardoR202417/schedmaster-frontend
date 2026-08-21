@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, CalendarDays, Pencil, Power, PowerOff, X, Save, Search, Mail } from 'lucide-react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AlertModal from '../../components/AlertModal';
@@ -18,13 +18,29 @@ interface Convocatoria {
 }
 
 type FormState = Convocatoria;
+type EstadoFiltro = '' | 'activada' | 'desactivada';
+type EditableField = Exclude<keyof FormState, 'id'>;
+
+interface PeriodoApi {
+  id_periodo: number;
+  nombre_periodo: string;
+  fecha_inicio_inscripcion: string;
+  fecha_fin_inscripcion: string;
+  fecha_inicio_actividades: string;
+  fecha_fin_periodo: string;
+  estado: string;
+}
+
+interface FieldProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+}
 
 interface ModalProps {
   onClose: () => void;
   title: string;
   subtitle: string;
-  form: FormState;
-  field: any;
+  field: (key: EditableField) => FieldProps;
   guardarConvocatoria: () => void;
 }
 
@@ -32,7 +48,6 @@ const ModalContent = ({
   onClose,
   title,
   subtitle,
-  form,
   field,
   guardarConvocatoria
 }: ModalProps) => (
@@ -116,10 +131,28 @@ const ModalContent = ({
   </div>
 );
 
+const mapConvocatorias = (payload: unknown): Convocatoria[] => {
+  const maybePayload = payload as { data?: unknown };
+  const source = Array.isArray(payload) ? payload : maybePayload?.data;
+
+  if (!Array.isArray(source)) return [];
+
+  return (source as PeriodoApi[]).map((p) => ({
+    id: p.id_periodo,
+    periodo: p.nombre_periodo,
+    fechaInicio: p.fecha_inicio_inscripcion.split('T')[0],
+    fechaFin: p.fecha_fin_inscripcion.split('T')[0],
+    fechaIngreso: p.fecha_inicio_actividades.split('T')[0],
+    fechaFinPeriodo: p.fecha_fin_periodo.split('T')[0],
+    estado: p.estado === 'activo' ? 'activada' : 'desactivada'
+  }));
+};
+
 export default function AdminConvocatoriasPage() {
 
   const [convocatorias, setConvocatorias] = useState<Convocatoria[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [estadoFiltro, setEstadoFiltro] = useState<EstadoFiltro>('');
   const [modalCrear, setModalCrear] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -139,29 +172,17 @@ export default function AdminConvocatoriasPage() {
 
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const mapConvocatorias = (payload: any): Convocatoria[] => {
-    const source = Array.isArray(payload) ? payload : payload?.data;
-
-    if (!Array.isArray(source)) return [];
-
-    return source.map((p: any) => ({
-      id: p.id_periodo,
-      periodo: p.nombre_periodo,
-      fechaInicio: p.fecha_inicio_inscripcion.split('T')[0],
-      fechaFin: p.fecha_fin_inscripcion.split('T')[0],
-      fechaIngreso: p.fecha_inicio_actividades.split('T')[0],
-      fechaFinPeriodo: p.fecha_fin_periodo.split('T')[0],
-      estado: p.estado === 'activo' ? 'activada' : 'desactivada'
-    }));
-  };
-
-  const cargarConvocatorias = async (query = '') => {
+  const cargarConvocatorias = useCallback(async (query = '', estado: EstadoFiltro = '') => {
     try {
       const term = query.trim();
       const baseUrl = `${API_URL}/admin-convocatoria`;
-      const endpoint = term
-        ? `${baseUrl}?q=${encodeURIComponent(term)}`
-        : baseUrl;
+      const params = new URLSearchParams();
+
+      if (term) params.set('q', term);
+      if (estado) params.set('estado', estado === 'activada' ? 'activo' : 'inactivo');
+
+      const queryString = params.toString();
+      const endpoint = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
       const res = await fetch(endpoint);
 
@@ -177,15 +198,15 @@ export default function AdminConvocatoriasPage() {
       console.error("Error cargando convocatorias", error);
       setConvocatorias([]);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      cargarConvocatorias(searchQuery);
+      cargarConvocatorias(searchQuery, estadoFiltro);
     }, 250);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [cargarConvocatorias, searchQuery, estadoFiltro]);
 
   const openCrear = () => {
     setForm(emptyForm);
@@ -209,8 +230,8 @@ export default function AdminConvocatoriasPage() {
     document.body.style.overflow = '';
   };
 
-  const field = (key: keyof FormState) => ({
-    value: form[key] as string,
+  const field = (key: EditableField) => ({
+    value: form[key],
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       setForm({ ...form, [key]: e.target.value }),
   });
@@ -256,7 +277,7 @@ export default function AdminConvocatoriasPage() {
 
       closeCrear();
       closeEditar();
-      cargarConvocatorias(searchQuery);
+      cargarConvocatorias(searchQuery, estadoFiltro);
 
     } catch (error) {
       console.error(error);
@@ -321,6 +342,19 @@ export default function AdminConvocatoriasPage() {
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
+            <div className="field">
+              <Power />
+              <select
+                className="field-select"
+                value={estadoFiltro}
+                onChange={e => setEstadoFiltro(e.target.value as EstadoFiltro)}
+                aria-label="Filtrar por estado"
+              >
+                <option value="">Todos los estados</option>
+                <option value="activada">Activas</option>
+                <option value="desactivada">Desactivadas</option>
+              </select>
+            </div>
           </section>
 
           <section className="table-area">
@@ -338,7 +372,7 @@ export default function AdminConvocatoriasPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {convocatorias.map(c => (
+                  {convocatorias.length > 0 ? convocatorias.map(c => (
                     <tr key={c.id}>
                       <td>{c.periodo}</td>
                       <td className="muted">{c.fechaInicio}</td>
@@ -376,7 +410,13 @@ export default function AdminConvocatoriasPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan={7} className="empty-state">
+                        No hay convocatorias con los filtros seleccionados
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -390,7 +430,6 @@ export default function AdminConvocatoriasPage() {
             onClose={closeCrear}
             title="Nueva convocatoria"
             subtitle="Configura un nuevo periodo de inscripciones"
-            form={form}
             field={field}
             guardarConvocatoria={guardarConvocatoria}
           />
@@ -403,7 +442,6 @@ export default function AdminConvocatoriasPage() {
             onClose={closeEditar}
             title="Editar convocatoria"
             subtitle="Actualiza la información del periodo"
-            form={form}
             field={field}
             guardarConvocatoria={guardarConvocatoria}
           />
