@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: http://localhost:3001 http://127.0.0.1:3001 https://schedmaster-backend.onrender.com https://res.cloudinary.com",
-              "connect-src 'self' http://localhost:3001 https://schedmaster-backend.onrender.com",
+              "connect-src 'self' http://localhost:3001 https://schedmaster-backend.onrender.com https://159.65.111.84.sslip.io",
               "object-src 'none'",
               "base-uri 'self'",
               "frame-ancestors 'none'",

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X, Send } from "lucide-react";
-import { loadExerciseIndex, findExercisesInText, type ExerciseEntry } from "../lib/exerciseSearch";
+import { loadExerciseIndex, findExercisesInText, extractExerciseTags, CURATED_EXERCISES, type ExerciseEntry } from "../lib/exerciseSearch";
 import ExerciseCard from "./ExerciseCard";
 import ChatMascot from "./ChatMascot";
 
@@ -60,9 +60,19 @@ export default function ChatBot() {
 
       const exerciseIndex = exerciseIndexRef.current ?? (await loadExerciseIndex());
       exerciseIndexRef.current = exerciseIndex;
-      const exercises = findExercisesInText(botText, exerciseIndex);
 
-      setMessages((prev) => [...prev, { sender: "bot", text: botText, exercises }]);
+      // 1) Prioridad: etiqueta invisible [[ejercicio:slug]] que el prompt de n8n
+      //    puede incluir a propósito. Se quita del texto que ve el usuario.
+      const { cleanText, exercises: taggedExercises } = extractExerciseTags(botText, exerciseIndex);
+
+      // 2) Respaldo: si el bot no mandó ninguna etiqueta (prompt aún no
+      //    actualizado, u olvido), intentamos detectar el ejercicio por texto libre.
+      const exercises = taggedExercises.length > 0
+        ? taggedExercises
+        : findExercisesInText(botText, [...CURATED_EXERCISES, ...exerciseIndex]);
+      const displayText = taggedExercises.length > 0 ? cleanText : botText;
+
+      setMessages((prev) => [...prev, { sender: "bot", text: displayText, exercises }]);
     } catch (error) {
       console.error("Error al conectar con el bot:", error);
       setMessages((prev) => [...prev, { sender: "bot", text: "Error de conexión con el servidor." }]);
