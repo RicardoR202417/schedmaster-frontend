@@ -10,11 +10,19 @@ import {
   X,
   RefreshCw,
   CheckCircle2,
-  Dot,
+  Droplets,
+  Salad,
+  Moon,
 } from 'lucide-react';
 import AlertModal from '../../components/AlertModal';
 import ThemeToggle from '../../components/ThemeToggle';
 import { gxFontClass } from '../../styles/fonts';
+
+const TIPS = [
+  { icon: Droplets, title: 'Hidratación', desc: 'Mantente hidratado durante tu entrenamiento' },
+  { icon: Salad, title: 'Nutrición', desc: 'Incluye verduras en cada comida' },
+  { icon: Moon, title: 'Descanso', desc: 'Dormir bien mejora tu rendimiento físico' },
+];
 
 export default function SeleccionServicioPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -141,9 +149,15 @@ export default function SeleccionServicioPage() {
 
         <div className="gx-app-section-label"><div><span>Consejos</span><h2>Para ti</h2></div></div>
         <div className="gx-tip-grid">
-          <div className="gx-card gx-tip-card"><Dot size={16} style={{ verticalAlign: '-3px', color: 'var(--gx-blue-500)' }} />Mantente hidratado durante tu entrenamiento</div>
-          <div className="gx-card gx-tip-card"><Dot size={16} style={{ verticalAlign: '-3px', color: 'var(--gx-blue-500)' }} />Incluye verduras en cada comida</div>
-          <div className="gx-card gx-tip-card"><Dot size={16} style={{ verticalAlign: '-3px', color: 'var(--gx-blue-500)' }} />Dormir bien mejora tu rendimiento físico</div>
+          {TIPS.map((tip) => (
+            <div key={tip.title} className="gx-card gx-card--hover gx-tip-card">
+              <span className="gx-tip-icon"><tip.icon size={20} /></span>
+              <div>
+                <h3>{tip.title}</h3>
+                <p>{tip.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
