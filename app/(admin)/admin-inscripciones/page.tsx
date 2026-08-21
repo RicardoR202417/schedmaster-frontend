@@ -1,17 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Users, RefreshCw, Check, X, Clock, Mail, GraduationCap, Briefcase,
-  Brain, AlertTriangle, CheckCircle
+  Brain, AlertTriangle, CheckCircle, Send
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import AdminSidebar from '../../components/AdminSidebar';
 import ConfirmModal from '../../components/ConfirmModal';
 import PropuestaModal from '../../components/PropuestaModal';
 import AlertModal from '../../components/AlertModal';
 
-const ROL_CONFIG: Record<number, { icon: any; nombre: string; color: string }> = {
+const ROL_CONFIG: Record<number, { icon: LucideIcon; nombre: string; color: string }> = {
   1: { icon: GraduationCap, nombre: 'Estudiante', color: 'var(--blue-light)' },
   2: { icon: Briefcase, nombre: 'Docente', color: 'var(--purple-light)' },
 };
@@ -85,7 +86,7 @@ export default function AdminInscripcionesPage() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertTitle, setAlertTitle] = useState('Mensaje');
 
-  const fetchInscripciones = async () => {
+  const fetchInscripciones = useCallback(async () => {
 
     setLoading(true);
 
@@ -120,9 +121,9 @@ export default function AdminInscripcionesPage() {
 
     }
 
-  };
+  }, [API_URL]);
 
-  const ejecutarNeurona = async () => {
+  const ejecutarNeurona = useCallback(async () => {
     try {
       const res = await fetch(`${API_URL}/neurona/evaluar-todos`);
       if (!res.ok) return;
@@ -136,11 +137,11 @@ export default function AdminInscripcionesPage() {
     } catch {
       setNeuronaOk(false);
     }
-  };
+  }, [API_URL]);
 
-  const handleActualizar = () => {
-    Promise.all([fetchInscripciones(), ejecutarNeurona()]);
-  };
+  const handleActualizar = useCallback(() => {
+    void Promise.all([fetchInscripciones(), ejecutarNeurona()]);
+  }, [fetchInscripciones, ejecutarNeurona]);
 
   // ── CAMBIO 3: useEffect autoaceptación VIP ───────────────────
   useEffect(() => {
@@ -178,11 +179,11 @@ export default function AdminInscripcionesPage() {
         // falla silenciosamente
       }
     });
-  }, [neuronaOk, inscripciones]);
+  }, [API_URL, neuronaOk, inscripciones]);
 
   useEffect(() => {
     handleActualizar();
-  }, []);
+  }, [handleActualizar]);
 
   const handleStatusChange = (id: number, nuevoEstado: string) => {
 
@@ -305,7 +306,7 @@ export default function AdminInscripcionesPage() {
   });
   const chartPath = chartPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
 
-  const formatDias = (dias: any[] | undefined) =>
+  const formatDias = (dias: Inscripcion['diasSeleccionados']) =>
     dias?.length
       ? dias.map(d => d?.dia?.nombre?.substring(0, 3)).join(', ')
       : 'No seleccionados';
@@ -585,7 +586,7 @@ export default function AdminInscripcionesPage() {
                                     setModalPropuestaOpen(true);
                                   }}
                                 >
-                                  Propuesta
+                                  <Send size={12}/> Propuesta
                                 </button>
 
                               </div>

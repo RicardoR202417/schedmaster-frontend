@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, CalendarDays, Pencil, Power, PowerOff, X, Save, Search } from 'lucide-react';
+import { Plus, CalendarDays, Pencil, Power, PowerOff, X, Save, Search, Mail } from 'lucide-react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AlertModal from '../../components/AlertModal';
 
@@ -123,7 +123,9 @@ export default function AdminConvocatoriasPage() {
   const [modalCrear, setModalCrear] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('Mensaje');
   const [alertMessage, setAlertMessage] = useState('');
+  const [notificandoId, setNotificandoId] = useState<number | null>(null);
 
   const emptyForm: FormState = {
     id: 0,
@@ -258,8 +260,38 @@ export default function AdminConvocatoriasPage() {
 
     } catch (error) {
       console.error(error);
+      setAlertTitle('Error');
       setAlertMessage(error instanceof Error ? error.message : 'Error al guardar convocatoria');
       setAlertOpen(true);
+    }
+  };
+
+  const notificarConvocatoria = async (convocatoria: Convocatoria) => {
+    try {
+      setNotificandoId(convocatoria.id);
+
+      const res = await fetch(`${API_URL}/admin-convocatoria/${convocatoria.id}/notificar`, {
+        method: 'POST'
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(data?.message || 'Error al notificar convocatoria');
+      }
+
+      setAlertTitle('Notificacion enviada');
+      setAlertMessage(
+        `Se enviaron ${data?.notificados ?? 0} correo(s). Pendientes encontrados: ${data?.pendientes ?? 0}. Fallidos: ${data?.fallidos ?? 0}.`
+      );
+      setAlertOpen(true);
+    } catch (error) {
+      console.error(error);
+      setAlertTitle('Error');
+      setAlertMessage(error instanceof Error ? error.message : 'Error al notificar convocatoria');
+      setAlertOpen(true);
+    } finally {
+      setNotificandoId(null);
     }
   };
 
@@ -321,6 +353,18 @@ export default function AdminConvocatoriasPage() {
                       </td>
                       <td>
                         <div className="row-actions">
+                          {c.estado === 'activada' && (
+                            <button
+                              type="button"
+                              className="btn-mini btn-mini--blue"
+                              onClick={() => notificarConvocatoria(c)}
+                              disabled={notificandoId === c.id}
+                              title="Notificar convocatoria activa"
+                            >
+                              <Mail size={14} />
+                              {notificandoId === c.id ? 'Enviando' : 'Notificar'}
+                            </button>
+                          )}
                           <button
                             type="button"
                             className="btn-icon btn-icon--cyan"
@@ -368,7 +412,7 @@ export default function AdminConvocatoriasPage() {
 
       <AlertModal
         open={alertOpen}
-        title="Error"
+        title={alertTitle}
         message={alertMessage}
         onClose={() => setAlertOpen(false)}
       />

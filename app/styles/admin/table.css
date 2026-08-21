@@ -253,6 +253,48 @@
   display: none;
 }
 
+.app--admin-inscriptions .modern-table th:last-child,
+.app--admin-inscriptions .modern-table td:last-child {
+  min-width: 340px;
+}
+
+.app--admin-inscriptions .modern-table th:last-child {
+  text-align: center;
+}
+
+.app--admin-inscriptions .modern-table td:last-child {
+  padding-right: 24px;
+}
+
+.app--admin-inscriptions .action-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(96px, 1fr));
+  gap: 8px;
+  align-items: center;
+}
+
+.app--admin-inscriptions .action-buttons .btn-mini,
+.app--admin-inscriptions .modern-table td:last-child > .btn-mini {
+  width: 100%;
+  height: 34px;
+  justify-content: center;
+  border-radius: 7px;
+  padding: 0 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.app--admin-inscriptions .action-buttons .btn-mini:hover {
+  transform: translateY(-1px);
+}
+
+.app--admin-inscriptions .btn-mini--gray:disabled {
+  background: rgba(148,163,184,.12);
+  border-color: rgba(148,163,184,.24);
+  color: var(--color-text-muted);
+  cursor: default;
+  opacity: 1;
+}
+
 @media (max-width: 720px) {
   .capacity-row {
     grid-template-columns: 78px 1fr 64px;
@@ -261,5 +303,14 @@
   .capacity-row .chip {
     grid-column: 1 / -1;
     justify-self: start;
+  }
+
+  .app--admin-inscriptions .modern-table th:last-child,
+  .app--admin-inscriptions .modern-table td:last-child {
+    min-width: 220px;
+  }
+
+  .app--admin-inscriptions .action-buttons {
+    grid-template-columns: 1fr;
   }
 }

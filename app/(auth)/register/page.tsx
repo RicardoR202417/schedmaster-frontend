@@ -212,10 +212,6 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!form.email.endsWith("@uteq.edu.mx")) {
-      alert("Solo se permiten correos institucionales (@uteq.edu.mx)");
-      return;
-    }
     if (!formValid) return;
 
     const datosParaBackend = {
@@ -310,7 +306,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="gx-field">
-                <label>Correo institucional</label>
+                <label>Correo</label>
                 <input
                   name="email"
                   type="email"
