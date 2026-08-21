@@ -40,7 +40,11 @@ html.has-custom-cursor * {
 }
 
 /* Onda que "late": sale desde el mismo redondeado del icono y se desvanece
-   en loop, para que el cursor no se sienta estatico mientras se mueve. */
+   en loop, para que el cursor no se sienta estatico mientras se mueve.
+   Se usan colores rgba() fijos (no color-mix(currentColor)): varios
+   navegadores no interpolan bien un box-shadow animado cuyo color depende
+   de currentColor y en vez de una onda suave se ve un salto brusco entre
+   los dos extremos. Por eso hay una keyframe por color/estado. */
 .custom-cursor-icon::after {
   content: '';
   position: absolute;
@@ -50,8 +54,8 @@ html.has-custom-cursor * {
   animation: custom-cursor-pulse 1.6s ease-out infinite;
 }
 @keyframes custom-cursor-pulse {
-  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent); }
-  70%, 100% { box-shadow: 0 0 0 16px color-mix(in srgb, currentColor 0%, transparent); }
+  0%   { box-shadow: 0 0 0 0 rgba(0, 164, 224, .5); }
+  70%, 100% { box-shadow: 0 0 0 16px rgba(0, 164, 224, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
   .custom-cursor-icon::after { animation: none; }
@@ -63,6 +67,13 @@ html.has-custom-cursor * {
   border-color: var(--yellow);
   color: #92400e;
 }
+.custom-cursor.is-hovering .custom-cursor-icon::after {
+  animation-name: custom-cursor-pulse-hover;
+}
+@keyframes custom-cursor-pulse-hover {
+  0%   { box-shadow: 0 0 0 0 rgba(235, 186, 61, .6); }
+  70%, 100% { box-shadow: 0 0 0 16px rgba(235, 186, 61, 0); }
+}
 
 .custom-cursor.is-clicking .custom-cursor-icon {
   transform: rotate(-15deg) scale(0.78);
@@ -73,10 +84,20 @@ html.dark .custom-cursor-icon {
   border-color: rgba(168, 196, 232, 0.45);
   color: #a8c4e8;
 }
+html.dark .custom-cursor-icon::after {
+  animation-name: custom-cursor-pulse-dark;
+}
+@keyframes custom-cursor-pulse-dark {
+  0%   { box-shadow: 0 0 0 0 rgba(168, 196, 232, .5); }
+  70%, 100% { box-shadow: 0 0 0 16px rgba(168, 196, 232, 0); }
+}
 html.dark .custom-cursor.is-hovering .custom-cursor-icon {
   background: rgba(235, 186, 61, 0.28);
   border-color: var(--yellow);
   color: #fbbf24;
+}
+html.dark .custom-cursor.is-hovering .custom-cursor-icon::after {
+  animation-name: custom-cursor-pulse-hover;
 }
 
 @media (pointer: coarse) {
