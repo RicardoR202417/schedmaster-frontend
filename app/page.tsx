@@ -73,7 +73,7 @@ export default function Home() {
         </div>
 
         <div className="gx-hero-inner">
-          <div className="gx-hero-text">
+          <Reveal as="div" className="gx-hero-text">
             <span className="gx-eyebrow gx-eyebrow--on-dark">
               <Award size={13} /> Gimnasio universitario UTEQ
             </span>
@@ -104,9 +104,9 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </div>
+          </Reveal>
 
-          <div className="gx-hero-visual">
+          <Reveal as="div" delay={150} className="gx-hero-visual">
             <div className="gx-mock">
               <div className="gx-mock-topbar">
                 <div className="gx-mock-dots"><span /><span /><span /></div>
@@ -142,23 +142,8 @@ export default function Home() {
                 <div className="gx-mock-avatars"><span /><span /><span /></div>
                 <small>+1,200 miembros activos</small>
               </div>
-
-              <div className="gx-float-card gx-float-card--1">
-                <span className="gx-float-icon"><Users size={16} /></span>
-                <div>
-                  <strong>Comunidad</strong>
-                  <span>+1,200 miembros</span>
-                </div>
-              </div>
-              <div className="gx-float-card gx-float-card--2">
-                <span className="gx-float-icon"><ShieldCheck size={16} /></span>
-                <div>
-                  <strong>Certificado</strong>
-                  <span>Equipo profesional</span>
-                </div>
-              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 

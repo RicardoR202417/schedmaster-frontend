@@ -151,22 +151,20 @@
 .gx-home .gx-section--alt { background: var(--gx-surface); }
 
 /* ── Features (bento) ────────────────────── */
+/* Flexbox en vez de grid con spans fijos: con flex-grow, la ultima fila
+   siempre reparte el espacio sobrante entre sus tarjetas en vez de dejar
+   huecos vacios, sin importar si hay 4, 5 o 6 tarjetas en total. */
 .gx-bento {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: minmax(190px, auto);
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 .gx-bento-card {
+  flex: 1 1 260px;
+  min-height: 190px;
   padding: 30px;
   display: flex; flex-direction: column; gap: 14px;
-  grid-column: span 2;
 }
-.gx-bento-card:nth-child(1) { grid-column: span 2; }
-.gx-bento-card:nth-child(2) { grid-column: span 2; }
-.gx-bento-card:nth-child(3) { grid-column: span 1; }
-.gx-bento-card:nth-child(4) { grid-column: span 1; }
-.gx-bento-card:nth-child(5) { grid-column: span 2; }
 
 .gx-bento-icon {
   width: 46px; height: 46px; border-radius: 13px;
@@ -265,9 +263,6 @@
   .gx-hero-subtitle { max-width: 100%; }
   .gx-hero-actions, .gx-hero-stats { justify-content: center; }
   .gx-hero-visual { margin-top: 20px; }
-  .gx-bento { grid-template-columns: repeat(2, 1fr); }
-  .gx-bento-card:nth-child(1), .gx-bento-card:nth-child(2), .gx-bento-card:nth-child(5) { grid-column: span 2; }
-  .gx-bento-card:nth-child(3), .gx-bento-card:nth-child(4) { grid-column: span 1; }
   .gx-showcase-grid { grid-template-columns: repeat(2, 1fr); }
   .gx-stats-band-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
 }
@@ -277,9 +272,7 @@
   .gx-hero-stats { gap: 18px; flex-wrap: wrap; }
   .gx-hero-stat-sep { display: none; }
   .gx-mock { max-width: 100%; }
-  .gx-float-card { display: none; }
-  .gx-bento { grid-template-columns: 1fr; }
-  .gx-bento-card, .gx-bento-card:nth-child(1), .gx-bento-card:nth-child(2), .gx-bento-card:nth-child(3), .gx-bento-card:nth-child(4), .gx-bento-card:nth-child(5) { grid-column: 1 / -1; }
+  .gx-bento-card { flex-basis: 100%; }
   .gx-showcase-grid { grid-template-columns: 1fr; }
   .gx-cta-card { padding: 52px 24px; }
 }
