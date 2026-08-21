@@ -23,13 +23,25 @@
   filter: blur(10px);
 }
 .gx-hero-bg-grid {
-  position: absolute; inset: 0;
+  /* Se desborda 56px (un periodo de la cuadricula) por lado: al animar el
+     translate, siempre queda patron de sobra para cubrir el hueco, y el
+     salto del loop es invisible porque coincide con el tamano de la celda. */
+  position: absolute; inset: -56px;
   background-image:
     linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 100%);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 100%);
+  animation: gx-grid-drift 16s linear infinite;
+  will-change: transform;
+}
+@keyframes gx-grid-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-56px, -56px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gx-hero-bg-grid { animation: none; }
 }
 .gx-hero-orb {
   position: absolute; border-radius: 50%;
